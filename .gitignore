@@ -1,0 +1,15 @@
+# Ignorar archivos y carpetas generadas por Maven/Java
+/target/
+*.class
+*.log
+
+# Archivos de configuración de IDEs
+*.iml
+.idea/
+*.swp
+*.swo
+*.bak
+.DS_Store
+
+# Archivos de sistema
+Thumbs.db
