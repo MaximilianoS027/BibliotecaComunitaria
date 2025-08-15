@@ -1,6 +1,6 @@
 package com.pap.domain.repository;
 
-import com.pap.domain.model.abstract.Usuario;
+import com.pap.domain.model.abst.Usuario;
 import com.pap.domain.model.concrete.Lector;
 import com.pap.domain.model.concrete.Bibliotecario;
 

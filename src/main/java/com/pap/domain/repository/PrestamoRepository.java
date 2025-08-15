@@ -1,8 +1,8 @@
 package com.pap.domain.repository;
 
 import com.pap.domain.model.concrete.Prestamo;
-import com.pap.domain.model.abstract.Usuario;
-import com.pap.domain.model.abstract.Material;
+import com.pap.domain.model.abst.Usuario;
+import com.pap.domain.model.abst.Material;
 
 import java.util.Date;
 import java.util.List;

@@ -1,6 +1,6 @@
 package com.pap.domain.model.concrete;
 
-import com.pap.domain.model.abstract.Material;
+import com.pap.domain.model.abst.Material;
 
 import java.util.Date;
 import java.util.Objects;

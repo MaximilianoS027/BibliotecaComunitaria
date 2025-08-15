@@ -1,6 +1,6 @@
 package com.pap.domain.repository;
 
-import com.pap.domain.model.abstract.Material;
+import com.pap.domain.model.abst.Material;
 import com.pap.domain.model.concrete.Libro;
 import com.pap.domain.model.concrete.Articulo;
 

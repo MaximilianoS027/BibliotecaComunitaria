@@ -1,7 +1,7 @@
 package com.pap.domain.model.concrete;
 
-import com.pap.domain.model.abstract.Material;
-import com.pap.domain.model.abstract.Usuario;
+import com.pap.domain.model.abst.Material;
+import com.pap.domain.model.abst.Usuario;
 import com.pap.domain.model.enums.EstadoPrestamo;
 
 import java.util.Date;

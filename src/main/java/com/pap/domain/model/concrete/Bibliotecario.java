@@ -1,6 +1,6 @@
 package com.pap.domain.model.concrete;
 
-import com.pap.domain.model.abstract.Usuario;
+import com.pap.domain.model.abst.Usuario;
 
 import java.util.Objects;
 

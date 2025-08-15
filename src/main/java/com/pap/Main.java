@@ -61,7 +61,7 @@ public class Main {
     private static void configurarLookAndFeel() {
         try {
             // Usar el look and feel del sistema operativo
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeel());
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             logger.info("Look and feel configurado: " + UIManager.getLookAndFeel().getName());
         } catch (Exception e) {
             logger.warn("No se pudo configurar el look and feel del sistema: " + e.getMessage());

@@ -1,4 +1,4 @@
-package com.pap.domain.model.abstract;
+package com.pap.domain.model.abst;
 
 import java.util.Objects;
 
