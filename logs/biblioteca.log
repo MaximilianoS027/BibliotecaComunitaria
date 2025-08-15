@@ -3,3 +3,8 @@
 2025-08-15 03:34:33 INFO  Main:65 - Look and feel configurado: Windows
 2025-08-15 03:34:33 INFO  Main:30 - Aplicación iniciada correctamente
 2025-08-15 03:34:33 INFO  Main:115 - Ventana principal mostrada correctamente
+2025-08-15 12:55:49 INFO  Main:48 - Logging configurado desde archivo: src/main/resources/log4j.properties
+2025-08-15 12:55:49 INFO  Main:22 - Iniciando Sistema de Gestión de Biblioteca v1.0.0
+2025-08-15 12:55:49 INFO  Main:65 - Look and feel configurado: Windows
+2025-08-15 12:55:49 INFO  Main:30 - Aplicación iniciada correctamente
+2025-08-15 12:55:49 INFO  Main:115 - Ventana principal mostrada correctamente
