@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <!-- Configuración de PostgreSQL con Docker -->
+        <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+        <property name="hibernate.connection.url">jdbc:postgresql://localhost:5434/database-name</property>
+        <property name="hibernate.connection.username">el-username</property>
+        <property name="hibernate.connection.password">la-password</property>
+        
+        <!-- Configuración de Hibernate para PostgreSQL -->
+        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+        <property name="hibernate.show_sql">true</property>
+        <property name="hibernate.format_sql">true</property>
+        <property name="hibernate.hbm2ddl.auto">update</property>
+        
+        <!-- Configuración de conexión -->
+        <property name="hibernate.connection.pool_size">10</property>
+        <property name="hibernate.current_session_context_class">thread</property>
+        
+        <!-- Configuración de logging -->
+        <property name="hibernate.use_sql_comments">true</property>
+        
+        <!-- Mapeo de entidades -->
+        <mapping class="com.pap.domain.model.concrete.Lector"/>
+        <mapping class="com.pap.domain.model.concrete.Bibliotecario"/>
+        <mapping class="com.pap.domain.model.concrete.Libro"/>
+        <mapping class="com.pap.domain.model.concrete.Articulo"/>
+        <mapping class="com.pap.domain.model.concrete.Prestamo"/>
+        
+    </session-factory>
+</hibernate-configuration>
