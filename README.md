@@ -4,7 +4,7 @@
 Sistema de gestión de biblioteca desarrollado en Java con arquitectura en capas, siguiendo los principios de Clean Architecture y patrones de diseño.
 
 ## Características
-- **Arquitectura en Capas**: Separación clara de responsabilidades entre dominio, aplicación, infraestructura y presentación
+- **Arquitectura en Capas**: Separación clara de responsabilidades entre paquetes lógicos como `datatypes`, `excepciones`, `interfaces`, `logica`, `persistencia` y `presentacion`.
 - **Persistencia con Hibernate**: ORM para mapeo objeto-relacional
 - **Base de Datos H2**: Base de datos en memoria para desarrollo
 - **Logging con Log4j**: Sistema de logging configurable
@@ -14,53 +14,32 @@ Sistema de gestión de biblioteca desarrollado en Java con arquitectura en capas
 ## Estructura del Proyecto
 
 ```
-src/main/java/com/pap/
-├── domain/                    # Capa de dominio
-│   ├── model/                # Modelos de dominio
-│   │   ├── abstract/         # Clases abstractas (Usuario, Material)
-│   │   ├── concrete/         # Clases concretas (Lector, Bibliotecario, Libro, etc.)
-│   │   └── enums/            # Enumeraciones (EstadoLector, EstadoPrestamo, Zona)
-│   └── repository/            # Interfaces de repositorio
-├── infrastructure/             # Capa de infraestructura
-│   ├── persistence/           # Implementaciones de persistencia
-│   │   ├── dao/               # Data Access Objects
-│   │   └── hibernate/         # Configuración de Hibernate
-│   └── database/              # Configuración de base de datos
-├── application/                # Capa de aplicación
-│   ├── controller/            # Controladores de la aplicación
-│   ├── service/               # Servicios de negocio
-│   └── dto/                   # Objetos de transferencia de datos
-├── presentation/               # Capa de presentación
-│   ├── gui/                   # Interfaces gráficas de usuario
-│   └── main/                  # Ventana principal
-└── shared/                     # Utilidades compartidas
-    ├── exception/              # Excepciones personalizadas
-    ├── utils/                  # Utilidades generales
-    └── constants/              # Constantes del sistema
+src/main/java/
+├── datatypes/                    # Clases para transferencia de datos
+├── excepciones/                  # Clases de excepciones personalizadas
+├── interfaces/                   # Interfaces del controlador y fábrica
+├── logica/                       # Lógica de negocio y manejo de entidades
+├── MainNuevo.java                # Punto de entrada principal de la aplicación
+├── persistencia/                 # Clases para la conexión a la base de datos
+├── presentacion/                 # Clases de la interfaz de usuario (Swing)
+└── resources/                    # Archivos de configuración y recursos
+    ├── database-postgresql.properties  # Configuración de PostgreSQL
+    ├── database.properties       # Configuración general de la base de datos
+    ├── hibernate-postgresql.cfg.xml    # Configuración de Hibernate para PostgreSQL
+    ├── hibernate.cfg.xml         # Configuración general de Hibernate
+    ├── log4j.properties          # Configuración de logging con Log4j
+    └── META-INF/                 # Metadatos
+        └── persistence.xml       # Configuración de JPA/Hibernate
 ```
 
 ## Modelo de Dominio
 
 ### Entidades Principales
-- **Usuario**: Clase abstracta base para Lector y Bibliotecario
-- **Material**: Clase abstracta base para Libro y Artículo
-- **Prestamo**: Representa un préstamo de materiales
-- **Lector**: Usuario que puede solicitar préstamos
-- **Bibliotecario**: Empleado que gestiona préstamos
-- **Libro**: Material específico con título y páginas
-- **Artículo**: Material general con descripción y peso
-
-### Enumeraciones
-- **EstadoLector**: ACTIVO, SUSPENDIDO
-- **EstadoPrestamo**: PENDIENTE, EN_CURSO, DEVUELTO
-- **Zona**: BIBLIOTECA_CENTRAL, SUCURSAL_ESTE, SUCURSAL_OESTE, etc.
+- **Bibliotecario**: Entidad que representa a un bibliotecario del sistema.
 
 ## Casos de Uso Implementados
 
-1. **Registrar Lector**: Crear un nuevo lector en el sistema
-2. **Registrar Libro**: Agregar un nuevo libro al catálogo
-3. **Crear Préstamo**: Crear un nuevo préstamo de materiales
-4. **Actualizar Préstamo**: Modificar el estado de un préstamo existente
+1. **Registrar Bibliotecario**: Crear un nuevo bibliotecario en el sistema.
 
 ## Tecnologías Utilizadas
 
@@ -118,36 +97,20 @@ El sistema utiliza H2 como base de datos en memoria por defecto. La configuraci�
 La configuración de logging se encuentra en:
 - `src/main/resources/log4j.properties`
 
-## Arquitectura
-
-### Patrón MVC
-- **Model**: Clases de dominio en el paquete `domain`
-- **View**: Interfaces gráficas en el paquete `presentation.gui`
-- **Controller**: Controladores en el paquete `application.controller`
-
-### Patrón DAO
-- Interfaces de repositorio en `domain.repository`
-- Implementaciones en `infrastructure.persistence.dao`
-
-### Inyección de Dependencias
-- Los servicios se inyectan en los controladores
-- Los repositorios se inyectan en los servicios
-
 ## Desarrollo
 
 ### Agregar Nueva Entidad
-1. Crear la clase en `domain.model.concrete`
-2. Crear la interfaz de repositorio en `domain.repository`
-3. Implementar el DAO en `infrastructure.persistence.dao`
-4. Crear el servicio en `application.service`
-5. Crear el controlador en `application.controller`
-6. Crear la interfaz gráfica en `presentation.gui`
+1. Crear la clase de entidad en el paquete `logica`.
+2. Si es necesario, crear un Dt (Data Type) para la entidad en el paquete `datatypes`.
+3. Implementar la lógica de negocio relacionada con la entidad en el `Controlador.java` o en una clase de negocio específica dentro de `logica`.
+4. Si la entidad requiere persistencia, asegúrate de que esté mapeada correctamente con Hibernate y maneja las operaciones de persistencia en `Conexion.java` o una clase relacionada.
+5. Crear o modificar la ventana (GUI) en el paquete `presentacion` para interactuar con la nueva entidad.
 
 ### Agregar Nuevo Caso de Uso
-1. Definir el flujo en el controlador correspondiente
-2. Implementar la lógica de negocio en el servicio
-3. Crear la interfaz gráfica necesaria
-4. Agregar validaciones y manejo de errores
+1. Definir el flujo en el `Controlador.java`.
+2. Implementar la lógica de negocio en el `Controlador.java` o en clases auxiliares dentro de `logica`.
+3. Crear la ventana (GUI) necesaria en el paquete `presentacion`.
+4. Agregar validaciones y manejo de errores utilizando las clases en `excepciones`.
 
 ## Testing
 
