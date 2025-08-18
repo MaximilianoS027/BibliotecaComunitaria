@@ -20,7 +20,7 @@ public class MainNuevo {
             public void run() {
                 try {
                     // Configurar Look and Feel del sistema
-                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeel());
+                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                     System.out.println("Look and feel configurado correctamente");
                     
                     // Crear y mostrar la ventana principal

@@ -1,7 +1,6 @@
 package logica;
 
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
@@ -9,21 +8,23 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "bibliotecarios")
-public class Bibliotecario {
+public class Bibliotecario extends Usuario {
     
-    @Id
     private String numeroEmpleado;
-    private String nombre;
-    private String email;
     
     // Constructor por defecto requerido por JPA
     public Bibliotecario() {}
     
     // Constructor con parámetros
-    public Bibliotecario(String numeroEmpleado, String nombre, String email) {
+    public Bibliotecario(String id, String numeroEmpleado, String nombre, String email) {
+        super(id, nombre, email);
         this.numeroEmpleado = numeroEmpleado;
-        this.nombre = nombre;
-        this.email = email;
+    }
+    
+    // Constructor con parámetros (sin ID para compatibilidad)
+    public Bibliotecario(String numeroEmpleado, String nombre, String email) {
+        super(numeroEmpleado, nombre, email); // Usar numeroEmpleado como ID
+        this.numeroEmpleado = numeroEmpleado;
     }
     
     // Getters y Setters
@@ -35,41 +36,18 @@ public class Bibliotecario {
         this.numeroEmpleado = numeroEmpleado;
     }
     
-    public String getNombre() {
-        return nombre;
-    }
-    
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-    
-    public String getEmail() {
-        return email;
-    }
-    
-    public void setEmail(String email) {
-        this.email = email;
-    }
-    
     // Métodos de negocio
     public boolean tieneNumeroEmpleadoValido() {
         return numeroEmpleado != null && !numeroEmpleado.trim().isEmpty();
     }
     
-    public boolean tieneNombreValido() {
-        return nombre != null && !nombre.trim().isEmpty() && nombre.length() >= 2;
-    }
-    
-    public boolean tieneEmailValido() {
-        return email != null && email.contains("@") && email.length() >= 5;
-    }
-    
     @Override
     public String toString() {
         return "Bibliotecario{" +
-                "numeroEmpleado='" + numeroEmpleado + '\'' +
-                ", nombre='" + nombre + '\'' +
-                ", email='" + email + '\'' +
+                "id='" + getId() + '\'' +
+                ", numeroEmpleado='" + numeroEmpleado + '\'' +
+                ", nombre='" + getNombre() + '\'' +
+                ", email='" + getEmail() + '\'' +
                 '}';
     }
 }

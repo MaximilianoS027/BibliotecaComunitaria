@@ -62,7 +62,30 @@ public class Principal extends JFrame {
         menuBibliotecarios.add(itemRegistrarBibliotecario);
         menuBibliotecarios.add(itemConsultarBibliotecarios);
         
+        // Menú Lectores
+        JMenu menuLectores = new JMenu("Lectores");
+        
+        JMenuItem itemRegistrarLector = new JMenuItem("Registrar Lector");
+        itemRegistrarLector.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                abrirRegistrarLector();
+            }
+        });
+        
+        JMenuItem itemConsultarLectores = new JMenuItem("Consultar Lectores");
+        itemConsultarLectores.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                abrirConsultarLectores();
+            }
+        });
+        
+        menuLectores.add(itemRegistrarLector);
+        menuLectores.add(itemConsultarLectores);
+        
         menuBar.add(menuBibliotecarios);
+        menuBar.add(menuLectores);
         
         setJMenuBar(menuBar);
     }
@@ -85,12 +108,30 @@ public class Principal extends JFrame {
         JOptionPane.showMessageDialog(this, "Funcionalidad en desarrollo", "Info", JOptionPane.INFORMATION_MESSAGE);
     }
     
+    private void abrirRegistrarLector() {
+        RegistrarLector ventana = new RegistrarLector(controlador);
+        desktopPane.add(ventana);
+        ventana.setVisible(true);
+        
+        // Centrar internal frame
+        try {
+            ventana.setSelected(true);
+        } catch (java.beans.PropertyVetoException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private void abrirConsultarLectores() {
+        // TODO: Implementar consulta de lectores
+        JOptionPane.showMessageDialog(this, "Funcionalidad en desarrollo", "Info", JOptionPane.INFORMATION_MESSAGE);
+    }
+    
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
                 try {
-                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeel());
+                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

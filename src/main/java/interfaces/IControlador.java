@@ -1,8 +1,11 @@
 package interfaces;
 
 import datatypes.DtBibliotecario;
+import datatypes.DtLector;
 import excepciones.BibliotecarioRepetidoException;
 import excepciones.BibliotecarioNoExisteException;
+import excepciones.LectorRepetidoException;
+import excepciones.LectorNoExisteException;
 import excepciones.DatosInvalidosException;
 
 /**
@@ -19,4 +22,21 @@ public interface IControlador {
         throws BibliotecarioNoExisteException;
     
     public String[] listarBibliotecarios();
+    
+    // Operaciones de Lector
+    public void registrarLector(String nombre, String email, String direccion, 
+                               String fechaRegistro, String estado, String zona) 
+        throws LectorRepetidoException, DatosInvalidosException;
+    
+    public DtLector obtenerLector(String id) 
+        throws LectorNoExisteException;
+    
+    public DtLector obtenerLectorPorEmail(String email) 
+        throws LectorNoExisteException;
+    
+    public String[] listarLectores();
+    
+    public String[] listarLectoresPorEstado(String estado);
+    
+    public String[] listarLectoresPorZona(String zona);
 }
