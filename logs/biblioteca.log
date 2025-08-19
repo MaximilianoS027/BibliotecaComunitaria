@@ -111,3 +111,393 @@
 2025-08-17 22:29:32 TRACE BasicBinder:64 - binding parameter [1] as [VARCHAR] - [pepe@sd.c]
 2025-08-17 22:29:32 TRACE BasicBinder:64 - binding parameter [2] as [VARCHAR] - [pepe]
 2025-08-17 22:29:32 TRACE BasicBinder:64 - binding parameter [3] as [VARCHAR] - [1]
+2025-08-18 14:57:38 INFO  LogHelper:31 - HHH000204: Processing PersistenceUnitInfo [name: biblioteca-persistence-unit]
+2025-08-18 14:57:38 INFO  Version:44 - HHH000412: Hibernate ORM core version 5.6.15.Final
+2025-08-18 14:57:38 INFO  Version:56 - HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2025-08-18 14:57:39 WARN  pooling:75 - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+2025-08-18 14:57:39 INFO  pooling:119 - HHH10001005: using driver [org.h2.Driver] at URL [jdbc:h2:mem:biblioteca;DB_CLOSE_DELAY=-1]
+2025-08-18 14:57:39 INFO  pooling:128 - HHH10001001: Connection properties: {password=****, user=sa}
+2025-08-18 14:57:39 INFO  pooling:132 - HHH10001003: Autocommit mode: false
+2025-08-18 14:57:39 INFO  DriverManagerConnectionProviderImpl:322 - HHH000115: Hibernate connection pool size: 20 (min=1)
+2025-08-18 14:57:39 INFO  Dialect:175 - HHH000400: Using dialect: org.hibernate.dialect.H2Dialect
+2025-08-18 14:57:39 DEBUG SQL:144 - 
+    
+    drop table if exists bibliotecarios CASCADE 
+2025-08-18 14:57:39 INFO  access:48 - HHH10001501: Connection obtained from JdbcConnectionAccess [org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess@1d0d1632] for (non-JTA) DDL execution was not in auto-commit mode; the Connection 'local transaction' will be committed and the Connection will be set into auto-commit mode.
+2025-08-18 14:57:39 DEBUG SQL:144 - 
+    
+    drop table if exists lectores CASCADE 
+2025-08-18 14:57:39 DEBUG SQL:144 - 
+    
+    drop table if exists usuarios CASCADE 
+2025-08-18 14:57:39 DEBUG SQL:144 - 
+    
+    create table bibliotecarios (
+       numeroEmpleado varchar(255),
+        id varchar(255) not null,
+        primary key (id)
+    )
+2025-08-18 14:57:39 INFO  access:48 - HHH10001501: Connection obtained from JdbcConnectionAccess [org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess@53934cf] for (non-JTA) DDL execution was not in auto-commit mode; the Connection 'local transaction' will be committed and the Connection will be set into auto-commit mode.
+2025-08-18 14:57:39 DEBUG SQL:144 - 
+    
+    create table lectores (
+       direccion varchar(255),
+        estado varchar(255),
+        fechaRegistro date,
+        zona varchar(255),
+        id varchar(255) not null,
+        primary key (id)
+    )
+2025-08-18 14:57:39 DEBUG SQL:144 - 
+    
+    create table usuarios (
+       id varchar(255) not null,
+        email varchar(255),
+        nombre varchar(255),
+        primary key (id)
+    )
+2025-08-18 14:57:39 DEBUG SQL:144 - 
+    
+    alter table bibliotecarios 
+       add constraint FK5bu1a7i9jsvub5mqpqync1tlb 
+       foreign key (id) 
+       references usuarios
+2025-08-18 14:57:39 DEBUG SQL:144 - 
+    
+    alter table lectores 
+       add constraint FKsh9x1ydakd9c9li817sb08gnn 
+       foreign key (id) 
+       references usuarios
+2025-08-18 14:57:39 INFO  JtaPlatformInitiator:52 - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2025-08-18 14:57:40 DEBUG SQL:144 - 
+    select
+        biblioteca0_.id as id1_2_0_,
+        biblioteca0_1_.email as email2_2_0_,
+        biblioteca0_1_.nombre as nombre3_2_0_,
+        biblioteca0_.numeroEmpleado as numeroem1_0_0_ 
+    from
+        bibliotecarios biblioteca0_ 
+    inner join
+        usuarios biblioteca0_1_ 
+            on biblioteca0_.id=biblioteca0_1_.id 
+    where
+        biblioteca0_.id=?
+2025-08-18 14:57:40 TRACE BasicBinder:64 - binding parameter [1] as [VARCHAR] - [1]
+2025-08-18 14:57:40 DEBUG SQL:144 - 
+    /* insert logica.Bibliotecario
+        */ insert 
+        into
+            usuarios
+            (email, nombre, id) 
+        values
+            (?, ?, ?)
+2025-08-18 14:57:40 TRACE BasicBinder:64 - binding parameter [1] as [VARCHAR] - [rojaseliezer123uy@gmail.com]
+2025-08-18 14:57:40 TRACE BasicBinder:64 - binding parameter [2] as [VARCHAR] - [Eliezer]
+2025-08-18 14:57:40 TRACE BasicBinder:64 - binding parameter [3] as [VARCHAR] - [1]
+2025-08-18 14:57:40 DEBUG SQL:144 - 
+    /* insert logica.Bibliotecario
+        */ insert 
+        into
+            bibliotecarios
+            (numeroEmpleado, id) 
+        values
+            (?, ?)
+2025-08-18 14:57:40 TRACE BasicBinder:64 - binding parameter [1] as [VARCHAR] - [1]
+2025-08-18 14:57:40 TRACE BasicBinder:64 - binding parameter [2] as [VARCHAR] - [1]
+2025-08-19 18:56:45 INFO  LogHelper:31 - HHH000204: Processing PersistenceUnitInfo [name: biblioteca-persistence-unit]
+2025-08-19 18:56:46 INFO  Version:44 - HHH000412: Hibernate ORM core version 5.6.15.Final
+2025-08-19 18:56:46 INFO  Version:56 - HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2025-08-19 18:56:46 WARN  pooling:75 - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+2025-08-19 18:56:46 INFO  pooling:119 - HHH10001005: using driver [org.h2.Driver] at URL [jdbc:h2:mem:biblioteca;DB_CLOSE_DELAY=-1]
+2025-08-19 18:56:46 INFO  pooling:128 - HHH10001001: Connection properties: {password=****, user=sa}
+2025-08-19 18:56:46 INFO  pooling:132 - HHH10001003: Autocommit mode: false
+2025-08-19 18:56:46 INFO  DriverManagerConnectionProviderImpl:322 - HHH000115: Hibernate connection pool size: 20 (min=1)
+2025-08-19 18:56:46 INFO  Dialect:175 - HHH000400: Using dialect: org.hibernate.dialect.H2Dialect
+2025-08-19 18:56:47 DEBUG SQL:144 - 
+    
+    drop table if exists bibliotecarios CASCADE 
+2025-08-19 18:56:47 INFO  access:48 - HHH10001501: Connection obtained from JdbcConnectionAccess [org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess@1d0d1632] for (non-JTA) DDL execution was not in auto-commit mode; the Connection 'local transaction' will be committed and the Connection will be set into auto-commit mode.
+2025-08-19 18:56:47 DEBUG SQL:144 - 
+    
+    drop table if exists lectores CASCADE 
+2025-08-19 18:56:47 DEBUG SQL:144 - 
+    
+    drop table if exists usuarios CASCADE 
+2025-08-19 18:56:47 DEBUG SQL:144 - 
+    
+    create table bibliotecarios (
+       numeroEmpleado varchar(255),
+        id varchar(255) not null,
+        primary key (id)
+    )
+2025-08-19 18:56:47 INFO  access:48 - HHH10001501: Connection obtained from JdbcConnectionAccess [org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess@53934cf] for (non-JTA) DDL execution was not in auto-commit mode; the Connection 'local transaction' will be committed and the Connection will be set into auto-commit mode.
+2025-08-19 18:56:47 DEBUG SQL:144 - 
+    
+    create table lectores (
+       direccion varchar(255),
+        estado varchar(255),
+        fechaRegistro date,
+        zona varchar(255),
+        id varchar(255) not null,
+        primary key (id)
+    )
+2025-08-19 18:56:47 DEBUG SQL:144 - 
+    
+    create table usuarios (
+       id varchar(255) not null,
+        email varchar(255),
+        nombre varchar(255),
+        primary key (id)
+    )
+2025-08-19 18:56:47 DEBUG SQL:144 - 
+    
+    alter table bibliotecarios 
+       add constraint FK5bu1a7i9jsvub5mqpqync1tlb 
+       foreign key (id) 
+       references usuarios
+2025-08-19 18:56:47 DEBUG SQL:144 - 
+    
+    alter table lectores 
+       add constraint FKsh9x1ydakd9c9li817sb08gnn 
+       foreign key (id) 
+       references usuarios
+2025-08-19 18:56:47 INFO  JtaPlatformInitiator:52 - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2025-08-19 18:56:47 DEBUG SQL:144 - 
+    select
+        biblioteca0_.id as id1_2_0_,
+        biblioteca0_1_.email as email2_2_0_,
+        biblioteca0_1_.nombre as nombre3_2_0_,
+        biblioteca0_.numeroEmpleado as numeroem1_0_0_ 
+    from
+        bibliotecarios biblioteca0_ 
+    inner join
+        usuarios biblioteca0_1_ 
+            on biblioteca0_.id=biblioteca0_1_.id 
+    where
+        biblioteca0_.id=?
+2025-08-19 18:56:47 TRACE BasicBinder:64 - binding parameter [1] as [VARCHAR] - [111]
+2025-08-19 18:56:47 DEBUG SQL:144 - 
+    /* insert logica.Bibliotecario
+        */ insert 
+        into
+            usuarios
+            (email, nombre, id) 
+        values
+            (?, ?, ?)
+2025-08-19 18:56:47 TRACE BasicBinder:64 - binding parameter [1] as [VARCHAR] - [mail@mail.com]
+2025-08-19 18:56:47 TRACE BasicBinder:64 - binding parameter [2] as [VARCHAR] - [Fulano]
+2025-08-19 18:56:47 TRACE BasicBinder:64 - binding parameter [3] as [VARCHAR] - [111]
+2025-08-19 18:56:47 DEBUG SQL:144 - 
+    /* insert logica.Bibliotecario
+        */ insert 
+        into
+            bibliotecarios
+            (numeroEmpleado, id) 
+        values
+            (?, ?)
+2025-08-19 18:56:47 TRACE BasicBinder:64 - binding parameter [1] as [VARCHAR] - [111]
+2025-08-19 18:56:47 TRACE BasicBinder:64 - binding parameter [2] as [VARCHAR] - [111]
+2025-08-19 19:36:51 INFO  LogHelper:31 - HHH000204: Processing PersistenceUnitInfo [name: biblioteca-persistence-unit]
+2025-08-19 19:36:51 INFO  Version:44 - HHH000412: Hibernate ORM core version 5.6.15.Final
+2025-08-19 19:36:51 INFO  Version:56 - HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2025-08-19 19:36:52 WARN  pooling:75 - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+2025-08-19 19:36:52 INFO  pooling:119 - HHH10001005: using driver [org.h2.Driver] at URL [jdbc:h2:mem:biblioteca;DB_CLOSE_DELAY=-1]
+2025-08-19 19:36:52 INFO  pooling:128 - HHH10001001: Connection properties: {password=****, user=sa}
+2025-08-19 19:36:52 INFO  pooling:132 - HHH10001003: Autocommit mode: false
+2025-08-19 19:36:52 INFO  DriverManagerConnectionProviderImpl:322 - HHH000115: Hibernate connection pool size: 20 (min=1)
+2025-08-19 19:36:52 INFO  Dialect:175 - HHH000400: Using dialect: org.hibernate.dialect.H2Dialect
+2025-08-19 19:36:53 DEBUG SQL:144 - 
+    
+    drop table if exists bibliotecarios CASCADE 
+2025-08-19 19:36:53 INFO  access:48 - HHH10001501: Connection obtained from JdbcConnectionAccess [org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess@2fc217a6] for (non-JTA) DDL execution was not in auto-commit mode; the Connection 'local transaction' will be committed and the Connection will be set into auto-commit mode.
+2025-08-19 19:36:53 DEBUG SQL:144 - 
+    
+    drop table if exists lectores CASCADE 
+2025-08-19 19:36:53 DEBUG SQL:144 - 
+    
+    drop table if exists usuarios CASCADE 
+2025-08-19 19:36:53 DEBUG SQL:144 - 
+    
+    create table bibliotecarios (
+       numeroEmpleado varchar(255),
+        id varchar(255) not null,
+        primary key (id)
+    )
+2025-08-19 19:36:53 INFO  access:48 - HHH10001501: Connection obtained from JdbcConnectionAccess [org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess@409544a0] for (non-JTA) DDL execution was not in auto-commit mode; the Connection 'local transaction' will be committed and the Connection will be set into auto-commit mode.
+2025-08-19 19:36:53 DEBUG SQL:144 - 
+    
+    create table lectores (
+       direccion varchar(255),
+        estado varchar(255),
+        fechaRegistro date,
+        zona varchar(255),
+        id varchar(255) not null,
+        primary key (id)
+    )
+2025-08-19 19:36:53 DEBUG SQL:144 - 
+    
+    create table usuarios (
+       id varchar(255) not null,
+        email varchar(255),
+        nombre varchar(255),
+        primary key (id)
+    )
+2025-08-19 19:36:53 DEBUG SQL:144 - 
+    
+    alter table bibliotecarios 
+       add constraint FK5bu1a7i9jsvub5mqpqync1tlb 
+       foreign key (id) 
+       references usuarios
+2025-08-19 19:36:53 DEBUG SQL:144 - 
+    
+    alter table lectores 
+       add constraint FKsh9x1ydakd9c9li817sb08gnn 
+       foreign key (id) 
+       references usuarios
+2025-08-19 19:36:53 INFO  JtaPlatformInitiator:52 - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2025-08-19 19:36:54 DEBUG SQL:144 - 
+    /* SELECT
+        b 
+    FROM
+        Bibliotecario b 
+    ORDER BY
+        b.nombre */ select
+            biblioteca0_.id as id1_2_,
+            biblioteca0_1_.email as email2_2_,
+            biblioteca0_1_.nombre as nombre3_2_,
+            biblioteca0_.numeroEmpleado as numeroem1_0_ 
+        from
+            bibliotecarios biblioteca0_ 
+        inner join
+            usuarios biblioteca0_1_ 
+                on biblioteca0_.id=biblioteca0_1_.id 
+        order by
+            biblioteca0_1_.nombre
+2025-08-19 19:37:08 DEBUG SQL:144 - 
+    select
+        biblioteca0_.id as id1_2_0_,
+        biblioteca0_1_.email as email2_2_0_,
+        biblioteca0_1_.nombre as nombre3_2_0_,
+        biblioteca0_.numeroEmpleado as numeroem1_0_0_ 
+    from
+        bibliotecarios biblioteca0_ 
+    inner join
+        usuarios biblioteca0_1_ 
+            on biblioteca0_.id=biblioteca0_1_.id 
+    where
+        biblioteca0_.id=?
+2025-08-19 19:37:08 TRACE BasicBinder:64 - binding parameter [1] as [VARCHAR] - [777]
+2025-08-19 19:37:08 DEBUG SQL:144 - 
+    /* insert logica.Bibliotecario
+        */ insert 
+        into
+            usuarios
+            (email, nombre, id) 
+        values
+            (?, ?, ?)
+2025-08-19 19:37:08 TRACE BasicBinder:64 - binding parameter [1] as [VARCHAR] - [correo@gmail.com]
+2025-08-19 19:37:08 TRACE BasicBinder:64 - binding parameter [2] as [VARCHAR] - [Nombre]
+2025-08-19 19:37:08 TRACE BasicBinder:64 - binding parameter [3] as [VARCHAR] - [777]
+2025-08-19 19:37:08 DEBUG SQL:144 - 
+    /* insert logica.Bibliotecario
+        */ insert 
+        into
+            bibliotecarios
+            (numeroEmpleado, id) 
+        values
+            (?, ?)
+2025-08-19 19:37:08 TRACE BasicBinder:64 - binding parameter [1] as [VARCHAR] - [777]
+2025-08-19 19:37:08 TRACE BasicBinder:64 - binding parameter [2] as [VARCHAR] - [777]
+2025-08-19 19:42:45 INFO  LogHelper:31 - HHH000204: Processing PersistenceUnitInfo [name: biblioteca-persistence-unit]
+2025-08-19 19:42:45 INFO  Version:44 - HHH000412: Hibernate ORM core version 5.6.15.Final
+2025-08-19 19:42:45 INFO  Version:56 - HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2025-08-19 19:42:46 WARN  pooling:75 - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+2025-08-19 19:42:46 INFO  pooling:119 - HHH10001005: using driver [org.h2.Driver] at URL [jdbc:h2:mem:biblioteca;DB_CLOSE_DELAY=-1]
+2025-08-19 19:42:46 INFO  pooling:128 - HHH10001001: Connection properties: {password=****, user=sa}
+2025-08-19 19:42:46 INFO  pooling:132 - HHH10001003: Autocommit mode: false
+2025-08-19 19:42:46 INFO  DriverManagerConnectionProviderImpl:322 - HHH000115: Hibernate connection pool size: 20 (min=1)
+2025-08-19 19:42:46 INFO  Dialect:175 - HHH000400: Using dialect: org.hibernate.dialect.H2Dialect
+2025-08-19 19:42:47 DEBUG SQL:144 - 
+    
+    drop table if exists bibliotecarios CASCADE 
+2025-08-19 19:42:47 INFO  access:48 - HHH10001501: Connection obtained from JdbcConnectionAccess [org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess@38a17820] for (non-JTA) DDL execution was not in auto-commit mode; the Connection 'local transaction' will be committed and the Connection will be set into auto-commit mode.
+2025-08-19 19:42:47 DEBUG SQL:144 - 
+    
+    drop table if exists lectores CASCADE 
+2025-08-19 19:42:47 DEBUG SQL:144 - 
+    
+    drop table if exists usuarios CASCADE 
+2025-08-19 19:42:47 DEBUG SQL:144 - 
+    
+    create table bibliotecarios (
+       numeroEmpleado varchar(255),
+        id varchar(255) not null,
+        primary key (id)
+    )
+2025-08-19 19:42:47 INFO  access:48 - HHH10001501: Connection obtained from JdbcConnectionAccess [org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess@3453de8a] for (non-JTA) DDL execution was not in auto-commit mode; the Connection 'local transaction' will be committed and the Connection will be set into auto-commit mode.
+2025-08-19 19:42:47 DEBUG SQL:144 - 
+    
+    create table lectores (
+       direccion varchar(255),
+        estado varchar(255),
+        fechaRegistro date,
+        zona varchar(255),
+        id varchar(255) not null,
+        primary key (id)
+    )
+2025-08-19 19:42:47 DEBUG SQL:144 - 
+    
+    create table usuarios (
+       id varchar(255) not null,
+        email varchar(255),
+        nombre varchar(255),
+        primary key (id)
+    )
+2025-08-19 19:42:47 DEBUG SQL:144 - 
+    
+    alter table bibliotecarios 
+       add constraint FK5bu1a7i9jsvub5mqpqync1tlb 
+       foreign key (id) 
+       references usuarios
+2025-08-19 19:42:47 DEBUG SQL:144 - 
+    
+    alter table lectores 
+       add constraint FKsh9x1ydakd9c9li817sb08gnn 
+       foreign key (id) 
+       references usuarios
+2025-08-19 19:42:47 INFO  JtaPlatformInitiator:52 - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2025-08-19 19:42:47 DEBUG SQL:144 - 
+    select
+        biblioteca0_.id as id1_2_0_,
+        biblioteca0_1_.email as email2_2_0_,
+        biblioteca0_1_.nombre as nombre3_2_0_,
+        biblioteca0_.numeroEmpleado as numeroem1_0_0_ 
+    from
+        bibliotecarios biblioteca0_ 
+    inner join
+        usuarios biblioteca0_1_ 
+            on biblioteca0_.id=biblioteca0_1_.id 
+    where
+        biblioteca0_.id=?
+2025-08-19 19:42:47 TRACE BasicBinder:64 - binding parameter [1] as [VARCHAR] - [efwe]
+2025-08-19 19:42:47 DEBUG SQL:144 - 
+    /* insert logica.Bibliotecario
+        */ insert 
+        into
+            usuarios
+            (email, nombre, id) 
+        values
+            (?, ?, ?)
+2025-08-19 19:42:47 TRACE BasicBinder:64 - binding parameter [1] as [VARCHAR] - [ewfew@iwdoiqj]
+2025-08-19 19:42:47 TRACE BasicBinder:64 - binding parameter [2] as [VARCHAR] - [wefef]
+2025-08-19 19:42:47 TRACE BasicBinder:64 - binding parameter [3] as [VARCHAR] - [efwe]
+2025-08-19 19:42:47 DEBUG SQL:144 - 
+    /* insert logica.Bibliotecario
+        */ insert 
+        into
+            bibliotecarios
+            (numeroEmpleado, id) 
+        values
+            (?, ?)
+2025-08-19 19:42:47 TRACE BasicBinder:64 - binding parameter [1] as [VARCHAR] - [efwe]
+2025-08-19 19:42:47 TRACE BasicBinder:64 - binding parameter [2] as [VARCHAR] - [efwe]

@@ -37,6 +37,11 @@
       <artifactId>postgresql</artifactId>
       <version>${postgresql.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>42.7.3</version>
+    </dependency>
     <!-- H2 Database (para desarrollo local) -->
     <dependency>
       <groupId>com.h2database</groupId>
