@@ -137,15 +137,11 @@ public class Principal extends JFrame {
     
     private void abrirRegistrarLector() {
         RegistrarLector ventana = new RegistrarLector(controlador);
-        desktopPane.add(ventana);
+        // Mostrar como ventana independiente
         ventana.setVisible(true);
         
-        // Centrar internal frame
-        try {
-            ventana.setSelected(true);
-        } catch (java.beans.PropertyVetoException e) {
-            e.printStackTrace();
-        }
+        // La ventana ya se centra automáticamente en su constructor
+        // No necesitamos hacer nada más aquí
     }
 
     private void abrirEstadoLector() {
