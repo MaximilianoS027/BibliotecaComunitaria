@@ -5,8 +5,8 @@ Sistema de gestión de biblioteca desarrollado en Java con arquitectura en capas
 
 ## Características
 - **Arquitectura en Capas**: Separación clara de responsabilidades entre paquetes lógicos como `datatypes`, `excepciones`, `interfaces`, `logica`, `persistencia` y `presentacion`.
-- **Persistencia con Hibernate**: ORM para mapeo objeto-relacional
-- **Base de Datos H2**: Base de datos en memoria para desarrollo
+- **Persistencia con JPA/Hibernate**: ORM para mapeo objeto-relacional
+- **Base de Datos PostgreSQL**: Base de datos robusta para producción
 - **Logging con Log4j**: Sistema de logging configurable
 - **Interfaz Gráfica Swing**: Interfaz de usuario nativa de Java
 - **Validaciones**: Sistema de validación robusto para entradas de usuario
@@ -21,12 +21,12 @@ src/main/java/
 ├── logica/                       # Lógica de negocio y manejo de entidades
 ├── MainNuevo.java                # Punto de entrada principal de la aplicación
 ├── persistencia/                 # Clases para la conexión a la base de datos
+│   ├── LectorDAO.java           # DAO para persistencia de lectores
+│   └── HibernateUtil.java       # Utilidad para configuración de Hibernate
 ├── presentacion/                 # Clases de la interfaz de usuario (Swing)
 └── resources/                    # Archivos de configuración y recursos
-    ├── database-postgresql.properties  # Configuración de PostgreSQL
-    ├── database.properties       # Configuración general de la base de datos
-    ├── hibernate-postgresql.cfg.xml    # Configuración de Hibernate para PostgreSQL
-    ├── hibernate.cfg.xml         # Configuración general de Hibernate
+    ├── database.properties       # Configuración de la base de datos PostgreSQL
+    ├── init-database.sql         # Script de inicialización de la base de datos
     ├── log4j.properties          # Configuración de logging con Log4j
     └── META-INF/                 # Metadatos
         └── persistence.xml       # Configuración de JPA/Hibernate
@@ -45,8 +45,8 @@ src/main/java/
 
 - **Java 11**: Lenguaje de programación
 - **Maven**: Gestión de dependencias y build
-- **Hibernate 5.6**: ORM para persistencia
-- **H2 Database**: Base de datos en memoria
+- **JPA/Hibernate 5.6**: ORM para persistencia
+- **PostgreSQL 16**: Base de datos robusta para producción
 - **Log4j**: Sistema de logging
 - **JUnit 4**: Framework de testing
 - **Swing**: Interfaz gráfica de usuario
@@ -66,7 +66,25 @@ git clone <url-del-repositorio>
 cd pap_proyect/tarea1
 ```
 
-### 2. Compilar el proyecto
+### 2. Configurar PostgreSQL
+```bash
+# Iniciar PostgreSQL con Docker
+docker-compose up -d
+
+# Verificar que esté corriendo
+docker ps
+
+# Conectar a la base de datos (opcional)
+docker exec -it postgres-local psql -U admin -d biblioteca_bd
+```
+
+### 3. Inicializar la base de datos
+```bash
+# Ejecutar el script de inicialización
+docker exec -i postgres-local psql -U admin -d biblioteca_bd < src/main/resources/init-database.sql
+```
+
+### 4. Compilar el proyecto
 ```bash
 mvn clean compile
 ```
@@ -89,9 +107,10 @@ mvn package
 ## Configuración
 
 ### Base de Datos
-El sistema utiliza H2 como base de datos en memoria por defecto. La configuración se encuentra en:
-- `src/main/resources/hibernate.cfg.xml`
+El sistema utiliza PostgreSQL como base de datos principal. La configuración se encuentra en:
+- `src/main/resources/META-INF/persistence.xml`
 - `src/main/resources/database.properties`
+- `src/main/resources/init-database.sql` (script de inicialización)
 
 ### Logging
 La configuración de logging se encuentra en:
@@ -100,10 +119,10 @@ La configuración de logging se encuentra en:
 ## Desarrollo
 
 ### Agregar Nueva Entidad
-1. Crear la clase de entidad en el paquete `logica`.
+1. Crear la clase de entidad en el paquete `logica` con anotaciones JPA.
 2. Si es necesario, crear un Dt (Data Type) para la entidad en el paquete `datatypes`.
 3. Implementar la lógica de negocio relacionada con la entidad en el `Controlador.java` o en una clase de negocio específica dentro de `logica`.
-4. Si la entidad requiere persistencia, asegúrate de que esté mapeada correctamente con Hibernate y maneja las operaciones de persistencia en `Conexion.java` o una clase relacionada.
+4. Crear un DAO en el paquete `persistencia` para manejar las operaciones de persistencia con Hibernate.
 5. Crear o modificar la ventana (GUI) en el paquete `presentacion` para interactuar con la nueva entidad.
 
 ### Agregar Nuevo Caso de Uso
@@ -169,4 +188,4 @@ Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más det
 - Modelo de dominio básico
 - Interfaz gráfica básica
 - Sistema de logging configurado
-- Configuración de Hibernate y H2
+- Configuración de JPA/Hibernate y PostgreSQL
