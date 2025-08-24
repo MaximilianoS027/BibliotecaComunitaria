@@ -1,36 +1,48 @@
 package logica;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
+import persistencia.HibernateUtil;
+import persistencia.LectorDAO;
+import excepciones.LectorNoExisteException;
+
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Manejador para la gestión de lectores en el sistema
- * Implementa el patrón Singleton
+ * Manejador para operaciones relacionadas con lectores
+ * Ahora con persistencia real en PostgreSQL
  */
 public class ManejadorLector {
     
-    private static ManejadorLector instancia;
-    private ConcurrentHashMap<String, Lector> lectores;
-    private AtomicLong contadorId;
+    private Map<String, Lector> lectores = new HashMap<>();
+    private AtomicInteger contadorId = new AtomicInteger(1);
+    private LectorDAO lectorDAO;
     
-    // Constructor privado para Singleton
-    private ManejadorLector() {
-        this.lectores = new ConcurrentHashMap<>();
-        this.contadorId = new AtomicLong(1);
+    public ManejadorLector() {
+        // Inicializar DAO con SessionFactory de Hibernate
+        this.lectorDAO = new LectorDAO(HibernateUtil.getSessionFactory());
+        
+        // Cargar lectores existentes de la base de datos
+        cargarLectoresDesdeBaseDatos();
     }
     
-    // Método para obtener la instancia única
-    public static synchronized ManejadorLector getInstancia() {
-        if (instancia == null) {
-            instancia = new ManejadorLector();
+    /**
+     * Carga lectores existentes desde la base de datos al inicializar
+     */
+    private void cargarLectoresDesdeBaseDatos() {
+        try {
+            List<Lector> lectoresDB = lectorDAO.listarTodos();
+            for (Lector lector : lectoresDB) {
+                lectores.put(lector.getId(), lector);
+            }
+            System.out.println("Cargados " + lectoresDB.size() + " lectores desde la base de datos");
+        } catch (Exception e) {
+            System.err.println("Error al cargar lectores desde BD: " + e.getMessage());
         }
-        return instancia;
     }
     
     /**
      * Agrega un nuevo lector al sistema
+     * Ahora persiste en la base de datos
      */
     public void agregarLector(Lector lector) {
         if (lector == null) {
@@ -43,40 +55,58 @@ public class ManejadorLector {
             lector.setId(nuevoId);
         }
         
+        // Guardar en memoria
         lectores.put(lector.getId(), lector);
+        
+        // NUEVO: Persistir en base de datos
+        try {
+            lectorDAO.guardar(lector);
+            System.out.println("Lector guardado exitosamente en BD: " + lector.getId());
+        } catch (Exception e) {
+            // Si falla la BD, remover de memoria también
+            lectores.remove(lector.getId());
+            throw new RuntimeException("Error al guardar lector en base de datos: " + e.getMessage(), e);
+        }
     }
     
     /**
      * Obtiene un lector por su ID
      */
-    public Lector obtenerLector(String id) {
+    public Lector obtenerLector(String id) throws LectorNoExisteException {
         if (id == null || id.trim().isEmpty()) {
-            throw new IllegalArgumentException("El ID no puede ser null o vacío");
+            throw new LectorNoExisteException("ID de lector inválido");
         }
         
-        return lectores.get(id.trim());
+        Lector lector = lectores.get(id.trim());
+        if (lector == null) {
+            throw new LectorNoExisteException("No existe un lector con ID: " + id);
+        }
+        
+        return lector;
     }
     
     /**
-     * Obtiene un lector por su email
+     * Verifica si existe un lector con el email dado
      */
-    public Lector obtenerLectorPorEmail(String email) {
+    public boolean existeLectorConEmail(String email) {
         if (email == null || email.trim().isEmpty()) {
-            throw new IllegalArgumentException("El email no puede ser null o vacío");
+            return false;
         }
         
+        String emailBusqueda = email.trim().toLowerCase();
         for (Lector lector : lectores.values()) {
-            if (email.trim().equalsIgnoreCase(lector.getEmail())) {
-                return lector;
+            if (lector.getEmail() != null && 
+                lector.getEmail().trim().toLowerCase().equals(emailBusqueda)) {
+                return true;
             }
         }
-        return null;
+        return false;
     }
     
     /**
-     * Lista todos los lectores del sistema
+     * Lista todos los lectores
      */
-    public List<Lector> listarLectores() {
+    public List<Lector> listarTodosLosLectores() {
         return new ArrayList<>(lectores.values());
     }
     
@@ -118,37 +148,48 @@ public class ManejadorLector {
      * Actualiza un lector existente
      */
     public void actualizarLector(Lector lector) {
-        if (lector == null) {
-            throw new IllegalArgumentException("El lector no puede ser null");
-        }
-        
-        if (lector.getId() == null || lector.getId().trim().isEmpty()) {
-            throw new IllegalArgumentException("El lector debe tener un ID válido");
+        if (lector == null || lector.getId() == null) {
+            throw new IllegalArgumentException("Lector o ID inválido");
         }
         
         if (!lectores.containsKey(lector.getId())) {
-            throw new IllegalArgumentException("El lector no existe en el sistema");
+            throw new IllegalArgumentException("No existe un lector con ID: " + lector.getId());
         }
         
+        // Actualizar en memoria
         lectores.put(lector.getId(), lector);
+        
+        // NUEVO: Actualizar en base de datos
+        try {
+            lectorDAO.actualizar(lector);
+            System.out.println("Lector actualizado exitosamente en BD: " + lector.getId());
+        } catch (Exception e) {
+            throw new RuntimeException("Error al actualizar lector en base de datos: " + e.getMessage(), e);
+        }
     }
     
     /**
      * Elimina un lector del sistema
      */
-    public void eliminarLector(String id) {
+    public void eliminarLector(String id) throws LectorNoExisteException {
         if (id == null || id.trim().isEmpty()) {
-            throw new IllegalArgumentException("El ID no puede ser null o vacío");
+            throw new LectorNoExisteException("ID de lector inválido");
         }
         
+        Lector lector = obtenerLector(id); // Verifica que existe
+        
+        // Eliminar de memoria
         lectores.remove(id.trim());
-    }
-    
-    /**
-     * Verifica si existe un lector con el email especificado
-     */
-    public boolean existeLectorConEmail(String email) {
-        return obtenerLectorPorEmail(email) != null;
+        
+        // NUEVO: Eliminar de base de datos
+        try {
+            lectorDAO.eliminar(id.trim());
+            System.out.println("Lector eliminado exitosamente de BD: " + id);
+        } catch (Exception e) {
+            // Si falla la BD, restaurar en memoria
+            lectores.put(id.trim(), lector);
+            throw new RuntimeException("Error al eliminar lector de base de datos: " + e.getMessage(), e);
+        }
     }
     
     /**
@@ -156,5 +197,38 @@ public class ManejadorLector {
      */
     public int getCantidadLectores() {
         return lectores.size();
+    }
+    
+    /**
+     * Método estático para obtener instancia (patrón Singleton)
+     * Para compatibilidad con el código existente
+     */
+    private static ManejadorLector instancia;
+    
+    public static ManejadorLector getInstancia() {
+        if (instancia == null) {
+            instancia = new ManejadorLector();
+        }
+        return instancia;
+    }
+    
+    /**
+     * Obtiene un lector por email
+     * Para compatibilidad con el código existente
+     */
+    public Lector obtenerLectorPorEmail(String email) {
+        try {
+            return lectorDAO.buscarPorEmail(email);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    /**
+     * Lista todos los lectores
+     * Alias para compatibilidad con el código existente
+     */
+    public List<Lector> listarLectores() {
+        return listarTodosLosLectores();
     }
 }

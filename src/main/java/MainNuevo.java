@@ -1,4 +1,5 @@
 import presentacion.Principal;
+import persistencia.HibernateUtil;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -14,6 +15,18 @@ public class MainNuevo {
         System.out.println(" SISTEMA DE BIBLIOTECA - NUEVA VERSION");
         System.out.println(" Funcionalidad: Registrar Bibliotecario");
         System.out.println("========================================");
+        
+        // Inicializar Hibernate y crear base de datos
+        try {
+            System.out.println("Inicializando base de datos...");
+            HibernateUtil.getSessionFactory();
+            System.out.println("Base de datos inicializada correctamente");
+            System.out.println("Tablas creadas/verificadas en PostgreSQL");
+        } catch (Exception e) {
+            System.err.println("Error al inicializar la base de datos: " + e.getMessage());
+            e.printStackTrace();
+            return; // No continuar si hay error en BD
+        }
         
         SwingUtilities.invokeLater(new Runnable() {
             @Override
