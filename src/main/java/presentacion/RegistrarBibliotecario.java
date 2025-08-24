@@ -1,6 +1,7 @@
 package presentacion;
 
-import interfaces.IControlador;
+import interfaces.IBibliotecarioControlador;
+import logica.BibliotecarioControlador;
 import excepciones.BibliotecarioRepetidoException;
 import excepciones.DatosInvalidosException;
 
@@ -11,19 +12,27 @@ import java.awt.event.ActionListener;
 
 /**
  * Ventana para registrar un nuevo bibliotecario
+ * Actualizada para usar controlador específico
  */
 public class RegistrarBibliotecario extends JInternalFrame {
     
-    private IControlador controlador;
+    private IBibliotecarioControlador controlador;
     private JTextField txtNumeroEmpleado;
     private JTextField txtNombre;
     private JTextField txtEmail;
     private JButton btnAceptar;
     private JButton btnCancelar;
     
-    public RegistrarBibliotecario(IControlador controlador) {
+    public RegistrarBibliotecario(IBibliotecarioControlador controlador) {
         super("Registrar Bibliotecario", true, true, true, true);
         this.controlador = controlador;
+        inicializarComponentes();
+    }
+    
+    // Constructor de compatibilidad para la transición
+    public RegistrarBibliotecario() {
+        super("Registrar Bibliotecario", true, true, true, true);
+        this.controlador = new BibliotecarioControlador();
         inicializarComponentes();
     }
     

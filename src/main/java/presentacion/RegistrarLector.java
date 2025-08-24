@@ -1,6 +1,7 @@
 package presentacion;
 
-import interfaces.IControlador;
+import interfaces.ILectorControlador;
+import logica.LectorControlador;
 import logica.EstadoLector;
 import logica.Zona;
 
@@ -13,10 +14,11 @@ import java.util.Date;
 
 /**
  * Ventana para registrar nuevos lectores en el sistema
+ * Actualizada para usar controlador específico
  */
 public class RegistrarLector extends JFrame {
     
-    private IControlador controlador;
+    private ILectorControlador controlador;
     
     // Componentes de la interfaz
     private JTextField txtNombre;
@@ -30,8 +32,14 @@ public class RegistrarLector extends JFrame {
     private JButton btnAceptar;
     private JButton btnCancelar;
     
-    public RegistrarLector(IControlador controlador) {
+    public RegistrarLector(ILectorControlador controlador) {
         this.controlador = controlador;
+        inicializarComponentes();
+    }
+    
+    // Constructor de compatibilidad para la transición
+    public RegistrarLector() {
+        this.controlador = new LectorControlador();
         inicializarComponentes();
     }
     

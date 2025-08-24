@@ -2,6 +2,9 @@ package presentacion;
 
 import interfaces.Fabrica;
 import interfaces.IControlador;
+import interfaces.IBibliotecarioControlador;
+import interfaces.ILectorControlador;
+import logica.ControladorPrincipal;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,14 +13,21 @@ import java.awt.event.ActionListener;
 
 /**
  * Ventana principal del sistema con menú
+ * Actualizada para usar controladores específicos
  */
 public class Principal extends JFrame {
     
-    private IControlador controlador;
+    private IControlador controlador; // Para compatibilidad con otras funciones
+    private IBibliotecarioControlador bibliotecarioControlador;
+    private ILectorControlador lectorControlador;
     private JDesktopPane desktopPane;
     
     public Principal() {
         this.controlador = Fabrica.getInstancia().getIControlador();
+        // Obtener controladores específicos del controlador principal
+        ControladorPrincipal ctrlPrincipal = ControladorPrincipal.getInstancia();
+        this.bibliotecarioControlador = ctrlPrincipal.getBibliotecarioControlador();
+        this.lectorControlador = ctrlPrincipal.getLectorControlador();
         inicializarComponentes();
     }
     
@@ -123,7 +133,7 @@ public class Principal extends JFrame {
     }
     
     private void abrirRegistrarBibliotecario() {
-        RegistrarBibliotecario ventana = new RegistrarBibliotecario(controlador);
+        RegistrarBibliotecario ventana = new RegistrarBibliotecario(bibliotecarioControlador);
         desktopPane.add(ventana);
         ventana.setVisible(true);
         
@@ -136,7 +146,7 @@ public class Principal extends JFrame {
     }
     
     private void abrirRegistrarLector() {
-        RegistrarLector ventana = new RegistrarLector(controlador);
+        RegistrarLector ventana = new RegistrarLector(lectorControlador);
         // Mostrar como ventana independiente
         ventana.setVisible(true);
         
