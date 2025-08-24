@@ -2,6 +2,7 @@
 /target/
 *.class
 *.log
+logs/
 
 # Archivos de configuración de IDEs
 *.iml

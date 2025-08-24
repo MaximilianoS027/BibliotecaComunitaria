@@ -6,10 +6,7 @@
     <property name="hibernate.connection.username">admin</property>
     <property name="hibernate.connection.password">admin</property>
     <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
-
-
-    <!-- Dialect -->
-    <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+    <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
 
     <!-- Opcional para ver SQL en consola -->
     <property name="hibernate.show_sql">true</property>
@@ -19,12 +16,12 @@
     <!-- Esquema en desarrollo -->
     <property name="hibernate.hbm2ddl.auto">update</property>
 
-    <!-- Tus mapeos -->
-    <mapping class="com.pap.domain.model.concrete.Lector"/>
-    <mapping class="com.pap.domain.model.concrete.Bibliotecario"/>
-    <mapping class="com.pap.domain.model.concrete.Libro"/>
-    <mapping class="com.pap.domain.model.concrete.Articulo"/>
-    <mapping class="com.pap.domain.model.concrete.Prestamo"/>
+    <!-- Mapeos de las clases de entidad -->
+    <mapping class="logica.Lector"/>
+    <mapping class="logica.Bibliotecario"/>
+    <mapping class="logica.Usuario"/>
+    <mapping class="logica.Zona"/>
+    <mapping class="logica.EstadoLector"/>
 
   </session-factory>
 </hibernate-configuration>

@@ -1,6 +1,7 @@
 package presentacion;
 
-import interfaces.IControlador;
+import interfaces.ILectorControlador;
+import logica.LectorControlador;
 import logica.EstadoLector;
 import logica.Zona;
 
@@ -13,10 +14,11 @@ import java.util.Date;
 
 /**
  * Ventana para registrar nuevos lectores en el sistema
+ * Actualizada para usar controlador específico
  */
-public class RegistrarLector extends JInternalFrame {
+public class RegistrarLector extends JFrame {
     
-    private IControlador controlador;
+    private ILectorControlador controlador;
     
     // Componentes de la interfaz
     private JTextField txtNombre;
@@ -30,15 +32,24 @@ public class RegistrarLector extends JInternalFrame {
     private JButton btnAceptar;
     private JButton btnCancelar;
     
-    public RegistrarLector(IControlador controlador) {
-        super("Registrar Lector", true, true, true, true);
+    public RegistrarLector(ILectorControlador controlador) {
         this.controlador = controlador;
         inicializarComponentes();
     }
     
+    // Constructor de compatibilidad para la transición
+    public RegistrarLector() {
+        this.controlador = new LectorControlador();
+        inicializarComponentes();
+    }
+    
     private void inicializarComponentes() {
-        setSize(800, 600); // Ventana más grande
+        setTitle("Registrar Lector");
+        setResizable(true);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
+        
+        // No establecer tamaño aquí - pack() lo calculará automáticamente
         
         // Panel principal
         JPanel panelPrincipal = new JPanel(new GridBagLayout());
@@ -211,8 +222,13 @@ public class RegistrarLector extends JInternalFrame {
         // Establecer fecha actual por defecto
         establecerFechaActual();
         
-        // Centrar ventana
-        setLocation(100, 100);
+        // Forzar el cálculo del layout ANTES de posicionar
+        pack();
+        
+        // Centrar ventana en la pantalla DESPUÉS del pack
+        setLocationRelativeTo(null);
+        
+        // pack() ya calculó el tamaño perfecto - no necesitamos setSize()
     }
     
     private void establecerFechaActual() {
