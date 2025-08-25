@@ -271,7 +271,7 @@ public class Controlador implements IControlador {
         String[] resultado = new String[lectores.size()];
         for (int i = 0; i < lectores.size(); i++) {
             Lector l = lectores.get(i);
-            resultado[i] = l.getNombre() + " (" + l.getEmail() + ") - " + l.getEstado();
+            resultado[i] = l.getNombre() + " (" + l.getEmail() + ") - " + l.getZona();
         }
         
         return resultado;
@@ -310,7 +310,7 @@ public class Controlador implements IControlador {
             String[] resultado = new String[lectores.size()];
             for (int i = 0; i < lectores.size(); i++) {
                 Lector l = lectores.get(i);
-                resultado[i] = l.getId() + " - " + l.getNombre() + " (" + l.getEmail() + ")";
+                resultado[i] = l.getNombre() + " (" + l.getEmail() + ") - " + l.getZona();
             }
             
             return resultado;
@@ -358,6 +358,26 @@ public class Controlador implements IControlador {
             manejadorLector.cambiarEstadoLector(idLector.trim(), estado);
         } catch (IllegalArgumentException e) {
             throw new DatosInvalidosException("Estado inválido: " + nuevoEstado);
+        }
+    }
+    
+    @Override
+    public void cambiarZonaLector(String idLector, String nuevaZona) 
+            throws LectorNoExisteException, DatosInvalidosException {
+        
+        if (idLector == null || idLector.trim().isEmpty()) {
+            throw new DatosInvalidosException("ID de lector es obligatorio");
+        }
+        
+        if (nuevaZona == null || nuevaZona.trim().isEmpty()) {
+            throw new DatosInvalidosException("La nueva zona es obligatoria");
+        }
+        
+        try {
+            Zona zona = Zona.valueOf(nuevaZona.trim().toUpperCase());
+            manejadorLector.cambiarZonaLector(idLector.trim(), zona);
+        } catch (IllegalArgumentException e) {
+            throw new DatosInvalidosException("Zona inválida: " + nuevaZona);
         }
     }
 }

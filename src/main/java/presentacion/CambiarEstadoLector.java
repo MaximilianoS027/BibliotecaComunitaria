@@ -96,17 +96,22 @@ public class CambiarEstadoLector extends JInternalFrame {
 
     private void cargarDatos() {
         try {
-            // Cargar lista de lectores
+            // Cargar lista de lectores solo con nombre y email (sin zona)
             String[] lectores = controlador.listarLectores();
             comboLectores.removeAllItems();
             comboLectores.addItem("-- Seleccionar Lector --");
             
             for (String lector : lectores) {
-                comboLectores.addItem(lector);
+                // Extraer solo "Nombre (Email)" sin la zona
+                String[] partes = lector.split(" - ");
+                if (partes.length >= 2) {
+                    String nombreEmail = partes[0]; // "Nombre (Email)"
+                    comboLectores.addItem(nombreEmail);
+                }
             }
             
-            // Seleccionar primer estado por defecto
-            comboEstados.setSelectedIndex(0);
+            // NO precargar estado - dejar que el usuario seleccione
+            // comboEstados.setSelectedIndex(0);
             
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, 
@@ -127,15 +132,8 @@ public class CambiarEstadoLector extends JInternalFrame {
             // Obtener lector seleccionado
             String lectorSeleccionado = (String) comboLectores.getSelectedItem();
             
-            // Extraer nombre y email del formato "Nombre (Email) - Estado"
-            String[] partes = lectorSeleccionado.split(" - ");
-            if (partes.length < 2) {
-                lblResultado.setText("Formato de lector inválido");
-                lblResultado.setForeground(Color.RED);
-                return;
-            }
-            
-            String nombreEmail = partes[0]; // "Nombre (Email)"
+            // El formato ahora es solo "Nombre (Email)" sin zona
+            String nombreEmail = lectorSeleccionado; // "Nombre (Email)"
             String nombre = nombreEmail.substring(0, nombreEmail.lastIndexOf("(")).trim();
             String email = nombreEmail.substring(nombreEmail.lastIndexOf("(") + 1, nombreEmail.lastIndexOf(")")).trim();
             
@@ -145,8 +143,15 @@ public class CambiarEstadoLector extends JInternalFrame {
             // Obtener estado seleccionado
             EstadoLector nuevoEstado = (EstadoLector) comboEstados.getSelectedItem();
             
-            // Cambiar estado
-            controlador.cambiarEstadoLector(idLector, nuevoEstado.toString());
+            // Validar que se haya seleccionado un estado
+            if (nuevoEstado == null) {
+                lblResultado.setText("Debe seleccionar un estado");
+                lblResultado.setForeground(Color.RED);
+                return;
+            }
+            
+            // Cambiar estado - usar el nombre del enum, no la descripción
+            controlador.cambiarEstadoLector(idLector, nuevoEstado.name());
             
             // Mostrar éxito
             lblResultado.setText("Estado cambiado exitosamente a: " + nuevoEstado.getDescripcion());
