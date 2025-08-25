@@ -6,9 +6,9 @@
     <session-factory>
         <!-- Configuración de PostgreSQL con Docker -->
         <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
-        <property name="hibernate.connection.url">jdbc:postgresql://localhost:5434/database-name</property>
-        <property name="hibernate.connection.username">el-username</property>
-        <property name="hibernate.connection.password">la-password</property>
+        <property name="hibernate.connection.url">jdbc:postgresql://localhost:5434/biblioteca_bd</property>
+        <property name="hibernate.connection.username">admin</property>
+        <property name="hibernate.connection.password">admin</property>
         
         <!-- Configuración de Hibernate para PostgreSQL -->
         <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
