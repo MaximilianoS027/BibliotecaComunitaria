@@ -271,10 +271,30 @@ public class Controlador implements IControlador {
         String[] resultado = new String[lectores.size()];
         for (int i = 0; i < lectores.size(); i++) {
             Lector l = lectores.get(i);
-            resultado[i] = l.getId() + " - " + l.getNombre() + " (" + l.getEmail() + ") - " + l.getEstado();
+            resultado[i] = l.getNombre() + " (" + l.getEmail() + ") - " + l.getEstado();
         }
         
         return resultado;
+    }
+    
+    /**
+     * Obtiene el ID de un lector por su nombre y email
+     * Útil para la interfaz de usuario
+     */
+    public String obtenerIdLectorPorNombreEmail(String nombre, String email) throws LectorNoExisteException {
+        if (nombre == null || nombre.trim().isEmpty() || email == null || email.trim().isEmpty()) {
+            throw new LectorNoExisteException("Nombre y email son obligatorios");
+        }
+        
+        List<Lector> lectores = manejadorLector.listarLectores();
+        for (Lector l : lectores) {
+            if (l.getNombre().trim().equals(nombre.trim()) && 
+                l.getEmail().trim().equals(email.trim())) {
+                return l.getId();
+            }
+        }
+        
+        throw new LectorNoExisteException("No se encontró lector con nombre: " + nombre + " y email: " + email);
     }
     
     @Override
@@ -318,6 +338,26 @@ public class Controlador implements IControlador {
             return resultado;
         } catch (IllegalArgumentException e) {
             return new String[0];
+        }
+    }
+    
+    @Override
+    public void cambiarEstadoLector(String idLector, String nuevoEstado) 
+            throws LectorNoExisteException, DatosInvalidosException {
+        
+        if (idLector == null || idLector.trim().isEmpty()) {
+            throw new DatosInvalidosException("ID de lector es obligatorio");
+        }
+        
+        if (nuevoEstado == null || nuevoEstado.trim().isEmpty()) {
+            throw new DatosInvalidosException("El nuevo estado es obligatorio");
+        }
+        
+        try {
+            EstadoLector estado = EstadoLector.valueOf(nuevoEstado.trim().toUpperCase());
+            manejadorLector.cambiarEstadoLector(idLector.trim(), estado);
+        } catch (IllegalArgumentException e) {
+            throw new DatosInvalidosException("Estado inválido: " + nuevoEstado);
         }
     }
 }

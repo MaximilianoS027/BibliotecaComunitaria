@@ -231,4 +231,30 @@ public class ManejadorLector {
     public List<Lector> listarLectores() {
         return listarTodosLosLectores();
     }
+    
+    /**
+     * Cambia el estado de un lector
+     */
+    public void cambiarEstadoLector(String idLector, EstadoLector nuevoEstado) 
+            throws LectorNoExisteException {
+        
+        if (idLector == null || idLector.trim().isEmpty()) {
+            throw new IllegalArgumentException("ID de lector inválido");
+        }
+        
+        if (nuevoEstado == null) {
+            throw new IllegalArgumentException("Nuevo estado inválido");
+        }
+        
+        Lector lector = obtenerLector(idLector.trim());
+        lector.setEstado(nuevoEstado);
+        
+        // Actualizar en base de datos
+        try {
+            lectorDAO.actualizar(lector);
+            System.out.println("Estado del lector " + idLector + " cambiado a: " + nuevoEstado);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al actualizar estado en base de datos: " + e.getMessage(), e);
+        }
+    }
 }

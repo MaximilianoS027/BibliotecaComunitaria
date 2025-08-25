@@ -39,4 +39,12 @@ public interface IControlador {
     public String[] listarLectoresPorEstado(String estado);
     
     public String[] listarLectoresPorZona(String zona);
+    
+    // Operación para cambiar estado de lector
+    public void cambiarEstadoLector(String idLector, String nuevoEstado) 
+        throws LectorNoExisteException, DatosInvalidosException;
+    
+    // Obtener ID de lector por nombre y email
+    public String obtenerIdLectorPorNombreEmail(String nombre, String email) 
+        throws LectorNoExisteException;
 }
