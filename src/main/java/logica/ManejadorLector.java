@@ -257,4 +257,30 @@ public class ManejadorLector {
             throw new RuntimeException("Error al actualizar estado en base de datos: " + e.getMessage(), e);
         }
     }
+    
+    /**
+     * Cambia la zona de un lector
+     */
+    public void cambiarZonaLector(String idLector, Zona nuevaZona) 
+            throws LectorNoExisteException {
+        
+        if (idLector == null || idLector.trim().isEmpty()) {
+            throw new IllegalArgumentException("ID de lector inválido");
+        }
+        
+        if (nuevaZona == null) {
+            throw new IllegalArgumentException("Nueva zona inválida");
+        }
+        
+        Lector lector = obtenerLector(idLector.trim());
+        lector.setZona(nuevaZona);
+        
+        // Actualizar en base de datos
+        try {
+            lectorDAO.actualizar(lector);
+            System.out.println("Zona del lector " + idLector + " cambiada a: " + nuevaZona);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al actualizar zona en base de datos: " + e.getMessage(), e);
+        }
+    }
 }

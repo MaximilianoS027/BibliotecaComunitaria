@@ -47,4 +47,8 @@ public interface IControlador {
     // Obtener ID de lector por nombre y email
     public String obtenerIdLectorPorNombreEmail(String nombre, String email) 
         throws LectorNoExisteException;
+    
+    // Operación para cambiar zona de lector
+    public void cambiarZonaLector(String idLector, String nuevaZona) 
+        throws LectorNoExisteException, DatosInvalidosException;
 }
