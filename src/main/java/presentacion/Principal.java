@@ -5,6 +5,7 @@ import interfaces.IControlador;
 import interfaces.IBibliotecarioControlador;
 import interfaces.ILectorControlador;
 import logica.ControladorPrincipal;
+import presentacion.CambiarEstadoLector;
 
 import javax.swing.*;
 import java.awt.*;
@@ -155,7 +156,7 @@ public class Principal extends JFrame {
     }
 
     private void abrirEstadoLector() {
-        EstadoLector ventana = new EstadoLector(controlador);
+        CambiarEstadoLector ventana = new CambiarEstadoLector(controlador);
         desktopPane.add(ventana);
         ventana.setVisible(true);
         try {
