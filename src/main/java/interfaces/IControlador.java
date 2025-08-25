@@ -2,10 +2,13 @@ package interfaces;
 
 import datatypes.DtBibliotecario;
 import datatypes.DtLector;
+import datatypes.DtLibro;
 import excepciones.BibliotecarioRepetidoException;
 import excepciones.BibliotecarioNoExisteException;
 import excepciones.LectorRepetidoException;
 import excepciones.LectorNoExisteException;
+import excepciones.LibroRepetidoException;
+import excepciones.LibroNoExisteException;
 import excepciones.DatosInvalidosException;
 
 /**
@@ -39,4 +42,18 @@ public interface IControlador {
     public String[] listarLectoresPorEstado(String estado);
     
     public String[] listarLectoresPorZona(String zona);
+    
+    // Operaciones de Libro
+    public void registrarLibro(String titulo, int cantidadPaginas) 
+        throws LibroRepetidoException, DatosInvalidosException;
+    
+    public DtLibro obtenerLibro(String id) 
+        throws LibroNoExisteException;
+    
+    public DtLibro obtenerLibroPorTitulo(String titulo) 
+        throws LibroNoExisteException;
+    
+    public String[] listarLibros();
+    
+    public String[] listarLibrosPorPaginas(int paginasMin, int paginasMax);
 }

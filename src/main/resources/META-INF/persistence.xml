@@ -9,6 +9,7 @@
         
         <!-- Entidades -->
         <class>logica.Bibliotecario</class>
+        <class>logica.Libro</class>
         
         <properties>
             <!-- Configuración de PostgreSQL Database -->

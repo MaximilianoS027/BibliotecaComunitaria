@@ -6,14 +6,14 @@ import javax.swing.UIManager;
 
 /**
  * Clase principal para ejecutar la nueva versión del sistema
- * con la funcionalidad de registrar bibliotecario
+ * con las funcionalidades de registrar bibliotecario y gestionar libros
  */
 public class MainNuevo {
     
     public static void main(String[] args) {
         System.out.println("========================================");
         System.out.println(" SISTEMA DE BIBLIOTECA - NUEVA VERSION");
-        System.out.println(" Funcionalidad: Registrar Bibliotecario");
+        System.out.println(" Funcionalidades: Bibliotecario y Libros");
         System.out.println("========================================");
         
         // Inicializar Hibernate y crear base de datos
@@ -41,10 +41,17 @@ public class MainNuevo {
                     ventanaPrincipal.setVisible(true);
                     
                     System.out.println("Aplicación iniciada correctamente");
-                    System.out.println("Para probar:");
-                    System.out.println("1. Ir al menú 'Bibliotecarios'");
-                    System.out.println("2. Seleccionar 'Registrar Bibliotecario'");
+                    System.out.println("Para probar las nuevas funcionalidades:");
+                    System.out.println("BIBLIOTECARIOS:");
+                    System.out.println("1. Ir al menú 'Gestión de Usuario'");
+                    System.out.println("2. Seleccionar 'Nuevo bibliotecario'");
                     System.out.println("3. Llenar el formulario y hacer clic en 'Aceptar'");
+                    System.out.println("");
+                    System.out.println("LIBROS (Nueva funcionalidad):");
+                    System.out.println("1. Ir al menú 'Gestión de materiales'");
+                    System.out.println("2. Seleccionar 'Nuevo libro'");
+                    System.out.println("3. Ingresar título y cantidad de páginas");
+                    System.out.println("4. Hacer clic en 'Registrar Libro'");
                     
                 } catch (Exception e) {
                     System.err.println("Error al iniciar la aplicación: " + e.getMessage());
