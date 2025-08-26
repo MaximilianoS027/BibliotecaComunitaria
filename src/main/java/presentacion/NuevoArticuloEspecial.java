@@ -1,6 +1,7 @@
 package presentacion;
 
-import interfaces.IControlador;
+// import interfaces.IControlador;
+import interfaces.IArticuloEspecialControlador;
 import excepciones.ArticuloEspecialRepetidoException;
 import excepciones.DatosInvalidosException;
 
@@ -15,16 +16,16 @@ import java.awt.event.ActionListener;
  */
 public class NuevoArticuloEspecial extends JInternalFrame {
     
-    private IControlador controlador;
+    private IArticuloEspecialControlador articuloEspecialControlador;
     private JTextField txtDescripcion;
     private JTextField txtPesoKg;
     private JTextField txtDimensiones;
     private JButton btnAceptar;
     private JButton btnCancelar;
     
-    public NuevoArticuloEspecial(IControlador controlador) {
+    public NuevoArticuloEspecial(IArticuloEspecialControlador articuloEspecialControlador) {
         super("Nuevo Artículo Especial", true, true, true, true);
-        this.controlador = controlador;
+        this.articuloEspecialControlador = articuloEspecialControlador;
         inicializarComponentes();
     }
     
@@ -130,7 +131,7 @@ public class NuevoArticuloEspecial extends JInternalFrame {
             }
             
             // Llamar al controlador
-            controlador.registrarArticuloEspecial(descripcion, pesoKg, dimensiones);
+            articuloEspecialControlador.registrarArticuloEspecial(descripcion, (float) pesoKg, dimensiones);
             
             // Mostrar mensaje de éxito
             JOptionPane.showMessageDialog(this, 

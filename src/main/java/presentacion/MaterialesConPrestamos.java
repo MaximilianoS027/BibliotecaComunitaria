@@ -1,17 +1,17 @@
 package presentacion;
 
-import interfaces.IControlador;
+// import interfaces.IControlador;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class MaterialesConPrestamos extends JInternalFrame {
 
-    private IControlador controlador;
+    // private IControlador controlador;
 
-    public MaterialesConPrestamos(IControlador controlador) {
+    public MaterialesConPrestamos(/*IControlador controlador*/) {
         super("Materiales con Préstamos", true, true, true, true);
-        this.controlador = controlador;
+        // this.controlador = controlador;
         inicializarComponentes();
     }
 

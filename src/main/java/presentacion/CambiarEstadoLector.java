@@ -1,24 +1,26 @@
 package presentacion;
 
-import interfaces.IControlador;
+// import interfaces.IControlador;
+import interfaces.ILectorControlador;
 import logica.EstadoLector;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 
 public class CambiarEstadoLector extends JInternalFrame {
 
-    private IControlador controlador;
+    private ILectorControlador lectorControlador;
     private JComboBox<String> comboLectores;
     private JComboBox<EstadoLector> comboEstados;
     private JButton btnCambiarEstado;
     private JLabel lblResultado;
 
-    public CambiarEstadoLector(IControlador controlador) {
+    public CambiarEstadoLector(ILectorControlador lectorControlador) {
         super("Cambiar Estado de Lector", true, true, true, true);
-        this.controlador = controlador;
+        this.lectorControlador = lectorControlador;
         inicializarComponentes();
         cargarDatos();
     }
@@ -53,6 +55,7 @@ public class CambiarEstadoLector extends JInternalFrame {
         gbc.gridy = 1;
         comboLectores = new JComboBox<>();
         comboLectores.setPreferredSize(new Dimension(300, 25));
+        comboLectores.setRenderer(new LectorListCellRenderer()); // Establecer el renderizador personalizado
         panelPrincipal.add(comboLectores, gbc);
 
         // Seleccionar Estado
@@ -97,17 +100,13 @@ public class CambiarEstadoLector extends JInternalFrame {
     private void cargarDatos() {
         try {
             // Cargar lista de lectores solo con nombre y email (sin zona)
-            String[] lectores = controlador.listarLectores();
+            String[] lectores = lectorControlador.listarLectores();
             comboLectores.removeAllItems();
             comboLectores.addItem("-- Seleccionar Lector --");
             
             for (String lector : lectores) {
-                // Extraer solo "Nombre (Email)" sin la zona
-                String[] partes = lector.split(" - ");
-                if (partes.length >= 2) {
-                    String nombreEmail = partes[0]; // "Nombre (Email)"
-                    comboLectores.addItem(nombreEmail);
-                }
+                // Añadir la cadena completa al JComboBox
+                comboLectores.addItem(lector);
             }
             
             // NO precargar estado - dejar que el usuario seleccione
@@ -132,13 +131,9 @@ public class CambiarEstadoLector extends JInternalFrame {
             // Obtener lector seleccionado
             String lectorSeleccionado = (String) comboLectores.getSelectedItem();
             
-            // El formato ahora es solo "Nombre (Email)" sin zona
-            String nombreEmail = lectorSeleccionado; // "Nombre (Email)"
-            String nombre = nombreEmail.substring(0, nombreEmail.lastIndexOf("(")).trim();
-            String email = nombreEmail.substring(nombreEmail.lastIndexOf("(") + 1, nombreEmail.lastIndexOf(")")).trim();
-            
-            // Obtener ID del lector usando nombre y email
-            String idLector = controlador.obtenerIdLectorPorNombreEmail(nombre, email);
+            // El formato es "ID - Nombre (Email) - Estado"
+            // Extraer solo el ID del lector
+            String idLector = lectorSeleccionado.split(" - ")[0];
             
             // Obtener estado seleccionado
             EstadoLector nuevoEstado = (EstadoLector) comboEstados.getSelectedItem();
@@ -151,7 +146,7 @@ public class CambiarEstadoLector extends JInternalFrame {
             }
             
             // Cambiar estado - usar el nombre del enum, no la descripción
-            controlador.cambiarEstadoLector(idLector, nuevoEstado.name());
+            lectorControlador.cambiarEstadoLector(idLector, nuevoEstado.name());
             
             // Mostrar éxito
             lblResultado.setText("Estado cambiado exitosamente a: " + nuevoEstado.getDescripcion());
@@ -166,6 +161,33 @@ public class CambiarEstadoLector extends JInternalFrame {
             JOptionPane.showMessageDialog(this, 
                 "Error al cambiar estado: " + e.getMessage(), 
                 "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    // Clase interna para el renderizado personalizado del JComboBox
+    class LectorListCellRenderer extends DefaultListCellRenderer {
+        @Override
+        public Component getListCellRendererComponent(JList<?> list, Object value,
+                                                      int index, boolean isSelected,
+                                                      boolean cellHasFocus) {
+            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            if (value instanceof String) {
+                String item = (String) value;
+                if (item.equals("-- Seleccionar Lector --")) {
+                    setText(item);
+                } else {
+                    // Formato esperado: "ID - Nombre (Email) - Estado - Zona"
+                    String[] partes = item.split(" - ");
+                    if (partes.length >= 3) {
+                        String nombreEmail = partes[1]; // "Nombre (Email)"
+                        String estado = partes[2];      // "Estado"
+                        setText(nombreEmail + " - " + estado);
+                    } else {
+                        setText(item); // En caso de que el formato no sea el esperado
+                    }
+                }
+            }
+            return this;
         }
     }
 }

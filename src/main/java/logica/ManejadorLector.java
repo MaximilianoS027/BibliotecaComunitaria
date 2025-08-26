@@ -225,6 +225,25 @@ public class ManejadorLector {
     }
     
     /**
+     * Obtiene un lector por nombre y email.
+     */
+    public Lector obtenerLectorPorNombreEmail(String nombre, String email) {
+        if (nombre == null || nombre.trim().isEmpty() || email == null || email.trim().isEmpty()) {
+            return null;
+        }
+        String nombreBusqueda = nombre.trim().toLowerCase();
+        String emailBusqueda = email.trim().toLowerCase();
+        for (Lector lector : lectores.values()) {
+            if (lector.getNombre() != null && lector.getEmail() != null &&
+                lector.getNombre().trim().toLowerCase().equals(nombreBusqueda) &&
+                lector.getEmail().trim().toLowerCase().equals(emailBusqueda)) {
+                return lector;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Lista todos los lectores
      * Alias para compatibilidad con el código existente
      */
