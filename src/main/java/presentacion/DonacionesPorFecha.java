@@ -1,17 +1,17 @@
 package presentacion;
 
-import interfaces.IControlador;
+// import interfaces.IControlador;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class DonacionesPorFecha extends JInternalFrame {
 
-    private IControlador controlador;
+    // private IControlador controlador;
 
-    public DonacionesPorFecha(IControlador controlador) {
+    public DonacionesPorFecha(/*IControlador controlador*/) {
         super("Donaciones por Fecha", true, true, true, true);
-        this.controlador = controlador;
+        // this.controlador = controlador;
         inicializarComponentes();
     }
 

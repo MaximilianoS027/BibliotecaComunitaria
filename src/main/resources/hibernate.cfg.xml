@@ -16,12 +16,20 @@
     <!-- Esquema en desarrollo -->
     <property name="hibernate.hbm2ddl.auto">update</property>
 
+    <!-- Configuración de conexión adicional -->
+    <property name="hibernate.connection.pool_size">10</property>
+    <property name="hibernate.current_session_context_class">thread</property>
+    <property name="hibernate.jdbc.batch_size">20</property>
+
     <!-- Mapeos de las clases de entidad -->
     <mapping class="logica.Lector"/>
     <mapping class="logica.Bibliotecario"/>
     <mapping class="logica.Usuario"/>
     <mapping class="logica.Zona"/>
     <mapping class="logica.EstadoLector"/>
+    <mapping class="logica.Material"/>
+    <mapping class="logica.ArticuloEspecial"/>
+    <mapping class="logica.Libro"/>
 
   </session-factory>
 </hibernate-configuration>

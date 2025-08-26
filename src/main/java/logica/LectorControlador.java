@@ -141,7 +141,7 @@ public class LectorControlador implements ILectorControlador {
         String[] resultado = new String[lectores.size()];
         for (int i = 0; i < lectores.size(); i++) {
             Lector l = lectores.get(i);
-            resultado[i] = l.getId() + " - " + l.getNombre() + " (" + l.getEmail() + ") - " + l.getEstado();
+            resultado[i] = l.getId() + " - " + l.getNombre() + " (" + l.getEmail() + ") - " + l.getEstado().getDescripcion() + " - " + l.getZona().getDescripcion();
         }
         
         return resultado;
@@ -184,6 +184,52 @@ public class LectorControlador implements ILectorControlador {
         return manejadorLector.existeLectorConEmail(email);
     }
     
+    @Override
+    public String obtenerIdLectorPorNombreEmail(String nombre, String email) throws LectorNoExisteException {
+        if (nombre == null || nombre.trim().isEmpty() || email == null || email.trim().isEmpty()) {
+            throw new LectorNoExisteException("Nombre y email son obligatorios para obtener el ID del lector.");
+        }
+        Lector lector = manejadorLector.obtenerLectorPorNombreEmail(nombre.trim(), email.trim());
+        if (lector == null) {
+            throw new LectorNoExisteException("No se encontró un lector con el nombre: " + nombre + " y email: " + email);
+        }
+        return lector.getId();
+    }
+
+    @Override
+    public void cambiarEstadoLector(String idLector, String nuevoEstado) throws LectorNoExisteException, DatosInvalidosException {
+        if (idLector == null || idLector.trim().isEmpty()) {
+            throw new DatosInvalidosException("ID de lector es obligatorio");
+        }
+        if (nuevoEstado == null || nuevoEstado.trim().isEmpty()) {
+            throw new DatosInvalidosException("El nuevo estado es obligatorio");
+        }
+        Lector lector = manejadorLector.obtenerLector(idLector.trim());
+        if (lector == null) {
+            throw new LectorNoExisteException("No se encontró el lector con ID: " + idLector);
+        }
+        EstadoLector estadoLector = parseEstado(nuevoEstado);
+        lector.setEstado(estadoLector);
+        manejadorLector.actualizarLector(lector);
+    }
+
+    @Override
+    public void cambiarZonaLector(String idLector, String nuevaZona) throws LectorNoExisteException, DatosInvalidosException {
+        if (idLector == null || idLector.trim().isEmpty()) {
+            throw new DatosInvalidosException("ID de lector es obligatorio");
+        }
+        if (nuevaZona == null || nuevaZona.trim().isEmpty()) {
+            throw new DatosInvalidosException("La nueva zona es obligatoria");
+        }
+        Lector lector = manejadorLector.obtenerLector(idLector.trim());
+        if (lector == null) {
+            throw new LectorNoExisteException("No se encontró el lector con ID: " + idLector);
+        }
+        Zona zonaLector = parseZona(nuevaZona);
+        lector.setZona(zonaLector);
+        manejadorLector.actualizarLector(lector);
+    }
+
     @Override
     public void actualizarLector(String id, String nombre, String email, String direccion,
                                 String estado, String zona)

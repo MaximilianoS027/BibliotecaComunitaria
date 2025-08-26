@@ -1,17 +1,17 @@
 package presentacion;
 
-import interfaces.IControlador;
+// import interfaces.IControlador;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class ModificarInfoPrestamo extends JInternalFrame {
 
-    private IControlador controlador;
+    // private IControlador controlador;
 
-    public ModificarInfoPrestamo(IControlador controlador) {
+    public ModificarInfoPrestamo(/*IControlador controlador*/) {
         super("Modificar Información de Préstamo", true, true, true, true);
-        this.controlador = controlador;
+        // this.controlador = controlador;
         inicializarComponentes();
     }
 

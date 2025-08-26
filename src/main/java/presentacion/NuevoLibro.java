@@ -1,6 +1,7 @@
 package presentacion;
 
-import interfaces.IControlador;
+// import interfaces.IControlador;
+import interfaces.ILibroControlador;
 import excepciones.LibroRepetidoException;
 import excepciones.DatosInvalidosException;
 
@@ -15,15 +16,15 @@ import java.awt.event.ActionListener;
  */
 public class NuevoLibro extends JInternalFrame {
     
-    private IControlador controlador;
+    private ILibroControlador libroControlador;
     private JTextField txtTitulo;
     private JTextField txtCantidadPaginas;
     private JButton btnAceptar;
     private JButton btnCancelar;
     
-    public NuevoLibro(IControlador controlador) {
+    public NuevoLibro(ILibroControlador libroControlador) {
         super("Nuevo Libro", true, true, true, true);
-        this.controlador = controlador;
+        this.libroControlador = libroControlador;
         inicializarComponentes();
     }
     
@@ -119,7 +120,7 @@ public class NuevoLibro extends JInternalFrame {
             }
             
             // Llamar al controlador
-            controlador.registrarLibro(titulo, cantidadPaginas);
+            libroControlador.registrarLibro(titulo, cantidadPaginas);
             
             // Mostrar mensaje de éxito
             JOptionPane.showMessageDialog(this, 

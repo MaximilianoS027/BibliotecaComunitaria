@@ -90,4 +90,31 @@ public interface ILectorControlador {
      * @throws LectorNoExisteException Si no existe el lector
      */
     void eliminarLector(String id) throws LectorNoExisteException;
+
+    /**
+     * Obtiene el ID de un lector por su nombre y email.
+     * @param nombre Nombre del lector.
+     * @param email Email del lector.
+     * @return El ID del lector.
+     * @throws LectorNoExisteException Si no se encuentra un lector con el nombre y email dados.
+     */
+    String obtenerIdLectorPorNombreEmail(String nombre, String email) throws LectorNoExisteException;
+
+    /**
+     * Cambia el estado de un lector.
+     * @param idLector ID del lector.
+     * @param nuevoEstado Nuevo estado del lector.
+     * @throws LectorNoExisteException Si el lector no existe.
+     * @throws DatosInvalidosException Si el nuevo estado es inválido.
+     */
+    void cambiarEstadoLector(String idLector, String nuevoEstado) throws LectorNoExisteException, DatosInvalidosException;
+
+    /**
+     * Cambia la zona de un lector.
+     * @param idLector ID del lector.
+     * @param nuevaZona Nueva zona del lector.
+     * @throws LectorNoExisteException Si el lector no existe.
+     * @throws DatosInvalidosException Si la nueva zona es inválida.
+     */
+    void cambiarZonaLector(String idLector, String nuevaZona) throws LectorNoExisteException, DatosInvalidosException;
 }

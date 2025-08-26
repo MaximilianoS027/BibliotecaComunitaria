@@ -1,11 +1,12 @@
 package presentacion;
 
 import interfaces.Fabrica;
-import interfaces.IControlador;
+// import interfaces.IControlador;
 import interfaces.IBibliotecarioControlador;
 import interfaces.ILectorControlador;
-import logica.ControladorPrincipal;
-import presentacion.CambiarEstadoLector;
+import interfaces.ILibroControlador;
+import interfaces.IArticuloEspecialControlador;
+// import logica.ControladorPrincipal;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,17 +19,23 @@ import java.awt.event.ActionListener;
  */
 public class Principal extends JFrame {
     
-    private IControlador controlador; // Para compatibilidad con otras funciones
+    // private IControlador controlador; // Para compatibilidad con otras funciones
     private IBibliotecarioControlador bibliotecarioControlador;
     private ILectorControlador lectorControlador;
+    private ILibroControlador libroControlador;
+    private IArticuloEspecialControlador articuloEspecialControlador;
+
     private JDesktopPane desktopPane;
     
     public Principal() {
-        this.controlador = Fabrica.getInstancia().getIControlador();
-        // Obtener controladores específicos del controlador principal
-        ControladorPrincipal ctrlPrincipal = ControladorPrincipal.getInstancia();
-        this.bibliotecarioControlador = ctrlPrincipal.getBibliotecarioControlador();
-        this.lectorControlador = ctrlPrincipal.getLectorControlador();
+        // this.controlador = Fabrica.getInstancia().getIControlador();
+        // Obtener controladores específicos de la Fábrica
+        Fabrica fabrica = Fabrica.getInstancia();
+        this.bibliotecarioControlador = fabrica.getIBibliotecarioControlador();
+        this.lectorControlador = fabrica.getILectorControlador();
+        this.libroControlador = fabrica.getILibroControlador();
+        this.articuloEspecialControlador = fabrica.getIArticuloEspecialControlador();
+
         inicializarComponentes();
     }
     
@@ -156,7 +163,7 @@ public class Principal extends JFrame {
     }
 
     private void abrirEstadoLector() {
-        CambiarEstadoLector ventana = new CambiarEstadoLector(controlador);
+        CambiarEstadoLector ventana = new CambiarEstadoLector(lectorControlador);
         desktopPane.add(ventana);
         ventana.setVisible(true);
         try {
@@ -167,7 +174,7 @@ public class Principal extends JFrame {
     }
 
     private void abrirModificarZonaLector() {
-        ModificarZonaLector ventana = new ModificarZonaLector(controlador);
+        ModificarZonaLector ventana = new ModificarZonaLector(lectorControlador);
         desktopPane.add(ventana);
         ventana.setVisible(true);
         try {
@@ -178,7 +185,7 @@ public class Principal extends JFrame {
     }
 
     private void abrirNuevoLibro() {
-        NuevoLibro ventana = new NuevoLibro(controlador);
+        NuevoLibro ventana = new NuevoLibro(libroControlador);
         desktopPane.add(ventana);
         ventana.setVisible(true);
         try {
@@ -189,7 +196,7 @@ public class Principal extends JFrame {
     }
 
     private void abrirNuevoArticulo() {
-        NuevoArticuloEspecial ventana = new NuevoArticuloEspecial(controlador);
+        NuevoArticuloEspecial ventana = new NuevoArticuloEspecial(articuloEspecialControlador);
         desktopPane.add(ventana);
         ventana.setVisible(true);
         try {
@@ -200,7 +207,7 @@ public class Principal extends JFrame {
     }
 
     private void abrirVerDonaciones() {
-        VerDonaciones ventana = new VerDonaciones(controlador);
+        VerDonaciones ventana = new VerDonaciones(); // No necesita controlador
         desktopPane.add(ventana);
         ventana.setVisible(true);
         try {
@@ -211,7 +218,7 @@ public class Principal extends JFrame {
     }
 
     private void abrirDonacionesPorFecha() {
-        DonacionesPorFecha ventana = new DonacionesPorFecha(controlador);
+        DonacionesPorFecha ventana = new DonacionesPorFecha(); // No necesita controlador
         desktopPane.add(ventana);
         ventana.setVisible(true);
         try {
@@ -222,7 +229,7 @@ public class Principal extends JFrame {
     }
 
     private void abrirNuevoPrestamo() {
-        NuevoPrestamo ventana = new NuevoPrestamo(controlador);
+        NuevoPrestamo ventana = new NuevoPrestamo(); // No necesita controlador
         desktopPane.add(ventana);
         ventana.setVisible(true);
         try {
@@ -233,7 +240,7 @@ public class Principal extends JFrame {
     }
 
     private void abrirEstadoPrestamo() {
-        EstadoPrestamo ventana = new EstadoPrestamo(controlador);
+        EstadoPrestamo ventana = new EstadoPrestamo(); // No necesita controlador
         desktopPane.add(ventana);
         ventana.setVisible(true);
         try {
@@ -244,7 +251,7 @@ public class Principal extends JFrame {
     }
 
     private void abrirModificarInfoPrestamo() {
-        ModificarInfoPrestamo ventana = new ModificarInfoPrestamo(controlador);
+        ModificarInfoPrestamo ventana = new ModificarInfoPrestamo(); // No necesita controlador
         desktopPane.add(ventana);
         ventana.setVisible(true);
         try {
@@ -255,7 +262,7 @@ public class Principal extends JFrame {
     }
 
     private void abrirListarPrestamos() {
-        ListarPrestamos ventana = new ListarPrestamos(controlador);
+        ListarPrestamos ventana = new ListarPrestamos(); // No necesita controlador
         desktopPane.add(ventana);
         ventana.setVisible(true);
         try {
@@ -266,7 +273,7 @@ public class Principal extends JFrame {
     }
 
     private void abrirHistorialPrestamos() {
-        HistorialPrestamos ventana = new HistorialPrestamos(controlador);
+        HistorialPrestamos ventana = new HistorialPrestamos(); // No necesita controlador
         desktopPane.add(ventana);
         ventana.setVisible(true);
         try {
@@ -277,7 +284,7 @@ public class Principal extends JFrame {
     }
 
     private void abrirReportePrestamosPorZona() {
-        ReportePrestamosPorZona ventana = new ReportePrestamosPorZona(controlador);
+        ReportePrestamosPorZona ventana = new ReportePrestamosPorZona(); // No necesita controlador
         desktopPane.add(ventana);
         ventana.setVisible(true);
         try {
@@ -288,7 +295,7 @@ public class Principal extends JFrame {
     }
 
     private void abrirMaterialesConPrestamos() {
-        MaterialesConPrestamos ventana = new MaterialesConPrestamos(controlador);
+        MaterialesConPrestamos ventana = new MaterialesConPrestamos(); // No necesita controlador
         desktopPane.add(ventana);
         ventana.setVisible(true);
         try {

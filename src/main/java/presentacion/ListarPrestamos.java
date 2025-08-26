@@ -1,17 +1,17 @@
 package presentacion;
 
-import interfaces.IControlador;
+// import interfaces.IControlador;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class ListarPrestamos extends JInternalFrame {
 
-    private IControlador controlador;
+    // private IControlador controlador;
 
-    public ListarPrestamos(IControlador controlador) {
+    public ListarPrestamos(/*IControlador controlador*/) {
         super("Listar Préstamos", true, true, true, true);
-        this.controlador = controlador;
+        // this.controlador = controlador;
         inicializarComponentes();
     }
 

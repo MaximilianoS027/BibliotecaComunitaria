@@ -1,24 +1,26 @@
 package presentacion;
 
-import interfaces.IControlador;
+// import interfaces.IControlador;
+import interfaces.ILectorControlador;
 import logica.Zona;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 
 public class ModificarZonaLector extends JInternalFrame {
 
-    private IControlador controlador;
+    private ILectorControlador lectorControlador;
     private JComboBox<String> comboLectores;
     private JComboBox<Zona> comboZonas;
     private JButton btnCambiarZona;
     private JLabel lblResultado;
 
-    public ModificarZonaLector(IControlador controlador) {
+    public ModificarZonaLector(ILectorControlador lectorControlador) {
         super("Modificar Zona de Lector", true, true, true, true);
-        this.controlador = controlador;
+        this.lectorControlador = lectorControlador;
         inicializarComponentes();
         cargarDatos();
     }
@@ -53,6 +55,7 @@ public class ModificarZonaLector extends JInternalFrame {
         gbc.gridy = 1;
         comboLectores = new JComboBox<>();
         comboLectores.setPreferredSize(new Dimension(300, 25));
+        comboLectores.setRenderer(new LectorZonaListCellRenderer()); // Establecer el renderizador personalizado
         panelPrincipal.add(comboLectores, gbc);
 
         // Seleccionar Zona
@@ -99,22 +102,15 @@ public class ModificarZonaLector extends JInternalFrame {
             System.out.println("=== DEBUG: Cargando datos ===");
             
             // Cargar lista de lectores solo con nombre y email (sin zona)
-            String[] lectores = controlador.listarLectores();
+            String[] lectores = lectorControlador.listarLectores();
             System.out.println("DEBUG: Total de lectores obtenidos: " + lectores.length);
             
             comboLectores.removeAllItems();
             comboLectores.addItem("-- Seleccionar Lector --");
             
             for (String lector : lectores) {
-                System.out.println("DEBUG: Lector original: '" + lector + "'");
-                // Extraer solo "Nombre (Email)" sin la zona
-                String[] partes = lector.split(" - ");
-                System.out.println("DEBUG: Partes del lector: " + partes.length);
-                if (partes.length >= 2) {
-                    String nombreEmail = partes[0]; // "Nombre (Email)"
-                    System.out.println("DEBUG: Agregando al combo: '" + nombreEmail + "'");
-                    comboLectores.addItem(nombreEmail);
-                }
+                System.out.println("DEBUG: Lector original: \'" + lector + "\' ");
+                comboLectores.addItem(lector); // Añadir la cadena completa al JComboBox
             }
             
             System.out.println("DEBUG: Total de items en combo: " + comboLectores.getItemCount());
@@ -145,20 +141,13 @@ public class ModificarZonaLector extends JInternalFrame {
 
             // Obtener lector seleccionado
             String lectorSeleccionado = (String) comboLectores.getSelectedItem();
-            System.out.println("DEBUG: Lector seleccionado: '" + lectorSeleccionado + "'");
+            System.out.println("DEBUG: Lector seleccionado: \'" + lectorSeleccionado + "\' ");
             
-            // El formato ahora es solo "Nombre (Email)" sin zona
-            String nombreEmail = lectorSeleccionado; // "Nombre (Email)"
-            String nombre = nombreEmail.substring(0, nombreEmail.lastIndexOf("(")).trim();
-            String email = nombreEmail.substring(nombreEmail.lastIndexOf("(") + 1, nombreEmail.lastIndexOf(")")).trim();
+            // El formato es "ID - Nombre (Email) - Estado"
+            // Extraer solo el ID del lector
+            String idLector = lectorSeleccionado.split(" - ")[0];
             
-            System.out.println("DEBUG: Nombre extraído: '" + nombre + "'");
-            System.out.println("DEBUG: Email extraído: '" + email + "'");
-            
-            // Obtener ID del lector usando nombre y email
-            System.out.println("DEBUG: Llamando a obtenerIdLectorPorNombreEmail...");
-            String idLector = controlador.obtenerIdLectorPorNombreEmail(nombre, email);
-            System.out.println("DEBUG: ID del lector obtenido: '" + idLector + "'");
+            System.out.println("DEBUG: ID del lector obtenido: \'" + idLector + "\' ");
             
             // Obtener zona seleccionada
             Zona nuevaZona = (Zona) comboZonas.getSelectedItem();
@@ -173,8 +162,8 @@ public class ModificarZonaLector extends JInternalFrame {
             }
             
             // Cambiar zona - usar el nombre del enum, no la descripción
-            System.out.println("DEBUG: Llamando a cambiarZonaLector con ID: '" + idLector + "' y zona: '" + nuevaZona.name() + "'");
-            controlador.cambiarZonaLector(idLector, nuevaZona.name());
+            System.out.println("DEBUG: Llamando a cambiarZonaLector con ID: \'" + idLector + "\' y zona: \'" + nuevaZona.getDescripcion() + "\' ");
+            lectorControlador.cambiarZonaLector(idLector, nuevaZona.getDescripcion());
             
             // Mostrar éxito
             lblResultado.setText("Zona cambiada exitosamente a: " + nuevaZona.getDescripcion());
@@ -193,6 +182,33 @@ public class ModificarZonaLector extends JInternalFrame {
             JOptionPane.showMessageDialog(this, 
                 "Error al cambiar zona: " + e.getMessage(), 
                 "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    // Clase interna para el renderizado personalizado del JComboBox
+    class LectorZonaListCellRenderer extends DefaultListCellRenderer {
+        @Override
+        public Component getListCellRendererComponent(JList<?> list, Object value,
+                                                      int index, boolean isSelected,
+                                                      boolean cellHasFocus) {
+            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            if (value instanceof String) {
+                String item = (String) value;
+                if (item.equals("-- Seleccionar Lector --")) {
+                    setText(item);
+                } else {
+                    // Formato esperado: "ID - Nombre (Email) - Estado - Zona"
+                    String[] partes = item.split(" - ");
+                    if (partes.length >= 4) {
+                        String nombreEmail = partes[1]; // "Nombre (Email)"
+                        String zona = partes[3];        // "Zona"
+                        setText(nombreEmail + " - " + zona);
+                    } else {
+                        setText(item); // En caso de que el formato no sea el esperado
+                    }
+                }
+            }
+            return this;
         }
     }
 }

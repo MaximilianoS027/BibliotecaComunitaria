@@ -38,10 +38,12 @@ public class RegistrarLector extends JFrame {
     }
     
     // Constructor de compatibilidad para la transición
+    /*
     public RegistrarLector() {
         this.controlador = new LectorControlador();
         inicializarComponentes();
     }
+    */
     
     private void inicializarComponentes() {
         setTitle("Registrar Lector");
