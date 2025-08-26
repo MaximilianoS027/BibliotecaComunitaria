@@ -78,7 +78,7 @@ public class Principal extends JFrame {
         itemNuevoLibro.addActionListener(e -> abrirNuevoLibro());
         menuGestionMateriales.add(itemNuevoLibro);
 
-        JMenuItem itemNuevoArticulo = new JMenuItem("Nuevo articulo");
+        JMenuItem itemNuevoArticulo = new JMenuItem("Nuevo artículo especial");
         itemNuevoArticulo.addActionListener(e -> abrirNuevoArticulo());
         menuGestionMateriales.add(itemNuevoArticulo);
 
@@ -189,7 +189,7 @@ public class Principal extends JFrame {
     }
 
     private void abrirNuevoArticulo() {
-        NuevoArticulo ventana = new NuevoArticulo(controlador);
+        NuevoArticuloEspecial ventana = new NuevoArticuloEspecial(controlador);
         desktopPane.add(ventana);
         ventana.setVisible(true);
         try {

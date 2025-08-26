@@ -132,7 +132,7 @@ public class BibliotecarioControlador implements IBibliotecarioControlador {
         }
         
         // Delegar al manejador para actualizar en BD
-// TODO: Descomentar cuando se implemente actualizarBibliotecario en ManejadorBibliotecario
-// manejadorBibliotecario.actualizarBibliotecario(bibliotecario);
+        // TODO: Descomentar cuando se implemente actualizarBibliotecario en ManejadorBibliotecario
+        // manejadorBibliotecario.actualizarBibliotecario(bibliotecario);
     }
 }

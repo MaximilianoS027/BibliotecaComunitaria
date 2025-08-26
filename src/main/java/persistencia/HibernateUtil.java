@@ -7,6 +7,9 @@ import logica.Usuario;
 import logica.Bibliotecario;
 import logica.EstadoLector;
 import logica.Zona;
+import logica.Material;
+import logica.ArticuloEspecial;
+import logica.Libro;
 
 /**
  * Utilidad para configurar y obtener SessionFactory de Hibernate
@@ -31,15 +34,18 @@ public class HibernateUtil {
                     // Configuración de Hibernate
                     Configuration configuration = new Configuration();
                     
-                    // Configuración de la base de datos
+                    // Configuración de la base de datos (con variables de entorno)
+                    String dbPort = System.getenv("DB_PORT") != null ? System.getenv("DB_PORT") : "5432";
+                    String dbUrl = "jdbc:postgresql://localhost:" + dbPort + "/biblioteca_bd?sslmode=disable";
+                    
                     configuration.setProperty("hibernate.connection.driver_class", "org.postgresql.Driver");
-                    configuration.setProperty("hibernate.connection.url", "jdbc:postgresql://localhost:5434/biblioteca_bd?sslmode=disable");
+                    configuration.setProperty("hibernate.connection.url", dbUrl);
                     configuration.setProperty("hibernate.connection.username", "admin");
                     configuration.setProperty("hibernate.connection.password", "admin");
                     
                     // Configuración de Hibernate
                     configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
-                    configuration.setProperty("hibernate.hbm2ddl.auto", "update");
+                    configuration.setProperty("hibernate.hbm2ddl.auto", "create-drop");
                     configuration.setProperty("hibernate.show_sql", "true");
                     configuration.setProperty("hibernate.format_sql", "true");
                     configuration.setProperty("hibernate.use_sql_comments", "true");
@@ -55,6 +61,9 @@ public class HibernateUtil {
                     configuration.addAnnotatedClass(Bibliotecario.class);
                     configuration.addAnnotatedClass(EstadoLector.class);
                     configuration.addAnnotatedClass(Zona.class);
+                    configuration.addAnnotatedClass(Material.class);
+                    configuration.addAnnotatedClass(ArticuloEspecial.class);
+                    configuration.addAnnotatedClass(Libro.class);
                     
                     // Construir SessionFactory
                     sessionFactory = configuration.buildSessionFactory();

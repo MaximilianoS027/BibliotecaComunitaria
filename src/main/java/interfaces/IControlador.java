@@ -7,6 +7,8 @@ import excepciones.BibliotecarioNoExisteException;
 import excepciones.LectorRepetidoException;
 import excepciones.LectorNoExisteException;
 import excepciones.DatosInvalidosException;
+import excepciones.ArticuloEspecialRepetidoException;
+import excepciones.LibroRepetidoException;
 
 /**
  * Interface principal del controlador del sistema
@@ -51,4 +53,12 @@ public interface IControlador {
     // Operación para cambiar zona de lector
     public void cambiarZonaLector(String idLector, String nuevaZona) 
         throws LectorNoExisteException, DatosInvalidosException;
+    
+    // Operaciones de Material - Artículo Especial
+    public void registrarArticuloEspecial(String descripcion, Double pesoKg, String dimensiones)
+        throws ArticuloEspecialRepetidoException, DatosInvalidosException;
+    
+    // Operaciones de Material - Libro
+    public void registrarLibro(String titulo, Integer cantidadPaginas)
+        throws LibroRepetidoException, DatosInvalidosException;
 }

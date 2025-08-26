@@ -1,7 +1,7 @@
 package presentacion;
 
 import interfaces.IControlador;
-import excepciones.LibroRepetidoException;
+import excepciones.ArticuloEspecialRepetidoException;
 import excepciones.DatosInvalidosException;
 
 import javax.swing.*;
@@ -10,25 +10,26 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * Ventana para registrar una nueva donación de libros
+ * Ventana para registrar un nuevo artículo especial
  * Sigue el formato estándar del proyecto
  */
-public class NuevoLibro extends JInternalFrame {
+public class NuevoArticuloEspecial extends JInternalFrame {
     
     private IControlador controlador;
-    private JTextField txtTitulo;
-    private JTextField txtCantidadPaginas;
+    private JTextField txtDescripcion;
+    private JTextField txtPesoKg;
+    private JTextField txtDimensiones;
     private JButton btnAceptar;
     private JButton btnCancelar;
     
-    public NuevoLibro(IControlador controlador) {
-        super("Nuevo Libro", true, true, true, true);
+    public NuevoArticuloEspecial(IControlador controlador) {
+        super("Nuevo Artículo Especial", true, true, true, true);
         this.controlador = controlador;
         inicializarComponentes();
     }
     
     private void inicializarComponentes() {
-        setSize(400, 300);
+        setSize(450, 350);
         setLayout(new BorderLayout());
         
         // Panel principal
@@ -37,7 +38,7 @@ public class NuevoLibro extends JInternalFrame {
         gbc.insets = new Insets(10, 10, 10, 10);
         
         // Título
-        JLabel lblTitulo = new JLabel("Registrar Nuevo Libro");
+        JLabel lblTitulo = new JLabel("Registrar Nuevo Artículo Especial");
         lblTitulo.setFont(new Font("Arial", Font.BOLD, 16));
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -51,24 +52,33 @@ public class NuevoLibro extends JInternalFrame {
         gbc.anchor = GridBagConstraints.WEST;
         panelPrincipal.add(lblInstrucciones, gbc);
         
-        // Título del libro
+        // Descripción
         gbc.gridwidth = 1;
         gbc.gridy = 2;
         gbc.gridx = 0;
-        panelPrincipal.add(new JLabel("Título del libro:"), gbc);
+        panelPrincipal.add(new JLabel("Descripción:"), gbc);
         
-        txtTitulo = new JTextField(15);
+        txtDescripcion = new JTextField(20);
         gbc.gridx = 1;
-        panelPrincipal.add(txtTitulo, gbc);
+        panelPrincipal.add(txtDescripcion, gbc);
         
-        // Cantidad de páginas
+        // Peso en kg
         gbc.gridy = 3;
         gbc.gridx = 0;
-        panelPrincipal.add(new JLabel("Cantidad de páginas:"), gbc);
+        panelPrincipal.add(new JLabel("Peso (kg):"), gbc);
         
-        txtCantidadPaginas = new JTextField(15);
+        txtPesoKg = new JTextField(20);
         gbc.gridx = 1;
-        panelPrincipal.add(txtCantidadPaginas, gbc);
+        panelPrincipal.add(txtPesoKg, gbc);
+        
+        // Dimensiones
+        gbc.gridy = 4;
+        gbc.gridx = 0;
+        panelPrincipal.add(new JLabel("Dimensiones:"), gbc);
+        
+        txtDimensiones = new JTextField(20);
+        gbc.gridx = 1;
+        panelPrincipal.add(txtDimensiones, gbc);
         
         add(panelPrincipal, BorderLayout.CENTER);
         
@@ -79,7 +89,7 @@ public class NuevoLibro extends JInternalFrame {
         btnAceptar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                registrarLibro();
+                registrarArticuloEspecial();
             }
         });
         
@@ -100,40 +110,41 @@ public class NuevoLibro extends JInternalFrame {
         setLocation(50, 50);
     }
     
-    private void registrarLibro() {
+    private void registrarArticuloEspecial() {
         try {
             // Obtener datos del formulario
-            String titulo = txtTitulo.getText();
-            String cantidadPaginasStr = txtCantidadPaginas.getText();
+            String descripcion = txtDescripcion.getText();
+            String pesoKgStr = txtPesoKg.getText();
+            String dimensiones = txtDimensiones.getText();
             
-            // Validar que la cantidad de páginas sea un número
-            int cantidadPaginas;
+            // Validar que el peso sea un número
+            double pesoKg;
             try {
-                cantidadPaginas = Integer.parseInt(cantidadPaginasStr);
+                pesoKg = Double.parseDouble(pesoKgStr);
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(this, 
-                    "La cantidad de páginas debe ser un número válido", 
+                    "El peso debe ser un número válido", 
                     "Datos Inválidos", 
                     JOptionPane.ERROR_MESSAGE);
                 return;
             }
             
             // Llamar al controlador
-            controlador.registrarLibro(titulo, cantidadPaginas);
+            controlador.registrarArticuloEspecial(descripcion, pesoKg, dimensiones);
             
             // Mostrar mensaje de éxito
             JOptionPane.showMessageDialog(this, 
-                "Libro ingresado exitosamente", 
+                "Artículo especial ingresado exitosamente", 
                 "Éxito", 
                 JOptionPane.INFORMATION_MESSAGE);
             
             // Limpiar formulario
             limpiarFormulario();
             
-        } catch (LibroRepetidoException e) {
+        } catch (ArticuloEspecialRepetidoException e) {
             JOptionPane.showMessageDialog(this, 
                 e.getMessage(), 
-                "Libro Repetido", 
+                "Artículo Especial Repetido", 
                 JOptionPane.ERROR_MESSAGE);
                 
         } catch (DatosInvalidosException e) {
@@ -152,8 +163,9 @@ public class NuevoLibro extends JInternalFrame {
     }
     
     private void limpiarFormulario() {
-        txtTitulo.setText("");
-        txtCantidadPaginas.setText("");
-        txtTitulo.requestFocus();
+        txtDescripcion.setText("");
+        txtPesoKg.setText("");
+        txtDimensiones.setText("");
+        txtDescripcion.requestFocus();
     }
 }

@@ -9,11 +9,16 @@
         
         <!-- Entidades -->
         <class>logica.Bibliotecario</class>
+        <class>logica.Lector</class>
+        <class>logica.Usuario</class>
+        <class>logica.Material</class>
+        <class>logica.ArticuloEspecial</class>
+        <class>logica.Libro</class>
         
         <properties>
             <!-- Configuración de PostgreSQL Database -->
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
-            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5434/biblioteca_bd"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/biblioteca_bd"/>
             <property name="javax.persistence.jdbc.user" value="admin"/>
             <property name="javax.persistence.jdbc.password" value="admin"/>
             
