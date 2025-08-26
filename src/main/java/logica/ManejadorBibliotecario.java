@@ -1,12 +1,12 @@
 package logica;
 
-import persistencia.Conexion;
+import persistencia.HibernateUtil;
 import excepciones.BibliotecarioRepetidoException;
 import excepciones.BibliotecarioNoExisteException;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.persistence.TypedQuery;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 import java.util.List;
 
 /**
@@ -25,37 +25,43 @@ public class ManejadorBibliotecario {
     }
     
     public void agregarBibliotecario(Bibliotecario bibliotecario) throws BibliotecarioRepetidoException {
-        EntityManager em = Conexion.getInstancia().getEntityManager();
-        EntityTransaction tx = null;
+        Session session = null;
+        Transaction transaction = null;
         
         try {
+            session = HibernateUtil.getSessionFactory().openSession();
+            transaction = session.beginTransaction();
+            
             // Verificar si ya existe
-            Bibliotecario existente = em.find(Bibliotecario.class, bibliotecario.getNumeroEmpleado());
+            Bibliotecario existente = session.get(Bibliotecario.class, bibliotecario.getNumeroEmpleado());
             if (existente != null) {
                 throw new BibliotecarioRepetidoException("Ya existe un bibliotecario con el número de empleado: " + bibliotecario.getNumeroEmpleado());
             }
             
-            tx = em.getTransaction();
-            tx.begin();
-            em.persist(bibliotecario);
-            tx.commit();
+            session.save(bibliotecario);
+            transaction.commit();
             
         } catch (Exception e) {
-            if (tx != null && tx.isActive()) {
-                tx.rollback();
+            if (transaction != null) {
+                transaction.rollback();
             }
             if (e instanceof BibliotecarioRepetidoException) {
                 throw e;
             }
             throw new RuntimeException("Error al agregar bibliotecario: " + e.getMessage(), e);
+        } finally {
+            if (session != null) {
+                session.close();
+            }
         }
     }
     
     public Bibliotecario obtenerBibliotecario(String numeroEmpleado) throws BibliotecarioNoExisteException {
-        EntityManager em = Conexion.getInstancia().getEntityManager();
+        Session session = null;
         
         try {
-            Bibliotecario bibliotecario = em.find(Bibliotecario.class, numeroEmpleado);
+            session = HibernateUtil.getSessionFactory().openSession();
+            Bibliotecario bibliotecario = session.get(Bibliotecario.class, numeroEmpleado);
             if (bibliotecario == null) {
                 throw new BibliotecarioNoExisteException("No existe un bibliotecario con el número de empleado: " + numeroEmpleado);
             }
@@ -66,30 +72,44 @@ public class ManejadorBibliotecario {
                 throw e;
             }
             throw new RuntimeException("Error al obtener bibliotecario: " + e.getMessage(), e);
+        } finally {
+            if (session != null) {
+                session.close();
+            }
         }
     }
     
     public List<Bibliotecario> listarBibliotecarios() {
-        EntityManager em = Conexion.getInstancia().getEntityManager();
+        Session session = null;
         
         try {
-            TypedQuery<Bibliotecario> query = em.createQuery("SELECT b FROM Bibliotecario b ORDER BY b.nombre", Bibliotecario.class);
+            session = HibernateUtil.getSessionFactory().openSession();
+            Query<Bibliotecario> query = session.createQuery("SELECT b FROM Bibliotecario b ORDER BY b.nombre", Bibliotecario.class);
             return query.getResultList();
             
         } catch (Exception e) {
             throw new RuntimeException("Error al listar bibliotecarios: " + e.getMessage(), e);
+        } finally {
+            if (session != null) {
+                session.close();
+            }
         }
     }
     
     public boolean existeBibliotecario(String numeroEmpleado) {
-        EntityManager em = Conexion.getInstancia().getEntityManager();
+        Session session = null;
         
         try {
-            Bibliotecario bibliotecario = em.find(Bibliotecario.class, numeroEmpleado);
+            session = HibernateUtil.getSessionFactory().openSession();
+            Bibliotecario bibliotecario = session.get(Bibliotecario.class, numeroEmpleado);
             return bibliotecario != null;
             
         } catch (Exception e) {
             return false;
+        } finally {
+            if (session != null) {
+                session.close();
+            }
         }
     }
 }

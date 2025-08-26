@@ -67,6 +67,8 @@ cd pap_proyect/tarea1
 ```
 
 ### 2. Configurar PostgreSQL
+
+#### Opción A: Con Docker (Recomendado para nuevos desarrolladores)
 ```bash
 # Iniciar PostgreSQL con Docker
 docker-compose up -d
@@ -76,6 +78,19 @@ docker ps
 
 # Conectar a la base de datos (opcional)
 docker exec -it postgres-local psql -U admin -d biblioteca_bd
+```
+
+#### Opción B: Con PostgreSQL nativo (Para desarrolladores con PostgreSQL instalado)
+```bash
+# Crear la base de datos
+psql -U postgres -h localhost -p 5432
+CREATE DATABASE biblioteca_bd;
+CREATE USER admin WITH PASSWORD 'admin';
+GRANT ALL PRIVILEGES ON DATABASE biblioteca_bd TO admin;
+\q
+
+# Configurar variable de entorno para usar puerto 5432
+export DB_PORT=5432
 ```
 
 ### 3. Inicializar la base de datos
