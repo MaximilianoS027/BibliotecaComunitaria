@@ -39,19 +39,14 @@ public class Lector extends Usuario {
         this.zona = zona;
     }
     
-    // Constructor con parámetros (sin ID para compatibilidad)
+    // Constructor con parámetros (sin ID para que ManejadorLector lo genere secuencialmente)
     public Lector(String nombre, String email, String direccion, 
                   Date fechaRegistro, EstadoLector estado, Zona zona) {
-        super(generarIdLector(), nombre, email);
+        super(null, nombre, email);  // Pasar null para que ManejadorLector genere ID secuencial (L1, L2, L3...)
         this.direccion = direccion;
         this.fechaRegistro = fechaRegistro;
         this.estado = estado;
         this.zona = zona;
-    }
-    
-    // Método para generar ID automático
-    private static String generarIdLector() {
-        return "L" + System.currentTimeMillis();
     }
     
     // Getters y Setters

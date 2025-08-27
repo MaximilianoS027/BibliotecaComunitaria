@@ -24,31 +24,30 @@ public class BibliotecarioControlador implements IBibliotecarioControlador {
     public void registrarBibliotecario(String numeroEmpleado, String nombre, String email) 
             throws BibliotecarioRepetidoException, DatosInvalidosException {
         
-        // Validaciones de datos
-        if (numeroEmpleado == null || numeroEmpleado.trim().isEmpty()) {
-            throw new DatosInvalidosException("El número de empleado es obligatorio");
-        }
-        
+        // Validaciones de datos (numeroEmpleado ahora es opcional - se autogenera)
         if (nombre == null || nombre.trim().isEmpty() || nombre.length() < 2) {
             throw new DatosInvalidosException("El nombre debe tener al menos 2 caracteres");
         }
         
-        if (email == null || !email.contains("@") || email.length() < 5) {
-            throw new DatosInvalidosException("El email debe ser válido y contener @");
+        // Validación de email mejorada
+        if (email == null || email.trim().isEmpty()) {
+            throw new DatosInvalidosException("El email es obligatorio");
         }
         
-        // Crear entidad
+        String emailLimpio = email.trim().toLowerCase();
+        String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+        if (!emailLimpio.matches(emailRegex) || emailLimpio.length() < 5 || emailLimpio.length() > 100) {
+            throw new DatosInvalidosException("El email debe ser válido y tener entre 5 y 100 caracteres");
+        }
+        
+        // Crear entidad (ID y numeroEmpleado se autogeneran en ManejadorBibliotecario)
         Bibliotecario bibliotecario = new Bibliotecario(
-            numeroEmpleado.trim(), 
+            null, // numeroEmpleado se autogenera
             nombre.trim(), 
-            email.trim()
+            emailLimpio
         );
         
         // Validaciones adicionales usando métodos de la entidad
-        if (!bibliotecario.tieneNumeroEmpleadoValido()) {
-            throw new DatosInvalidosException("Número de empleado inválido");
-        }
-        
         if (!bibliotecario.tieneNombreValido()) {
             throw new DatosInvalidosException("Nombre inválido");
         }
@@ -86,7 +85,8 @@ public class BibliotecarioControlador implements IBibliotecarioControlador {
         String[] resultado = new String[bibliotecarios.size()];
         for (int i = 0; i < bibliotecarios.size(); i++) {
             Bibliotecario b = bibliotecarios.get(i);
-            resultado[i] = b.getNumeroEmpleado() + " - " + b.getNombre() + " (" + b.getEmail() + ")";
+            // Usar ID real (B1, B2...) en lugar del número de empleado para compatibilidad con sistema de préstamos
+            resultado[i] = b.getId() + " - " + b.getNombre() + " (" + b.getEmail() + ")";
         }
         
         return resultado;
@@ -114,13 +114,20 @@ public class BibliotecarioControlador implements IBibliotecarioControlador {
             throw new DatosInvalidosException("El nombre debe tener al menos 2 caracteres");
         }
         
-        if (email == null || !email.contains("@") || email.length() < 5) {
-            throw new DatosInvalidosException("El email debe ser válido y contener @");
+        // Validación de email mejorada
+        if (email == null || email.trim().isEmpty()) {
+            throw new DatosInvalidosException("El email es obligatorio");
+        }
+        
+        String emailLimpio = email.trim().toLowerCase();
+        String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+        if (!emailLimpio.matches(emailRegex) || emailLimpio.length() < 5 || emailLimpio.length() > 100) {
+            throw new DatosInvalidosException("El email debe ser válido y tener entre 5 y 100 caracteres");
         }
         
         // Actualizar datos
         bibliotecario.setNombre(nombre.trim());
-        bibliotecario.setEmail(email.trim());
+        bibliotecario.setEmail(emailLimpio);
         
         // Validaciones adicionales
         if (!bibliotecario.tieneNombreValido()) {

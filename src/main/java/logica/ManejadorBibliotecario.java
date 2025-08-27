@@ -8,20 +8,145 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Manejador Singleton para operaciones CRUD de Bibliotecario
  */
 public class ManejadorBibliotecario {
     private static ManejadorBibliotecario instancia = null;
+    private static AtomicInteger contadorId = new AtomicInteger(1);
+    private static AtomicInteger contadorEmpleado = new AtomicInteger(1000);
     
-    private ManejadorBibliotecario() {}
+    private ManejadorBibliotecario() {
+        // Inicializar contadores con los últimos números usados
+        inicializarContadores();
+    }
     
     public static ManejadorBibliotecario getInstancia() {
         if (instancia == null) {
             instancia = new ManejadorBibliotecario();
         }
         return instancia;
+    }
+    
+    /**
+     * Genera un ID único secuencial para bibliotecario (B1, B2, B3...)
+     */
+    private synchronized String generarIdBibliotecario() {
+        // Verificar cuál es el último ID en la BD para evitar duplicados
+        int ultimoNumero = obtenerUltimoNumeroBibliotecario();
+        if (ultimoNumero >= contadorId.get()) {
+            contadorId.set(ultimoNumero + 1);
+        }
+        return "B" + contadorId.getAndIncrement();
+    }
+    
+    /**
+     * Genera un número de empleado único secuencial (1000, 1001, 1002...)
+     */
+    private synchronized String generarNumeroEmpleado() {
+        // Verificar cuál es el último número en la BD para evitar duplicados
+        int ultimoNumero = obtenerUltimoNumeroEmpleado();
+        if (ultimoNumero >= contadorEmpleado.get()) {
+            contadorEmpleado.set(ultimoNumero + 1);
+        }
+        return String.valueOf(contadorEmpleado.getAndIncrement());
+    }
+    
+    /**
+     * Obtiene el último número de bibliotecario de la base de datos
+     */
+    private int obtenerUltimoNumeroBibliotecario() {
+        Session session = null;
+        try {
+            session = HibernateUtil.getSessionFactory().openSession();
+            
+            // Consultar todos los IDs que empiecen con 'B' y extraer el número más alto
+            Query<String> query = session.createQuery(
+                "SELECT u.id FROM Usuario u WHERE u.id LIKE 'B%'", String.class);
+            List<String> ids = query.list();
+            
+            int maxNumero = 0;
+            for (String id : ids) {
+                if (id != null && id.length() > 1) {
+                    try {
+                        String numeroStr = id.substring(1); // Quitar 'B'
+                        int numero = Integer.parseInt(numeroStr);
+                        if (numero > maxNumero) {
+                            maxNumero = numero;
+                        }
+                    } catch (NumberFormatException e) {
+                        // Ignorar IDs con formato inválido
+                    }
+                }
+            }
+            
+            return maxNumero;
+            
+        } catch (Exception e) {
+            // En caso de error, retornar 0 para usar contador por defecto
+            System.err.println("Error al obtener último número de bibliotecario: " + e.getMessage());
+            return 0;
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+    
+    /**
+     * Obtiene el último número de empleado de la base de datos
+     */
+    private int obtenerUltimoNumeroEmpleado() {
+        Session session = null;
+        try {
+            session = HibernateUtil.getSessionFactory().openSession();
+            
+            // Consultar todos los números de empleado y obtener el más alto
+            Query<String> query = session.createQuery(
+                "SELECT b.numeroEmpleado FROM Bibliotecario b", String.class);
+            List<String> numeros = query.list();
+            
+            int maxNumero = 999; // Empezar en 999 para que el primer número sea 1000
+            for (String numero : numeros) {
+                if (numero != null) {
+                    try {
+                        int num = Integer.parseInt(numero);
+                        if (num > maxNumero) {
+                            maxNumero = num;
+                        }
+                    } catch (NumberFormatException e) {
+                        // Ignorar números con formato inválido
+                    }
+                }
+            }
+            
+            return maxNumero;
+            
+        } catch (Exception e) {
+            // En caso de error, retornar 999 para usar contador por defecto (1000)
+            System.err.println("Error al obtener último número de empleado: " + e.getMessage());
+            return 999;
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+    
+    /**
+     * Inicializa los contadores con base en los bibliotecarios existentes
+     */
+    private void inicializarContadores() {
+        int ultimoId = obtenerUltimoNumeroBibliotecario();
+        int ultimoEmpleado = obtenerUltimoNumeroEmpleado();
+        
+        contadorId.set(ultimoId + 1);
+        contadorEmpleado.set(ultimoEmpleado + 1);
+        
+        System.out.println("Contador de bibliotecarios inicializado en: B" + contadorId.get());
+        System.out.println("Contador de empleados inicializado en: " + contadorEmpleado.get());
     }
     
     public void agregarBibliotecario(Bibliotecario bibliotecario) throws BibliotecarioRepetidoException {
@@ -32,7 +157,17 @@ public class ManejadorBibliotecario {
             session = HibernateUtil.getSessionFactory().openSession();
             transaction = session.beginTransaction();
             
-            // Verificar si ya existe
+            // Generar ID automáticamente si no tiene
+            if (bibliotecario.getId() == null || bibliotecario.getId().trim().isEmpty()) {
+                bibliotecario.setId(generarIdBibliotecario());
+            }
+            
+            // Generar número de empleado automáticamente si no tiene
+            if (bibliotecario.getNumeroEmpleado() == null || bibliotecario.getNumeroEmpleado().trim().isEmpty()) {
+                bibliotecario.setNumeroEmpleado(generarNumeroEmpleado());
+            }
+            
+            // Verificar si ya existe por número de empleado
             Bibliotecario existente = session.get(Bibliotecario.class, bibliotecario.getNumeroEmpleado());
             if (existente != null) {
                 throw new BibliotecarioRepetidoException("Ya existe un bibliotecario con el número de empleado: " + bibliotecario.getNumeroEmpleado());
@@ -72,6 +207,38 @@ public class ManejadorBibliotecario {
                 throw e;
             }
             throw new RuntimeException("Error al obtener bibliotecario: " + e.getMessage(), e);
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+    
+    /**
+     * Obtiene un bibliotecario por su ID (B1, B2, B3...)
+     */
+    public Bibliotecario obtenerBibliotecarioPorId(String id) throws BibliotecarioNoExisteException {
+        Session session = null;
+        
+        try {
+            session = HibernateUtil.getSessionFactory().openSession();
+            
+            // Buscar por ID en lugar de número de empleado
+            Query<Bibliotecario> query = session.createQuery(
+                "SELECT b FROM Bibliotecario b WHERE b.id = :id", Bibliotecario.class);
+            query.setParameter("id", id);
+            
+            Bibliotecario bibliotecario = query.uniqueResult();
+            if (bibliotecario == null) {
+                throw new BibliotecarioNoExisteException("No existe un bibliotecario con ID: " + id);
+            }
+            return bibliotecario;
+            
+        } catch (Exception e) {
+            if (e instanceof BibliotecarioNoExisteException) {
+                throw e;
+            }
+            throw new RuntimeException("Error al obtener bibliotecario por ID: " + e.getMessage(), e);
         } finally {
             if (session != null) {
                 session.close();
