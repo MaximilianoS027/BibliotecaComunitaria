@@ -3,6 +3,7 @@ package logica;
 import persistencia.HibernateUtil;
 import persistencia.PrestamoDAO;
 import excepciones.PrestamoNoExisteException;
+import datatypes.DtPrestamo;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -138,6 +139,69 @@ public class ManejadorPrestamo {
         }
         
         return prestamo;
+    }
+    
+    /**
+     * Obtiene un préstamo como DtPrestamo con todas las relaciones cargadas
+     * Este método evita problemas de lazy loading al cargar todo dentro de una sesión activa
+     */
+    public DtPrestamo obtenerPrestamoDto(String id) throws PrestamoNoExisteException {
+        if (id == null || id.trim().isEmpty()) {
+            throw new PrestamoNoExisteException("ID de préstamo inválido");
+        }
+        
+        Session session = null;
+        try {
+            session = HibernateUtil.getSessionFactory().openSession();
+            
+            // Query que carga eagerly todas las relaciones necesarias
+            Query<Prestamo> query = session.createQuery(
+                "SELECT p FROM Prestamo p " +
+                "JOIN FETCH p.lector " +
+                "JOIN FETCH p.bibliotecario " +
+                "JOIN FETCH p.material " +
+                "WHERE p.id = :id", Prestamo.class);
+            query.setParameter("id", id.trim());
+            
+            Prestamo prestamo = query.uniqueResult();
+            if (prestamo == null) {
+                throw new PrestamoNoExisteException("No existe un préstamo con ID: " + id);
+            }
+            
+            // Convertir a DTO dentro de la sesión activa
+            String materialTipo = prestamo.getMaterial() instanceof Libro ? "Libro" : "Artículo Especial";
+            String materialDescripcion;
+            
+            if (prestamo.getMaterial() instanceof Libro) {
+                materialDescripcion = ((Libro) prestamo.getMaterial()).getTitulo();
+            } else {
+                materialDescripcion = ((ArticuloEspecial) prestamo.getMaterial()).getDescripcion();
+            }
+            
+            return new DtPrestamo(
+                prestamo.getId(),
+                prestamo.getFechaSolicitud(),
+                prestamo.getFechaDevolucion(),
+                prestamo.getEstado().name(),
+                prestamo.getLector().getId(),
+                prestamo.getLector().getNombre(),
+                prestamo.getBibliotecario().getId(),
+                prestamo.getBibliotecario().getNombre(),
+                prestamo.getMaterial().getId(),
+                materialTipo,
+                materialDescripcion
+            );
+            
+        } catch (Exception e) {
+            if (e instanceof PrestamoNoExisteException) {
+                throw e;
+            }
+            throw new RuntimeException("Error al obtener préstamo: " + e.getMessage(), e);
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
     }
     
     /**
