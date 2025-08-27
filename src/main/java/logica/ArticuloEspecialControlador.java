@@ -126,7 +126,7 @@ public class ArticuloEspecialControlador implements IArticuloEspecialControlador
         String[] resultado = new String[articulos.size()];
         for (int i = 0; i < articulos.size(); i++) {
             ArticuloEspecial a = articulos.get(i);
-            resultado[i] = a.getDescripcion() + " - " + a.getPesoKg() + " kg - " + a.getDimensiones();
+            resultado[i] = a.getId() + " - " + a.getDescripcion() + " (" + a.getPesoKg() + " kg, " + a.getDimensiones() + ")";
         }
         
         return resultado;
