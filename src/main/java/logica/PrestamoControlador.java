@@ -68,7 +68,7 @@ public class PrestamoControlador implements IPrestamoControlador {
         }
         
         try {
-            bibliotecario = manejadorBibliotecario.obtenerBibliotecario(bibliotecarioId.trim());
+            bibliotecario = manejadorBibliotecario.obtenerBibliotecarioPorId(bibliotecarioId.trim());
         } catch (Exception e) {
             throw new DatosInvalidosException("No existe un bibliotecario con ID: " + bibliotecarioId);
         }

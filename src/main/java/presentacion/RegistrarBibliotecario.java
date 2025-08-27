@@ -17,7 +17,6 @@ import java.awt.event.ActionListener;
 public class RegistrarBibliotecario extends JInternalFrame {
     
     private IBibliotecarioControlador controlador;
-    private JTextField txtNumeroEmpleado;
     private JTextField txtNombre;
     private JTextField txtEmail;
     private JButton btnAceptar;
@@ -37,7 +36,7 @@ public class RegistrarBibliotecario extends JInternalFrame {
     }
     
     private void inicializarComponentes() {
-        setSize(400, 300);
+        setSize(450, 220);
         setLayout(new BorderLayout());
         
         // Panel principal
@@ -46,7 +45,7 @@ public class RegistrarBibliotecario extends JInternalFrame {
         gbc.insets = new Insets(10, 10, 10, 10);
         
         // Título
-        JLabel lblTitulo = new JLabel("Registrar Cliente");
+        JLabel lblTitulo = new JLabel("Registrar Bibliotecario");
         lblTitulo.setFont(new Font("Arial", Font.BOLD, 16));
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -55,23 +54,14 @@ public class RegistrarBibliotecario extends JInternalFrame {
         panelPrincipal.add(lblTitulo, gbc);
         
         // Instrucciones
-        JLabel lblInstrucciones = new JLabel("Ingrese los siguientes datos:");
+        JLabel lblInstrucciones = new JLabel("Ingrese los siguientes datos (número de empleado se genera automáticamente):");
         gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.WEST;
         panelPrincipal.add(lblInstrucciones, gbc);
         
-        // Número de empleado
+        // Nombre
         gbc.gridwidth = 1;
         gbc.gridy = 2;
-        gbc.gridx = 0;
-        panelPrincipal.add(new JLabel("Número de empleado:"), gbc);
-        
-        txtNumeroEmpleado = new JTextField(15);
-        gbc.gridx = 1;
-        panelPrincipal.add(txtNumeroEmpleado, gbc);
-        
-        // Nombre
-        gbc.gridy = 3;
         gbc.gridx = 0;
         panelPrincipal.add(new JLabel("Nombre:"), gbc);
         
@@ -80,7 +70,7 @@ public class RegistrarBibliotecario extends JInternalFrame {
         panelPrincipal.add(txtNombre, gbc);
         
         // Email
-        gbc.gridy = 4;
+        gbc.gridy = 3;
         gbc.gridx = 0;
         panelPrincipal.add(new JLabel("Correo electrónico:"), gbc);
         
@@ -121,12 +111,11 @@ public class RegistrarBibliotecario extends JInternalFrame {
     private void registrarBibliotecario() {
         try {
             // Obtener datos del formulario
-            String numeroEmpleado = txtNumeroEmpleado.getText();
             String nombre = txtNombre.getText();
             String email = txtEmail.getText();
             
-            // Llamar al controlador
-            controlador.registrarBibliotecario(numeroEmpleado, nombre, email);
+            // Llamar al controlador (numeroEmpleado se autogenera, por eso pasamos null)
+            controlador.registrarBibliotecario(null, nombre, email);
             
             // Mostrar mensaje de éxito
             JOptionPane.showMessageDialog(this, 
@@ -159,9 +148,8 @@ public class RegistrarBibliotecario extends JInternalFrame {
     }
     
     private void limpiarFormulario() {
-        txtNumeroEmpleado.setText("");
         txtNombre.setText("");
         txtEmail.setText("");
-        txtNumeroEmpleado.requestFocus();
+        txtNombre.requestFocus();
     }
 }

@@ -6,6 +6,8 @@ import excepciones.PrestamoNoExisteException;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.hibernate.Session;
+import org.hibernate.query.Query;
 
 /**
  * Manejador para operaciones relacionadas con préstamos
@@ -23,6 +25,9 @@ public class ManejadorPrestamo {
         
         // Cargar préstamos existentes de la base de datos
         cargarPrestamosDesdeBaseDatos();
+        
+        // Inicializar contador con el último número usado
+        inicializarContador();
     }
     
     /**
@@ -38,6 +43,56 @@ public class ManejadorPrestamo {
         } catch (Exception e) {
             System.err.println("Error al cargar préstamos desde BD: " + e.getMessage());
         }
+    }
+    
+    /**
+     * Obtiene el último número de préstamo de la base de datos
+     */
+    private int obtenerUltimoNumeroPrestamo() {
+        Session session = null;
+        try {
+            session = HibernateUtil.getSessionFactory().openSession();
+            
+            // Consultar todos los IDs que empiecen con 'P' y extraer el número más alto
+            Query<String> query = session.createQuery(
+                "SELECT p.id FROM Prestamo p WHERE p.id LIKE 'P%'", String.class);
+            List<String> ids = query.list();
+            
+            int maxNumero = 0;
+            for (String id : ids) {
+                if (id != null && id.length() > 1) {
+                    try {
+                        String numeroStr = id.substring(1); // Quitar 'P'
+                        int numero = Integer.parseInt(numeroStr);
+                        if (numero > maxNumero) {
+                            maxNumero = numero;
+                        }
+                    } catch (NumberFormatException e) {
+                        // Ignorar IDs con formato inválido
+                    }
+                }
+            }
+            
+            return maxNumero;
+            
+        } catch (Exception e) {
+            // En caso de error, retornar 0 para usar contador por defecto
+            System.err.println("Error al obtener último número de préstamo: " + e.getMessage());
+            return 0;
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+    
+    /**
+     * Inicializa el contador con base en los préstamos existentes
+     */
+    private void inicializarContador() {
+        int ultimoNumero = obtenerUltimoNumeroPrestamo();
+        contadorId.set(ultimoNumero + 1);
+        System.out.println("Contador de préstamos inicializado en: " + contadorId.get());
     }
     
     /**

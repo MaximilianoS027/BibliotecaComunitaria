@@ -6,6 +6,8 @@ import excepciones.LectorNoExisteException;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.hibernate.Session;
+import org.hibernate.query.Query;
 
 /**
  * Manejador para operaciones relacionadas con lectores
@@ -23,6 +25,9 @@ public class ManejadorLector {
         
         // Cargar lectores existentes de la base de datos
         cargarLectoresDesdeBaseDatos();
+        
+        // Inicializar contador con el último número usado
+        inicializarContador();
     }
     
     /**
@@ -41,6 +46,68 @@ public class ManejadorLector {
     }
     
     /**
+     * Obtiene el último número de lector de la base de datos
+     */
+    private int obtenerUltimoNumeroLector() {
+        Session session = null;
+        try {
+            session = HibernateUtil.getSessionFactory().openSession();
+            
+            // Consultar todos los IDs que empiecen con 'L' y extraer el número más alto
+            Query<String> query = session.createQuery(
+                "SELECT u.id FROM Usuario u WHERE u.id LIKE 'L%'", String.class);
+            List<String> ids = query.list();
+            
+            int maxNumero = 0;
+            for (String id : ids) {
+                if (id != null && id.length() > 1) {
+                    try {
+                        String numeroStr = id.substring(1); // Quitar 'L'
+                        int numero = Integer.parseInt(numeroStr);
+                        if (numero > maxNumero) {
+                            maxNumero = numero;
+                        }
+                    } catch (NumberFormatException e) {
+                        // Ignorar IDs con formato inválido
+                    }
+                }
+            }
+            
+            return maxNumero;
+            
+        } catch (Exception e) {
+            // En caso de error, retornar 0 para usar contador por defecto
+            System.err.println("Error al obtener último número de lector: " + e.getMessage());
+            return 0;
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+    
+    /**
+     * Inicializa el contador con base en los lectores existentes
+     */
+    private void inicializarContador() {
+        int ultimoNumero = obtenerUltimoNumeroLector();
+        contadorId.set(ultimoNumero + 1);
+        System.out.println("Contador de lectores inicializado en: L" + contadorId.get());
+    }
+    
+    /**
+     * Genera un ID único secuencial para lector (L1, L2, L3...)
+     */
+    private synchronized String generarIdLector() {
+        // Verificar cuál es el último ID en la BD para evitar duplicados
+        int ultimoNumero = obtenerUltimoNumeroLector();
+        if (ultimoNumero >= contadorId.get()) {
+            contadorId.set(ultimoNumero + 1);
+        }
+        return "L" + contadorId.getAndIncrement();
+    }
+    
+    /**
      * Agrega un nuevo lector al sistema
      * Ahora persiste en la base de datos
      */
@@ -50,9 +117,8 @@ public class ManejadorLector {
         }
         
         if (lector.getId() == null || lector.getId().trim().isEmpty()) {
-            // Generar ID automático si no tiene uno
-            String nuevoId = "L" + contadorId.getAndIncrement();
-            lector.setId(nuevoId);
+            // Generar ID automático secuencial si no tiene uno
+            lector.setId(generarIdLector());
         }
         
         // Guardar en memoria
