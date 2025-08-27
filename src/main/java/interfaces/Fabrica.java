@@ -4,6 +4,8 @@ import logica.ArticuloEspecialControlador;
 import logica.BibliotecarioControlador;
 import logica.LectorControlador;
 import logica.LibroControlador;
+import logica.PrestamoControlador;
+import logica.Controlador;
 
 /**
  * Fábrica Singleton para crear instancias de controladores específicos
@@ -14,6 +16,8 @@ public class Fabrica {
     private static IBibliotecarioControlador bibliotecarioControlador = null;
     private static ILibroControlador libroControlador = null;
     private static IArticuloEspecialControlador articuloEspecialControlador = null;
+    private static IPrestamoControlador prestamoControlador = null;
+    private static IControlador controlador = null;
 
     private Fabrica() {}
 
@@ -50,5 +54,19 @@ public class Fabrica {
             articuloEspecialControlador = new ArticuloEspecialControlador();
         }
         return articuloEspecialControlador;
+    }
+    
+    public IPrestamoControlador getIPrestamoControlador() {
+        if (prestamoControlador == null) {
+            prestamoControlador = new PrestamoControlador();
+        }
+        return prestamoControlador;
+    }
+    
+    public IControlador getIControlador() {
+        if (controlador == null) {
+            controlador = Controlador.getInstancia();
+        }
+        return controlador;
     }
 }

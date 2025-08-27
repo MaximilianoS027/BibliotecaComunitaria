@@ -1,7 +1,7 @@
 package presentacion;
 
 import interfaces.Fabrica;
-// import interfaces.IControlador;
+import interfaces.IControlador;
 import interfaces.IBibliotecarioControlador;
 import interfaces.ILectorControlador;
 import interfaces.ILibroControlador;
@@ -19,7 +19,7 @@ import java.awt.event.ActionListener;
  */
 public class Principal extends JFrame {
     
-    // private IControlador controlador; // Para compatibilidad con otras funciones
+    private IControlador controlador; // Controlador principal
     private IBibliotecarioControlador bibliotecarioControlador;
     private ILectorControlador lectorControlador;
     private ILibroControlador libroControlador;
@@ -28,9 +28,9 @@ public class Principal extends JFrame {
     private JDesktopPane desktopPane;
     
     public Principal() {
-        // this.controlador = Fabrica.getInstancia().getIControlador();
-        // Obtener controladores específicos de la Fábrica
+        // Obtener controladores de la Fábrica
         Fabrica fabrica = Fabrica.getInstancia();
+        this.controlador = fabrica.getIControlador();
         this.bibliotecarioControlador = fabrica.getIBibliotecarioControlador();
         this.lectorControlador = fabrica.getILectorControlador();
         this.libroControlador = fabrica.getILibroControlador();
@@ -229,7 +229,7 @@ public class Principal extends JFrame {
     }
 
     private void abrirNuevoPrestamo() {
-        NuevoPrestamo ventana = new NuevoPrestamo(); // No necesita controlador
+        NuevoPrestamo ventana = new NuevoPrestamo(controlador);
         desktopPane.add(ventana);
         ventana.setVisible(true);
         try {

@@ -112,7 +112,7 @@ public class LibroControlador implements ILibroControlador {
         String[] resultado = new String[libros.size()];
         for (int i = 0; i < libros.size(); i++) {
             Libro l = libros.get(i);
-            resultado[i] = l.getTitulo() + " - " + l.getCantidadPaginas() + " páginas";
+            resultado[i] = l.getId() + " - " + l.getTitulo() + " (" + l.getCantidadPaginas() + " páginas)";
         }
         
         return resultado;

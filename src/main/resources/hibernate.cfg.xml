@@ -30,6 +30,8 @@
     <mapping class="logica.Material"/>
     <mapping class="logica.ArticuloEspecial"/>
     <mapping class="logica.Libro"/>
+    <mapping class="logica.Prestamo"/>
+    <mapping class="logica.EstadoPrestamo"/>
 
   </session-factory>
 </hibernate-configuration>
