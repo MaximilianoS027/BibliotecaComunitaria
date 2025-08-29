@@ -104,13 +104,9 @@ public class Principal extends JFrame {
         itemNuevoPrestamo.addActionListener(e -> abrirNuevoPrestamo());
         menuGestionPrestamo.add(itemNuevoPrestamo);
 
-        JMenuItem itemEstadoPrestamo = new JMenuItem("Estado de un prestamo");
-        itemEstadoPrestamo.addActionListener(e -> abrirEstadoPrestamo());
-        menuGestionPrestamo.add(itemEstadoPrestamo);
-
-        JMenuItem itemModificarInfoPrestamo = new JMenuItem("Modificar información de prestamo");
-        itemModificarInfoPrestamo.addActionListener(e -> abrirModificarInfoPrestamo());
-        menuGestionPrestamo.add(itemModificarInfoPrestamo);
+        JMenuItem itemModificarPrestamo = new JMenuItem("Modificar Prestamo");
+        itemModificarPrestamo.addActionListener(e -> abrirModificarPrestamo());
+        menuGestionPrestamo.add(itemModificarPrestamo);
 
         JMenuItem itemListarPrestamos = new JMenuItem("Listar prestamos");
         itemListarPrestamos.addActionListener(e -> abrirListarPrestamos());
@@ -239,19 +235,8 @@ public class Principal extends JFrame {
         }
     }
 
-    private void abrirEstadoPrestamo() {
-        EstadoPrestamo ventana = new EstadoPrestamo(); // No necesita controlador
-        desktopPane.add(ventana);
-        ventana.setVisible(true);
-        try {
-            ventana.setSelected(true);
-        } catch (java.beans.PropertyVetoException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void abrirModificarInfoPrestamo() {
-        ModificarInfoPrestamo ventana = new ModificarInfoPrestamo(); // No necesita controlador
+    private void abrirModificarPrestamo() {
+        ModificarPrestamo ventana = new ModificarPrestamo(controlador);
         desktopPane.add(ventana);
         ventana.setVisible(true);
         try {
@@ -262,7 +247,7 @@ public class Principal extends JFrame {
     }
 
     private void abrirListarPrestamos() {
-        ListarPrestamos ventana = new ListarPrestamos(); // No necesita controlador
+        ListarPrestamos ventana = new ListarPrestamos(controlador); // Ahora necesita controlador
         desktopPane.add(ventana);
         ventana.setVisible(true);
         try {
@@ -304,6 +289,8 @@ public class Principal extends JFrame {
             e.printStackTrace();
         }
     }
+
+
     
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {

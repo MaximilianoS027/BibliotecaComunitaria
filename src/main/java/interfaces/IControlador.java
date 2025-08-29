@@ -163,4 +163,12 @@ public interface IControlador {
      */
     void devolverPrestamo(String idPrestamo, String fechaDevolucion) 
         throws PrestamoNoExisteException, DatosInvalidosException;
+    
+    /**
+     * Modifica la información completa de un préstamo
+     */
+    void modificarPrestamo(String idPrestamo, String lectorId, String bibliotecarioId, 
+                          String materialId, String fechaSolicitud, String estado, 
+                          String fechaDevolucion) 
+        throws PrestamoNoExisteException, DatosInvalidosException;
 }

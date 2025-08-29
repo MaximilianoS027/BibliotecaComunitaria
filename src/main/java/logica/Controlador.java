@@ -227,6 +227,15 @@ public class Controlador implements IControlador {
         prestamoControlador.devolverPrestamo(idPrestamo, fechaDevolucion);
     }
     
+    @Override
+    public void modificarPrestamo(String idPrestamo, String lectorId, String bibliotecarioId, 
+                                 String materialId, String fechaSolicitud, String estado, 
+                                 String fechaDevolucion) 
+            throws PrestamoNoExisteException, DatosInvalidosException {
+        prestamoControlador.modificarPrestamo(idPrestamo, lectorId, bibliotecarioId, 
+                                             materialId, fechaSolicitud, estado, fechaDevolucion);
+    }
+    
     // ============= GETTERS PARA CONTROLADORES ESPECÍFICOS =============
     
     public IBibliotecarioControlador getBibliotecarioControlador() {

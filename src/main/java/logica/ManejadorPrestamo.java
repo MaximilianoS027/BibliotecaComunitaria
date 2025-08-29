@@ -3,6 +3,7 @@ package logica;
 import persistencia.HibernateUtil;
 import persistencia.PrestamoDAO;
 import excepciones.PrestamoNoExisteException;
+import datatypes.DtPrestamo;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -11,11 +12,11 @@ import org.hibernate.query.Query;
 
 /**
  * Manejador para operaciones relacionadas con préstamos
- * Con persistencia real en PostgreSQL
+ * Con persistencia directa en PostgreSQL (sin cache en memoria)
+ * Refactorizado para consistencia arquitectónica
  */
 public class ManejadorPrestamo {
     
-    private Map<String, Prestamo> prestamos = new HashMap<>();
     private AtomicInteger contadorId = new AtomicInteger(1);
     private PrestamoDAO prestamoDAO;
     
@@ -23,81 +24,29 @@ public class ManejadorPrestamo {
         // Inicializar DAO con SessionFactory de Hibernate
         this.prestamoDAO = new PrestamoDAO(HibernateUtil.getSessionFactory());
         
-        // Cargar préstamos existentes de la base de datos
-        cargarPrestamosDesdeBaseDatos();
-        
         // Inicializar contador con el último número usado
         inicializarContador();
     }
     
-    /**
-     * Carga préstamos existentes desde la base de datos al inicializar
-     */
-    private void cargarPrestamosDesdeBaseDatos() {
-        try {
-            List<Prestamo> prestamosDB = prestamoDAO.listarTodos();
-            for (Prestamo prestamo : prestamosDB) {
-                prestamos.put(prestamo.getId(), prestamo);
-            }
-            System.out.println("Cargados " + prestamosDB.size() + " préstamos desde la base de datos");
-        } catch (Exception e) {
-            System.err.println("Error al cargar préstamos desde BD: " + e.getMessage());
-        }
-    }
+
     
     /**
      * Obtiene el último número de préstamo de la base de datos
-     */
-    private int obtenerUltimoNumeroPrestamo() {
-        Session session = null;
-        try {
-            session = HibernateUtil.getSessionFactory().openSession();
-            
-            // Consultar todos los IDs que empiecen con 'P' y extraer el número más alto
-            Query<String> query = session.createQuery(
-                "SELECT p.id FROM Prestamo p WHERE p.id LIKE 'P%'", String.class);
-            List<String> ids = query.list();
-            
-            int maxNumero = 0;
-            for (String id : ids) {
-                if (id != null && id.length() > 1) {
-                    try {
-                        String numeroStr = id.substring(1); // Quitar 'P'
-                        int numero = Integer.parseInt(numeroStr);
-                        if (numero > maxNumero) {
-                            maxNumero = numero;
-                        }
-                    } catch (NumberFormatException e) {
-                        // Ignorar IDs con formato inválido
-                    }
-                }
-            }
-            
-            return maxNumero;
-            
-        } catch (Exception e) {
-            // En caso de error, retornar 0 para usar contador por defecto
-            System.err.println("Error al obtener último número de préstamo: " + e.getMessage());
-            return 0;
-        } finally {
-            if (session != null) {
-                session.close();
-            }
-        }
-    }
-    
-    /**
-     * Inicializa el contador con base en los préstamos existentes
+     * para inicializar correctamente el contador
      */
     private void inicializarContador() {
-        int ultimoNumero = obtenerUltimoNumeroPrestamo();
-        contadorId.set(ultimoNumero + 1);
-        System.out.println("Contador de préstamos inicializado en: " + contadorId.get());
+        try {
+            // Consultar el conteo actual en la BD
+            long totalPrestamos = prestamoDAO.contarTotal();
+            contadorId.set((int) totalPrestamos + 1);
+        } catch (Exception e) {
+            System.err.println("Error al inicializar contador: " + e.getMessage());
+            contadorId.set(1);
+        }
     }
     
     /**
      * Agrega un nuevo préstamo al sistema
-     * Ahora persiste en la base de datos
      */
     public void agregarPrestamo(Prestamo prestamo) {
         if (prestamo == null) {
@@ -110,16 +59,11 @@ public class ManejadorPrestamo {
             prestamo.setId(nuevoId);
         }
         
-        // Guardar en memoria
-        prestamos.put(prestamo.getId(), prestamo);
-        
-        // NUEVO: Persistir en base de datos
+        // Persistir directamente en base de datos
         try {
             prestamoDAO.guardar(prestamo);
             System.out.println("Préstamo guardado exitosamente en BD: " + prestamo.getId());
         } catch (Exception e) {
-            // Si falla la BD, remover de memoria también
-            prestamos.remove(prestamo.getId());
             throw new RuntimeException("Error al guardar préstamo en base de datos: " + e.getMessage(), e);
         }
     }
@@ -129,22 +73,95 @@ public class ManejadorPrestamo {
      */
     public Prestamo obtenerPrestamo(String id) throws PrestamoNoExisteException {
         if (id == null || id.trim().isEmpty()) {
-            throw new PrestamoNoExisteException("ID de préstamo inválido");
+            throw new IllegalArgumentException("El ID no puede ser null o vacío");
         }
         
-        Prestamo prestamo = prestamos.get(id.trim());
-        if (prestamo == null) {
-            throw new PrestamoNoExisteException("No existe un préstamo con ID: " + id);
+        try {
+            Prestamo prestamo = prestamoDAO.buscarPorId(id.trim());
+            if (prestamo == null) {
+                throw new PrestamoNoExisteException("No existe un préstamo con ID: " + id);
+            }
+            return prestamo;
+        } catch (PrestamoNoExisteException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException("Error al buscar préstamo: " + e.getMessage(), e);
         }
-        
-        return prestamo;
     }
     
     /**
-     * Lista todos los préstamos
+     * Obtiene un préstamo como DtPrestamo con todas las relaciones cargadas
+     * Este método evita problemas de lazy loading al cargar todo dentro de una sesión activa
+     */
+    public DtPrestamo obtenerPrestamoDto(String id) throws PrestamoNoExisteException {
+        if (id == null || id.trim().isEmpty()) {
+            throw new PrestamoNoExisteException("ID de préstamo inválido");
+        }
+        
+        Session session = null;
+        try {
+            session = HibernateUtil.getSessionFactory().openSession();
+            
+            // Query que carga eagerly todas las relaciones necesarias
+            Query<Prestamo> query = session.createQuery(
+                "SELECT p FROM Prestamo p " +
+                "JOIN FETCH p.lector " +
+                "JOIN FETCH p.bibliotecario " +
+                "JOIN FETCH p.material " +
+                "WHERE p.id = :id", Prestamo.class);
+            query.setParameter("id", id.trim());
+            
+            Prestamo prestamo = query.uniqueResult();
+            if (prestamo == null) {
+                throw new PrestamoNoExisteException("No existe un préstamo con ID: " + id);
+            }
+            
+            // Convertir a DTO dentro de la sesión activa
+            String materialTipo = prestamo.getMaterial() instanceof Libro ? "Libro" : "Artículo Especial";
+            String materialDescripcion;
+            
+            if (prestamo.getMaterial() instanceof Libro) {
+                materialDescripcion = ((Libro) prestamo.getMaterial()).getTitulo();
+            } else {
+                materialDescripcion = ((ArticuloEspecial) prestamo.getMaterial()).getDescripcion();
+            }
+            
+            return new DtPrestamo(
+                prestamo.getId(),
+                prestamo.getFechaSolicitud(),
+                prestamo.getFechaDevolucion(),
+                prestamo.getEstado().name(),
+                prestamo.getLector().getId(),
+                prestamo.getLector().getNombre(),
+                prestamo.getBibliotecario().getId(),
+                prestamo.getBibliotecario().getNombre(),
+                prestamo.getMaterial().getId(),
+                materialTipo,
+                materialDescripcion
+            );
+            
+        } catch (Exception e) {
+            if (e instanceof PrestamoNoExisteException) {
+                throw e;
+            }
+            throw new RuntimeException("Error al obtener préstamo: " + e.getMessage(), e);
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+    
+    /**
+     * Lista todos los préstamos desde la base de datos
      */
     public List<Prestamo> listarTodosLosPrestamos() {
-        return new ArrayList<>(prestamos.values());
+        try {
+            return prestamoDAO.listarTodos();
+        } catch (Exception e) {
+            System.err.println("Error al listar préstamos: " + e.getMessage());
+            return new ArrayList<>();
+        }
     }
     
     /**
@@ -155,13 +172,12 @@ public class ManejadorPrestamo {
             return new ArrayList<>();
         }
         
-        List<Prestamo> resultado = new ArrayList<>();
-        for (Prestamo prestamo : prestamos.values()) {
-            if (estado.equals(prestamo.getEstado())) {
-                resultado.add(prestamo);
-            }
+        try {
+            return prestamoDAO.listarPorEstado(estado);
+        } catch (Exception e) {
+            System.err.println("Error al listar préstamos por estado: " + e.getMessage());
+            return new ArrayList<>();
         }
-        return resultado;
     }
     
     /**
@@ -172,13 +188,12 @@ public class ManejadorPrestamo {
             return new ArrayList<>();
         }
         
-        List<Prestamo> resultado = new ArrayList<>();
-        for (Prestamo prestamo : prestamos.values()) {
-            if (prestamo.getLector() != null && lectorId.trim().equals(prestamo.getLector().getId())) {
-                resultado.add(prestamo);
-            }
+        try {
+            return prestamoDAO.listarPorLector(lectorId.trim());
+        } catch (Exception e) {
+            System.err.println("Error al listar préstamos por lector: " + e.getMessage());
+            return new ArrayList<>();
         }
-        return resultado;
     }
     
     /**
@@ -189,36 +204,31 @@ public class ManejadorPrestamo {
             return new ArrayList<>();
         }
         
-        List<Prestamo> resultado = new ArrayList<>();
-        for (Prestamo prestamo : prestamos.values()) {
-            if (prestamo.getMaterial() != null && materialId.trim().equals(prestamo.getMaterial().getId())) {
-                resultado.add(prestamo);
-            }
+        try {
+            return prestamoDAO.listarPorMaterial(materialId.trim());
+        } catch (Exception e) {
+            System.err.println("Error al listar préstamos por material: " + e.getMessage());
+            return new ArrayList<>();
         }
-        return resultado;
     }
     
     /**
      * Actualiza un préstamo existente
      */
     public void actualizarPrestamo(Prestamo prestamo) {
-        if (prestamo == null || prestamo.getId() == null) {
-            throw new IllegalArgumentException("Préstamo o ID inválido");
+        if (prestamo == null) {
+            throw new IllegalArgumentException("El préstamo no puede ser null");
         }
         
-        if (!prestamos.containsKey(prestamo.getId())) {
-            throw new IllegalArgumentException("No existe un préstamo con ID: " + prestamo.getId());
-        }
-        
-        // Actualizar en memoria
-        prestamos.put(prestamo.getId(), prestamo);
-        
-        // NUEVO: Actualizar en base de datos
         try {
+            // Verificar que existe
+            obtenerPrestamo(prestamo.getId());
+            
+            // Actualizar en base de datos
             prestamoDAO.actualizar(prestamo);
-            System.out.println("Préstamo actualizado exitosamente en BD: " + prestamo.getId());
+            System.out.println("Préstamo actualizado exitosamente: " + prestamo.getId());
         } catch (Exception e) {
-            throw new RuntimeException("Error al actualizar préstamo en base de datos: " + e.getMessage(), e);
+            throw new RuntimeException("Error al actualizar préstamo: " + e.getMessage(), e);
         }
     }
     
@@ -227,21 +237,19 @@ public class ManejadorPrestamo {
      */
     public void eliminarPrestamo(String id) throws PrestamoNoExisteException {
         if (id == null || id.trim().isEmpty()) {
-            throw new PrestamoNoExisteException("ID de préstamo inválido");
+            throw new IllegalArgumentException("El ID no puede ser null o vacío");
         }
         
-        Prestamo prestamo = obtenerPrestamo(id); // Verifica que existe
-        
-        // Eliminar de memoria
-        prestamos.remove(id.trim());
-        
-        // NUEVO: Eliminar de base de datos
         try {
+            // Verificar que existe antes de eliminar
+            obtenerPrestamo(id.trim());
+            
+            // Eliminar de base de datos
             prestamoDAO.eliminar(id.trim());
-            System.out.println("Préstamo eliminado exitosamente de BD: " + id);
+            System.out.println("Préstamo eliminado exitosamente: " + id);
+        } catch (PrestamoNoExisteException e) {
+            throw e;
         } catch (Exception e) {
-            // Si falla la BD, restaurar en memoria
-            prestamos.put(id.trim(), prestamo);
             throw new RuntimeException("Error al eliminar préstamo de base de datos: " + e.getMessage(), e);
         }
     }
@@ -250,7 +258,12 @@ public class ManejadorPrestamo {
      * Obtiene la cantidad total de préstamos
      */
     public int getCantidadPrestamos() {
-        return prestamos.size();
+        try {
+            return (int) prestamoDAO.contarTotal();
+        } catch (Exception e) {
+            System.err.println("Error al contar préstamos: " + e.getMessage());
+            return 0;
+        }
     }
     
     /**
