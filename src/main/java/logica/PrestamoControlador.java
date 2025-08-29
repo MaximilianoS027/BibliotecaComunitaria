@@ -186,7 +186,14 @@ public class PrestamoControlador implements IPrestamoControlador {
             return new String[0];
         }
         
+        System.out.println("DEBUG PrestamoControlador: Buscando préstamos para lector: " + lectorId.trim());
         List<Prestamo> prestamos = manejadorPrestamo.listarPrestamosPorLector(lectorId.trim());
+        System.out.println("DEBUG PrestamoControlador: Encontrados " + prestamos.size() + " préstamos");
+        
+        for (Prestamo p : prestamos) {
+            System.out.println("DEBUG PrestamoControlador: Préstamo " + p.getId() + " - Estado: " + p.getEstado());
+        }
+        
         return convertirAArray(prestamos);
     }
     
