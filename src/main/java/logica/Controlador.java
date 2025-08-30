@@ -216,6 +216,11 @@ public class Controlador implements IControlador {
     }
     
     @Override
+    public String[] listarPrestamosPorBibliotecario(String bibliotecarioId) {
+        return prestamoControlador.listarPrestamosPorBibliotecario(bibliotecarioId);
+    }
+    
+    @Override
     public void cambiarEstadoPrestamo(String idPrestamo, String nuevoEstado) 
             throws PrestamoNoExisteException, DatosInvalidosException {
         prestamoControlador.cambiarEstadoPrestamo(idPrestamo, nuevoEstado);

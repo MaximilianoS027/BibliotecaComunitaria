@@ -221,6 +221,66 @@ public class PrestamoDAO {
     }
     
     /**
+     * Lista préstamos por bibliotecario
+     */
+    public List<Prestamo> listarPorBibliotecario(String bibliotecarioId) {
+        Session session = null;
+        
+        try {
+            session = sessionFactory.openSession();
+            
+            Query<Prestamo> query = session.createQuery(
+                "FROM Prestamo p WHERE p.bibliotecario.id = :bibliotecarioId", Prestamo.class);
+            query.setParameter("bibliotecarioId", bibliotecarioId);
+            
+            return query.list();
+            
+        } catch (Exception e) {
+            throw new RuntimeException("Error al listar préstamos por bibliotecario: " + e.getMessage(), e);
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+    
+    /**
+     * Obtiene información de préstamos por bibliotecario con JOIN para evitar lazy-loading
+     */
+    public List<Object[]> listarPrestamosPorBibliotecarioConInfo(String bibliotecarioId) {
+        Session session = null;
+        
+        try {
+            session = sessionFactory.openSession();
+            
+            // Consulta con JOIN para obtener toda la información necesaria
+            Query<Object[]> query = session.createQuery(
+                "SELECT p.fechaSolicitud, p.fechaDevolucion, l.nombre, " +
+                "CASE " +
+                "  WHEN lb.titulo IS NOT NULL THEN lb.titulo " +
+                "  WHEN ae.descripcion IS NOT NULL THEN ae.descripcion " +
+                "  ELSE 'Material sin descripción' " +
+                "END " +
+                "FROM Prestamo p " +
+                "JOIN p.lector l " +
+                "JOIN p.material m " +
+                "LEFT JOIN Libro lb ON m.id = lb.id " +
+                "LEFT JOIN ArticuloEspecial ae ON m.id = ae.id " +
+                "WHERE p.bibliotecario.id = :bibliotecarioId", Object[].class);
+            query.setParameter("bibliotecarioId", bibliotecarioId);
+            
+            return query.list();
+            
+        } catch (Exception e) {
+            throw new RuntimeException("Error al listar préstamos por bibliotecario con info: " + e.getMessage(), e);
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+    
+    /**
      * Cuenta el total de préstamos
      */
     public long contarTotal() {

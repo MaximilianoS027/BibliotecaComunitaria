@@ -93,6 +93,11 @@ public class Libro extends Material {
     }
     
     @Override
+    public String getDescripcionMaterial() {
+        return titulo != null ? titulo : "Libro sin título";
+    }
+    
+    @Override
     public String toString() {
         return "Libro{" +
                 "id='" + getId() + '\'' +

@@ -75,4 +75,7 @@ public abstract class Material {
                 ", fechaIngreso=" + fechaIngreso +
                 '}';
     }
+    
+    // Método abstracto para obtener la descripción del material
+    public abstract String getDescripcionMaterial();
 }

@@ -91,6 +91,11 @@ public class ArticuloEspecial extends Material {
         return getFechaIngreso();
     }
     
+    @Override
+    public String getDescripcionMaterial() {
+        return descripcion != null ? descripcion : "Artículo sin descripción";
+    }
+    
     // Método para validar formato de dimensiones (LxAxH cm)
     public boolean tieneDimensionesFormatoValido() {
         if (dimensiones == null || dimensiones.trim().isEmpty()) {

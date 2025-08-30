@@ -180,6 +180,17 @@ public class PrestamoControlador implements IPrestamoControlador {
     }
     
     @Override
+    public String[] listarPrestamosPorBibliotecario(String bibliotecarioId) {
+        if (bibliotecarioId == null || bibliotecarioId.trim().isEmpty()) {
+            return new String[0];
+        }
+        
+        // Usar el nuevo método que evita problemas de lazy-loading
+        List<Object[]> prestamosInfo = manejadorPrestamo.listarPrestamosPorBibliotecarioConInfo(bibliotecarioId.trim());
+        return convertirInfoAArray(prestamosInfo);
+    }
+    
+    @Override
     public void cambiarEstadoPrestamo(String idPrestamo, String nuevoEstado) 
             throws PrestamoNoExisteException, DatosInvalidosException {
         if (idPrestamo == null || idPrestamo.trim().isEmpty()) {
@@ -251,14 +262,9 @@ public class PrestamoControlador implements IPrestamoControlador {
     }
     
     private DtPrestamo convertirADto(Prestamo prestamo) {
-        String materialTipo = prestamo.getMaterial() instanceof Libro ? "Libro" : "Artículo Especial";
-        String materialDescripcion;
-        
-        if (prestamo.getMaterial() instanceof Libro) {
-            materialDescripcion = ((Libro) prestamo.getMaterial()).getTitulo();
-        } else {
-            materialDescripcion = ((ArticuloEspecial) prestamo.getMaterial()).getDescripcion();
-        }
+        // Determinar tipo de material basado en la clase
+        String materialTipo = prestamo.getMaterial().getClass().getSimpleName();
+        String materialDescripcion = prestamo.getMaterial().getDescripcionMaterial();
         
         return new DtPrestamo(
             prestamo.getId(),
@@ -279,8 +285,37 @@ public class PrestamoControlador implements IPrestamoControlador {
         String[] resultado = new String[prestamos.size()];
         for (int i = 0; i < prestamos.size(); i++) {
             Prestamo p = prestamos.get(i);
-            resultado[i] = p.getId() + " - " + p.getLector().getNombre() + " (" + p.getLector().getEmail() + 
-                          ") - " + p.getMaterial().getId() + " - " + p.getEstado();
+            
+            // Obtener información del material usando el método abstracto
+            String materialDescripcion = p.getMaterial().getDescripcionMaterial();
+            
+            // Formato: "Material|FechaSolicitud|FechaDevolucion|Lector"
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            String fechaSolicitud = p.getFechaSolicitud() != null ? sdf.format(p.getFechaSolicitud()) : "N/A";
+            String fechaDevolucion = p.getFechaDevolucion() != null ? sdf.format(p.getFechaDevolucion()) : "N/A";
+            
+            resultado[i] = materialDescripcion + "|" + fechaSolicitud + "|" + fechaDevolucion + "|" + p.getLector().getNombre();
+        }
+        return resultado;
+    }
+    
+    private String[] convertirInfoAArray(List<Object[]> prestamosInfo) {
+        String[] resultado = new String[prestamosInfo.size()];
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        
+        for (int i = 0; i < prestamosInfo.size(); i++) {
+            Object[] info = prestamosInfo.get(i);
+            
+            // info[0] = fechaSolicitud, info[1] = fechaDevolucion, 
+            // info[2] = lectorNombre, info[3] = materialDescripcion
+            
+            String fechaSolicitud = info[0] != null ? sdf.format((Date) info[0]) : "N/A";
+            String fechaDevolucion = info[1] != null ? sdf.format((Date) info[1]) : "N/A";
+            String lectorNombre = info[2] != null ? (String) info[2] : "N/A";
+            String materialDescripcion = info[3] != null ? (String) info[3] : "N/A";
+            
+            // Formato: "Material|FechaSolicitud|FechaDevolucion|Lector"
+            resultado[i] = materialDescripcion + "|" + fechaSolicitud + "|" + fechaDevolucion + "|" + lectorNombre;
         }
         return resultado;
     }

@@ -199,6 +199,39 @@ public class ManejadorPrestamo {
     }
     
     /**
+     * Lista préstamos por bibliotecario
+     */
+    public List<Prestamo> listarPrestamosPorBibliotecario(String bibliotecarioId) {
+        if (bibliotecarioId == null || bibliotecarioId.trim().isEmpty()) {
+            return new ArrayList<>();
+        }
+        
+        List<Prestamo> resultado = new ArrayList<>();
+        for (Prestamo prestamo : prestamos.values()) {
+            if (prestamo.getBibliotecario() != null && bibliotecarioId.trim().equals(prestamo.getBibliotecario().getId())) {
+                resultado.add(prestamo);
+            }
+        }
+        return resultado;
+    }
+    
+    /**
+     * Lista información de préstamos por bibliotecario usando consulta directa
+     */
+    public List<Object[]> listarPrestamosPorBibliotecarioConInfo(String bibliotecarioId) {
+        if (bibliotecarioId == null || bibliotecarioId.trim().isEmpty()) {
+            return new ArrayList<>();
+        }
+        
+        try {
+            return prestamoDAO.listarPrestamosPorBibliotecarioConInfo(bibliotecarioId.trim());
+        } catch (Exception e) {
+            System.err.println("Error al obtener información de préstamos: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+    
+    /**
      * Actualiza un préstamo existente
      */
     public void actualizarPrestamo(Prestamo prestamo) {

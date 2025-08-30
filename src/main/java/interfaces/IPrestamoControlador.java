@@ -57,6 +57,13 @@ public interface IPrestamoControlador {
     String[] listarPrestamosPorMaterial(String materialId);
     
     /**
+     * Lista préstamos de un bibliotecario específico
+     * @param bibliotecarioId ID del bibliotecario
+     * @return Array con información de préstamos del bibliotecario
+     */
+    String[] listarPrestamosPorBibliotecario(String bibliotecarioId);
+    
+    /**
      * Cambia el estado de un préstamo
      * @param idPrestamo ID del préstamo
      * @param nuevoEstado Nuevo estado del préstamo

@@ -6,6 +6,7 @@ import interfaces.IBibliotecarioControlador;
 import interfaces.ILectorControlador;
 import interfaces.ILibroControlador;
 import interfaces.IArticuloEspecialControlador;
+import presentacion.HistorialPrestamosPorBibliotecario;
 // import logica.ControladorPrincipal;
 
 import javax.swing.*;
@@ -122,6 +123,10 @@ public class Principal extends JFrame {
         JMenuItem itemHistorialPrestamos = new JMenuItem("Historial de Prestamos");
         itemHistorialPrestamos.addActionListener(e -> abrirHistorialPrestamos());
         menuConsultas.add(itemHistorialPrestamos);
+
+        JMenuItem itemHistorialPrestamosPorBibliotecario = new JMenuItem("Historial de Prestamos por Bibliotecario");
+        itemHistorialPrestamosPorBibliotecario.addActionListener(e -> abrirHistorialPrestamosPorBibliotecario());
+        menuConsultas.add(itemHistorialPrestamosPorBibliotecario);
 
         JMenuItem itemReportePrestamosPorZona = new JMenuItem("Reporte de prestamos por zona");
         itemReportePrestamosPorZona.addActionListener(e -> abrirReportePrestamosPorZona());
@@ -274,6 +279,17 @@ public class Principal extends JFrame {
 
     private void abrirHistorialPrestamos() {
         HistorialPrestamos ventana = new HistorialPrestamos(); // No necesita controlador
+        desktopPane.add(ventana);
+        ventana.setVisible(true);
+        try {
+            ventana.setSelected(true);
+        } catch (java.beans.PropertyVetoException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void abrirHistorialPrestamosPorBibliotecario() {
+        HistorialPrestamosPorBibliotecario ventana = new HistorialPrestamosPorBibliotecario(controlador, bibliotecarioControlador);
         desktopPane.add(ventana);
         ventana.setVisible(true);
         try {

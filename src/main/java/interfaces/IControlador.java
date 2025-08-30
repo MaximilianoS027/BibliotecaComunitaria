@@ -153,6 +153,11 @@ public interface IControlador {
     String[] listarPrestamosPorMaterial(String materialId);
     
     /**
+     * Lista préstamos de un bibliotecario específico
+     */
+    String[] listarPrestamosPorBibliotecario(String bibliotecarioId);
+    
+    /**
      * Cambia el estado de un préstamo
      */
     void cambiarEstadoPrestamo(String idPrestamo, String nuevoEstado) 
