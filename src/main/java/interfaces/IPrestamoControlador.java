@@ -75,4 +75,21 @@ public interface IPrestamoControlador {
      */
     void devolverPrestamo(String idPrestamo, String fechaDevolucion) 
         throws PrestamoNoExisteException, DatosInvalidosException;
+    
+    /**
+     * Modifica la información completa de un préstamo
+     * @param idPrestamo ID del préstamo a modificar
+     * @param lectorId Nuevo ID del lector
+     * @param bibliotecarioId Nuevo ID del bibliotecario
+     * @param materialId Nuevo ID del material
+     * @param fechaSolicitud Nueva fecha de solicitud en formato dd/MM/yyyy
+     * @param estado Nuevo estado del préstamo
+     * @param fechaDevolucion Nueva fecha de devolución en formato dd/MM/yyyy (puede ser null o vacía)
+     * @throws PrestamoNoExisteException Si no existe el préstamo
+     * @throws DatosInvalidosException Si los datos no son válidos
+     */
+    void modificarPrestamo(String idPrestamo, String lectorId, String bibliotecarioId, 
+                          String materialId, String fechaSolicitud, String estado, 
+                          String fechaDevolucion) 
+        throws PrestamoNoExisteException, DatosInvalidosException;
 }
