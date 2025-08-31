@@ -2,7 +2,7 @@
   <session-factory>
 
     <!-- Conexión a PostgreSQL en Docker (app corriendo en tu máquina) -->
-    <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/biblioteca_bd</property>
+    <property name="hibernate.connection.url">jdbc:postgresql://localhost:5434/biblioteca_bd</property>
     <property name="hibernate.connection.username">admin</property>
     <property name="hibernate.connection.password">admin</property>
     <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>

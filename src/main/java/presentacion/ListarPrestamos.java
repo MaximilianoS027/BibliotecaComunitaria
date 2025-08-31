@@ -1,7 +1,6 @@
 package presentacion;
 
 import interfaces.IControlador;
-import logica.EstadoPrestamo;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -9,9 +8,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+import datatypes.DtPrestamo;
 
 public class ListarPrestamos extends JInternalFrame {
 
@@ -145,7 +144,7 @@ public class ListarPrestamos extends JInternalFrame {
         panelSuperior.add(panelBotones, gbc);
 
         // Panel central - Tabla de resultados
-        String[] columnas = {"ID Préstamo", "Material", "Tipo", "Fecha Solicitud", "Estado", "Días"};
+        String[] columnas = {"ID Préstamo", "Material", "Tipo", "Fecha Solicitud", "Fecha Devolución", "Estado", "Días"};
         modeloTabla = new DefaultTableModel(columnas, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -161,9 +160,10 @@ public class ListarPrestamos extends JInternalFrame {
         tablaResultados.getColumnModel().getColumn(0).setPreferredWidth(80);  // ID
         tablaResultados.getColumnModel().getColumn(1).setPreferredWidth(200); // Material
         tablaResultados.getColumnModel().getColumn(2).setPreferredWidth(80);  // Tipo
-        tablaResultados.getColumnModel().getColumn(3).setPreferredWidth(100); // Fecha
-        tablaResultados.getColumnModel().getColumn(4).setPreferredWidth(100); // Estado
-        tablaResultados.getColumnModel().getColumn(5).setPreferredWidth(60);  // Días
+        tablaResultados.getColumnModel().getColumn(3).setPreferredWidth(100); // Fecha Solicitud
+        tablaResultados.getColumnModel().getColumn(4).setPreferredWidth(100); // Fecha Devolución
+        tablaResultados.getColumnModel().getColumn(5).setPreferredWidth(100); // Estado
+        tablaResultados.getColumnModel().getColumn(6).setPreferredWidth(60);  // Días
         
         JScrollPane scrollTabla = new JScrollPane(tablaResultados);
         scrollTabla.setBorder(BorderFactory.createTitledBorder("Resultados"));
@@ -238,9 +238,11 @@ public class ListarPrestamos extends JInternalFrame {
                     String[] partes = prestamo.split(" - ");
                     if (partes.length >= 4) {
                         String prestamoId = partes[0];
-                        String materialInfo = partes[2];
                         String estado = partes[3];
                         
+                        // Obtener el DtPrestamo completo
+                        DtPrestamo dtPrestamo = controlador.obtenerPrestamo(prestamoId);
+
                         // Filtrar según tipo de consulta
                         if (rbSoloActivos.isSelected()) {
                             // Los préstamos activos son: PENDIENTE y EN_CURSO (o "En Curso")
@@ -255,7 +257,7 @@ public class ListarPrestamos extends JInternalFrame {
                         }
                         
                         // Obtener información detallada del préstamo
-                        String[] datosPrestamo = obtenerDatosPrestamo(prestamoId, materialInfo, estado);
+                        String[] datosPrestamo = obtenerDatosPrestamo(dtPrestamo);
                         modeloTabla.addRow(datosPrestamo);
                         prestamosAñadidos++;
                     }
@@ -273,52 +275,54 @@ public class ListarPrestamos extends JInternalFrame {
         }
     }
 
-    private String[] obtenerDatosPrestamo(String prestamoId, String materialInfo, String estado) {
+    private String[] obtenerDatosPrestamo(DtPrestamo dtPrestamo) {
         try {
             // Intentar obtener información completa del préstamo
             // Por ahora usamos información básica, pero podríamos llamar a obtenerPrestamo() para más detalles
             
             String tipoMaterial = "Material";
-            String descripcionMaterial = materialInfo;
+            String descripcionMaterial = dtPrestamo.getMaterialDescripcion();
             
             // Determinar tipo de material
-            if (materialInfo.toLowerCase().contains("libro")) {
+            if (dtPrestamo.getMaterialTipo().toLowerCase().contains("libro")) {
                 tipoMaterial = "Libro";
-            } else if (materialInfo.toLowerCase().contains("artículo") || materialInfo.toLowerCase().contains("articulo")) {
+            } else if (dtPrestamo.getMaterialTipo().toLowerCase().contains("artículo") || dtPrestamo.getMaterialTipo().toLowerCase().contains("articulo")) {
                 tipoMaterial = "Artículo";
             }
             
-            // Fecha solicitud (por ahora aproximada)
-            String fechaSolicitud = "N/A";
+            String fechaSolicitudStr = "N/A";
             String diasTranscurridos = "N/A";
-            
-            // Calcular días transcurridos (estimación basada en el ID del préstamo)
-            try {
-                // Implementación simple - en una versión completa obtendríamos la fecha real
-                int numeroId = Integer.parseInt(prestamoId.substring(1));
-                int diasEstimados = (int) (Math.random() * 30); // Simulación
-                diasTranscurridos = String.valueOf(diasEstimados);
-                
-                // Fecha estimada (restar días de hoy)
-                Date fechaEstimada = new Date(System.currentTimeMillis() - (diasEstimados * 24 * 60 * 60 * 1000L));
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yy");
-                fechaSolicitud = sdf.format(fechaEstimada);
-            } catch (Exception e) {
-                // Mantener valores por defecto
+
+            // Obtener y formatear la fecha real de solicitud
+            if (dtPrestamo.getFechaSolicitud() != null) {
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                fechaSolicitudStr = sdf.format(dtPrestamo.getFechaSolicitud());
+
+                // Calcular días transcurridos
+                long diffInMillies = Math.abs(new Date().getTime() - dtPrestamo.getFechaSolicitud().getTime());
+                long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+                diasTranscurridos = String.valueOf(diff);
             }
-            
+
+            String fechaDevolucionStr = ""; // Valor por defecto vacío
+            if (dtPrestamo.getFechaDevolucion() != null) {
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                fechaDevolucionStr = sdf.format(dtPrestamo.getFechaDevolucion());
+            }
+
             return new String[]{
-                prestamoId,
+                dtPrestamo.getId(),
                 descripcionMaterial,
                 tipoMaterial,
-                fechaSolicitud,
-                estado,
+                fechaSolicitudStr,
+                fechaDevolucionStr, // Añadir fecha de devolución
+                dtPrestamo.getEstado(),
                 diasTranscurridos
             };
             
         } catch (Exception e) {
-            System.err.println("Error obteniendo datos del préstamo " + prestamoId + ": " + e.getMessage());
-            return new String[]{prestamoId, materialInfo, "N/A", "N/A", estado, "N/A"};
+            System.err.println("Error obteniendo datos del préstamo " + dtPrestamo.getId() + ": " + e.getMessage());
+            return new String[]{dtPrestamo.getId(), dtPrestamo.getMaterialDescripcion(), "N/A", "N/A", "", dtPrestamo.getEstado(), "N/A"};
         }
     }
 
