@@ -247,7 +247,7 @@ public class Principal extends JFrame {
     }
 
     private void abrirListarPrestamos() {
-        ListarPrestamos ventana = new ListarPrestamos(); // No necesita controlador
+        ListarPrestamos ventana = new ListarPrestamos(controlador); // Ahora necesita controlador
         desktopPane.add(ventana);
         ventana.setVisible(true);
         try {
@@ -289,6 +289,8 @@ public class Principal extends JFrame {
             e.printStackTrace();
         }
     }
+
+
     
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
