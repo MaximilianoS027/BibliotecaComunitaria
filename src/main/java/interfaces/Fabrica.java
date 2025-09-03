@@ -5,6 +5,7 @@ import logica.BibliotecarioControlador;
 import logica.LectorControlador;
 import logica.LibroControlador;
 import logica.PrestamoControlador;
+import logica.MaterialesConPrestamosPendientesControlador;
 import logica.Controlador;
 
 /**
@@ -17,6 +18,7 @@ public class Fabrica {
     private static ILibroControlador libroControlador = null;
     private static IArticuloEspecialControlador articuloEspecialControlador = null;
     private static IPrestamoControlador prestamoControlador = null;
+    private static IMaterialesConPrestamosPendientesControlador materialesConPrestamosPendientesControlador = null;
     private static IControlador controlador = null;
 
     private Fabrica() {}
@@ -61,6 +63,13 @@ public class Fabrica {
             prestamoControlador = new PrestamoControlador();
         }
         return prestamoControlador;
+    }
+    
+    public IMaterialesConPrestamosPendientesControlador getIMaterialesConPrestamosPendientesControlador() {
+        if (materialesConPrestamosPendientesControlador == null) {
+            materialesConPrestamosPendientesControlador = new MaterialesConPrestamosPendientesControlador();
+        }
+        return materialesConPrestamosPendientesControlador;
     }
     
     public IControlador getIControlador() {

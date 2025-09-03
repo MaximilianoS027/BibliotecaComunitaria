@@ -6,12 +6,11 @@ import interfaces.IBibliotecarioControlador;
 import interfaces.ILectorControlador;
 import interfaces.ILibroControlador;
 import interfaces.IArticuloEspecialControlador;
+import interfaces.IMaterialesConPrestamosPendientesControlador;
 // import logica.ControladorPrincipal;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * Ventana principal del sistema con menú
@@ -24,6 +23,7 @@ public class Principal extends JFrame {
     private ILectorControlador lectorControlador;
     private ILibroControlador libroControlador;
     private IArticuloEspecialControlador articuloEspecialControlador;
+    private IMaterialesConPrestamosPendientesControlador materialesConPrestamosPendientesControlador;
 
     private JDesktopPane desktopPane;
     
@@ -35,6 +35,7 @@ public class Principal extends JFrame {
         this.lectorControlador = fabrica.getILectorControlador();
         this.libroControlador = fabrica.getILibroControlador();
         this.articuloEspecialControlador = fabrica.getIArticuloEspecialControlador();
+        this.materialesConPrestamosPendientesControlador = fabrica.getIMaterialesConPrestamosPendientesControlador();
 
         inicializarComponentes();
     }
@@ -123,9 +124,9 @@ public class Principal extends JFrame {
         itemReportePrestamosPorZona.addActionListener(e -> abrirReportePrestamosPorZona());
         menuConsultas.add(itemReportePrestamosPorZona);
 
-        JMenuItem itemMaterialesConPrestamos = new JMenuItem("Materiales con prestamos");
-        itemMaterialesConPrestamos.addActionListener(e -> abrirMaterialesConPrestamos());
-        menuConsultas.add(itemMaterialesConPrestamos);
+        JMenuItem itemMaterialesConPrestamosPendientes = new JMenuItem("Materiales con préstamos pendientes");
+        itemMaterialesConPrestamosPendientes.addActionListener(e -> abrirMaterialesConPrestamosPendientes());
+        menuConsultas.add(itemMaterialesConPrestamosPendientes);
 
         // Añadir menús a la barra de menú
         menuBar.add(menuGestionUsuario);
@@ -279,15 +280,13 @@ public class Principal extends JFrame {
         }
     }
 
-    private void abrirMaterialesConPrestamos() {
-        MaterialesConPrestamos ventana = new MaterialesConPrestamos(); // No necesita controlador
-        desktopPane.add(ventana);
+    private void abrirMaterialesConPrestamosPendientes() {
+        MaterialesConPrestamosPendientes ventana = new MaterialesConPrestamosPendientes(materialesConPrestamosPendientesControlador);
+        // Mostrar como ventana independiente (no como internal frame)
         ventana.setVisible(true);
-        try {
-            ventana.setSelected(true);
-        } catch (java.beans.PropertyVetoException e) {
-            e.printStackTrace();
-        }
+        
+        // La ventana ya se centra automáticamente en su constructor
+        // No necesitamos hacer nada más aquí
     }
 
 
