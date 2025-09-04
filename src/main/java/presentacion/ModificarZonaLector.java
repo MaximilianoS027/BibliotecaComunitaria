@@ -145,7 +145,7 @@ public class ModificarZonaLector extends JInternalFrame {
             
             // El formato es "ID - Nombre (Email) - Estado"
             // Extraer solo el ID del lector
-            String idLector = lectorSeleccionado.split(" - ")[0];
+            String idLector = lectorSeleccionado.split(" - ", 2)[0];
             
             System.out.println("DEBUG: ID del lector obtenido: \'" + idLector + "\' ");
             
@@ -198,7 +198,7 @@ public class ModificarZonaLector extends JInternalFrame {
                     setText(item);
                 } else {
                     // Formato esperado: "ID - Nombre (Email) - Estado - Zona"
-                    String[] partes = item.split(" - ");
+                    String[] partes = item.split(" - ", 2);
                     if (partes.length >= 4) {
                         String nombreEmail = partes[1]; // "Nombre (Email)"
                         String zona = partes[3];        // "Zona"

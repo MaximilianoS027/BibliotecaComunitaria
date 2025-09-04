@@ -133,7 +133,7 @@ public class CambiarEstadoLector extends JInternalFrame {
             
             // El formato es "ID - Nombre (Email) - Estado"
             // Extraer solo el ID del lector
-            String idLector = lectorSeleccionado.split(" - ")[0];
+            String idLector = lectorSeleccionado.split(" - ", 2)[0];
             
             // Obtener estado seleccionado
             EstadoLector nuevoEstado = (EstadoLector) comboEstados.getSelectedItem();
@@ -177,7 +177,7 @@ public class CambiarEstadoLector extends JInternalFrame {
                     setText(item);
                 } else {
                     // Formato esperado: "ID - Nombre (Email) - Estado - Zona"
-                    String[] partes = item.split(" - ");
+                    String[] partes = item.split(" - ", 2);
                     if (partes.length >= 3) {
                         String nombreEmail = partes[1]; // "Nombre (Email)"
                         String estado = partes[2];      // "Estado"
