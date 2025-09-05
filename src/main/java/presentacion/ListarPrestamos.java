@@ -235,10 +235,14 @@ public class ListarPrestamos extends JInternalFrame {
             for (String prestamo : prestamos) {
                 try {
                     // Formato esperado: "ID - Lector (email) - Material - Estado"
-                    String[] partes = prestamo.split(" - ");
-                    if (partes.length >= 4) {
+                    String[] partes = prestamo.split(" - ", 2);
+                    if (partes.length >= 2) {
                         String prestamoId = partes[0];
-                        String estado = partes[3];
+                        // partes[1] contiene "Lector (email) - Material - Estado"
+                        // Necesitamos extraer el estado que está al final
+                        String resto = partes[1];
+                        String[] restoPartes = resto.split(" - ");
+                        String estado = restoPartes.length > 0 ? restoPartes[restoPartes.length - 1] : "N/A";
                         
                         // Obtener el DtPrestamo completo
                         DtPrestamo dtPrestamo = controlador.obtenerPrestamo(prestamoId);
@@ -330,7 +334,7 @@ public class ListarPrestamos extends JInternalFrame {
         // Reutilizar la lógica exacta de ModificarPrestamo
         for (String item : lista) {
             if (item.equals(seleccion)) {
-                String[] partes = item.split(" - ");
+                String[] partes = item.split(" - ", 2);
                 if (partes.length >= 1) {
                     return partes[0]; // Retornar el ID (primera parte)
                 }

@@ -163,9 +163,9 @@ public class NuevoPrestamo extends JInternalFrame {
             
             for (String lector : lectores) {
                 // Formato: "ID - Nombre (Email) - Estado"
-                String[] partes = lector.split(" - ");
+                String[] partes = lector.split(" - ", 2);
                 if (partes.length >= 2) {
-                    String nombreEmail = partes[1]; // "Nombre (Email)"
+                    String nombreEmail = partes[1]; // "Nombre (Email) - Estado"
                     comboLectores.addItem(nombreEmail);
                 }
             }
@@ -177,7 +177,7 @@ public class NuevoPrestamo extends JInternalFrame {
             
             for (String bibliotecario : bibliotecarios) {
                 // Formato: "ID - Nombre (Email)"
-                String[] partes = bibliotecario.split(" - ");
+                String[] partes = bibliotecario.split(" - ", 2);
                 if (partes.length >= 2) {
                     String nombreEmail = partes[1]; // "Nombre (Email)"
                     comboBibliotecarios.addItem(nombreEmail);
@@ -192,7 +192,7 @@ public class NuevoPrestamo extends JInternalFrame {
             String[] libros = controlador.listarLibros();
             for (String libro : libros) {
                 // Formato: "ID - Título"
-                String[] partes = libro.split(" - ");
+                String[] partes = libro.split(" - ", 2);
                 if (partes.length >= 2) {
                     String titulo = partes[1];
                     comboMateriales.addItem("Libro: " + titulo);
@@ -203,7 +203,7 @@ public class NuevoPrestamo extends JInternalFrame {
             String[] articulos = controlador.listarArticulosEspeciales();
             for (String articulo : articulos) {
                 // Formato: "ID - Descripción"
-                String[] partes = articulo.split(" - ");
+                String[] partes = articulo.split(" - ", 2);
                 if (partes.length >= 2) {
                     String descripcion = partes[1];
                     comboMateriales.addItem("Artículo: " + descripcion);
@@ -268,7 +268,7 @@ public class NuevoPrestamo extends JInternalFrame {
     
     private String obtenerIdDeSeleccion(String seleccion, String[] lista) {
         for (String item : lista) {
-            String[] partes = item.split(" - ");
+            String[] partes = item.split(" - ", 2);
             if (partes.length >= 2 && partes[1].equals(seleccion)) {
                 return partes[0]; // Retornar el ID
             }
@@ -285,7 +285,7 @@ public class NuevoPrestamo extends JInternalFrame {
             String[] libros = controlador.listarLibros();
             for (String libro : libros) {
                 // Formato: "ID - Título (páginas)"
-                String[] partes = libro.split(" - ");
+                String[] partes = libro.split(" - ", 2);
                 if (partes.length >= 2) {
                     String tituloConPaginas = partes[1]; // "Título (páginas)"
                     if (tituloConPaginas.equals(descripcion)) {
@@ -297,7 +297,7 @@ public class NuevoPrestamo extends JInternalFrame {
             String[] articulos = controlador.listarArticulosEspeciales();
             for (String articulo : articulos) {
                 // Formato: "ID - Descripción (peso, dimensiones)"
-                String[] partes = articulo.split(" - ");
+                String[] partes = articulo.split(" - ", 2);
                 if (partes.length >= 2) {
                     String descripcionCompleta = partes[1]; // "Descripción (peso, dimensiones)"
                     if (descripcionCompleta.equals(descripcion)) {
