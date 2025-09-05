@@ -90,13 +90,9 @@ public class Principal extends JFrame {
         itemNuevoArticulo.addActionListener(e -> abrirNuevoArticulo());
         menuGestionMateriales.add(itemNuevoArticulo);
 
-        JMenuItem itemVerDonaciones = new JMenuItem("Ver todas las donaciones");
-        itemVerDonaciones.addActionListener(e -> abrirVerDonaciones());
-        menuGestionMateriales.add(itemVerDonaciones);
-
-        JMenuItem itemDonacionesPorFecha = new JMenuItem("Donaciones por fecha");
-        itemDonacionesPorFecha.addActionListener(e -> abrirDonacionesPorFecha());
-        menuGestionMateriales.add(itemDonacionesPorFecha);
+        JMenuItem itemConsultarDonaciones = new JMenuItem("Consultar Donaciones");
+        itemConsultarDonaciones.addActionListener(e -> abrirConsultarDonaciones());
+        menuGestionMateriales.add(itemConsultarDonaciones);
 
         // Menú Gestión de Préstamo
         JMenu menuGestionPrestamo = new JMenu("Gestión Prestamo");
@@ -198,32 +194,21 @@ public class Principal extends JFrame {
         ventana.setVisible(true);
         try {
             ventana.setSelected(true);
-        } catch (java.beans.PropertyVetoException e) {
+            } catch (java.beans.PropertyVetoException e) {
             e.printStackTrace();
+            }
         }
-    }
 
-    private void abrirVerDonaciones() {
-        VerDonaciones ventana = new VerDonaciones(); // No necesita controlador
+    private void abrirConsultarDonaciones() {
+        ConsultarDonaciones ventana = new ConsultarDonaciones(); // Se necesitará un controlador
         desktopPane.add(ventana);
         ventana.setVisible(true);
         try {
             ventana.setSelected(true);
-        } catch (java.beans.PropertyVetoException e) {
+            } catch (java.beans.PropertyVetoException e) {
             e.printStackTrace();
+            }
         }
-    }
-
-    private void abrirDonacionesPorFecha() {
-        DonacionesPorFecha ventana = new DonacionesPorFecha(); // No necesita controlador
-        desktopPane.add(ventana);
-        ventana.setVisible(true);
-        try {
-            ventana.setSelected(true);
-        } catch (java.beans.PropertyVetoException e) {
-            e.printStackTrace();
-        }
-    }
 
     private void abrirNuevoPrestamo() {
         NuevoPrestamo ventana = new NuevoPrestamo(controlador);
@@ -231,10 +216,10 @@ public class Principal extends JFrame {
         ventana.setVisible(true);
         try {
             ventana.setSelected(true);
-        } catch (java.beans.PropertyVetoException e) {
+            } catch (java.beans.PropertyVetoException e) {
             e.printStackTrace();
+            }
         }
-    }
 
     private void abrirModificarPrestamo() {
         ModificarPrestamo ventana = new ModificarPrestamo(controlador);
