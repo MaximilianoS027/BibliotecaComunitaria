@@ -6,6 +6,7 @@ import excepciones.ArticuloEspecialRepetidoException;
 import excepciones.ArticuloEspecialNoExisteException;
 import excepciones.DatosInvalidosException;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
@@ -126,7 +127,7 @@ public class ArticuloEspecialControlador implements IArticuloEspecialControlador
         String[] resultado = new String[articulos.size()];
         for (int i = 0; i < articulos.size(); i++) {
             ArticuloEspecial a = articulos.get(i);
-            resultado[i] = a.getId() + " - " + a.getDescripcion() + " (" + a.getPesoKg() + " kg, " + a.getDimensiones() + ")";
+            resultado[i] = a.getId() + " | " + a.getDescripcion() + " | " + a.getPesoKg() + " | " + a.getDimensiones() + " | " + new SimpleDateFormat("dd/MM/yyyy").format(a.getFechaRegistro());
         }
         
         return resultado;
