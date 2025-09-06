@@ -19,6 +19,7 @@ public class FondoBibliotecaPanel extends JDesktopPane {
     public FondoBibliotecaPanel() {
         super();
         cargarImagenFondo();
+        setBackground(Color.WHITE); // Establecer el color de fondo del panel a blanco
     }
     
     private void cargarImagenFondo() {
@@ -67,7 +68,7 @@ public class FondoBibliotecaPanel extends JDesktopPane {
             y = (panelHeight - scaledHeight) / 2;
             
             // Dibujar la imagen con transparencia para que no interfiera con el contenido
-            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.8f));
+            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
             g2d.drawImage(imagenFondo, x, y, scaledWidth, scaledHeight, this);
         } else {
             // Fondo azul como fallback si no se puede cargar la imagen
