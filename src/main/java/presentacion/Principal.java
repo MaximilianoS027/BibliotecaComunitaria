@@ -7,6 +7,7 @@ import interfaces.ILectorControlador;
 import interfaces.ILibroControlador;
 import interfaces.IArticuloEspecialControlador;
 import interfaces.IMaterialesConPrestamosPendientesControlador;
+import interfaces.IPrestamoControlador;
 // import logica.ControladorPrincipal;
 
 import javax.swing.*;
@@ -24,6 +25,7 @@ public class Principal extends JFrame {
     private ILibroControlador libroControlador;
     private IArticuloEspecialControlador articuloEspecialControlador;
     private IMaterialesConPrestamosPendientesControlador materialesConPrestamosPendientesControlador;
+    private IPrestamoControlador prestamoControlador;
 
     private JDesktopPane desktopPane;
     
@@ -36,6 +38,7 @@ public class Principal extends JFrame {
         this.libroControlador = fabrica.getILibroControlador();
         this.articuloEspecialControlador = fabrica.getIArticuloEspecialControlador();
         this.materialesConPrestamosPendientesControlador = fabrica.getIMaterialesConPrestamosPendientesControlador();
+        this.prestamoControlador = fabrica.getIPrestamoControlador();
 
         inicializarComponentes();
     }
@@ -115,6 +118,10 @@ public class Principal extends JFrame {
         JMenuItem itemHistorialPrestamos = new JMenuItem("Historial de Prestamos");
         itemHistorialPrestamos.addActionListener(e -> abrirHistorialPrestamos());
         menuConsultas.add(itemHistorialPrestamos);
+
+        JMenuItem itemHistorialPrestamosPorBibliotecario = new JMenuItem("Historial de Prestamos por Bibliotecario");
+        itemHistorialPrestamosPorBibliotecario.addActionListener(e -> abrirHistorialPrestamosPorBibliotecario());
+        menuConsultas.add(itemHistorialPrestamosPorBibliotecario);
 
         JMenuItem itemReportePrestamosPorZona = new JMenuItem("Reporte de prestamos por zona");
         itemReportePrestamosPorZona.addActionListener(e -> abrirReportePrestamosPorZona());
@@ -245,6 +252,18 @@ public class Principal extends JFrame {
 
     private void abrirHistorialPrestamos() {
         HistorialPrestamos ventana = new HistorialPrestamos(); // No necesita controlador
+        desktopPane.add(ventana);
+        ventana.setVisible(true);
+        try {
+            ventana.setSelected(true);
+        } catch (java.beans.PropertyVetoException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void abrirHistorialPrestamosPorBibliotecario() {
+        HistorialPrestamosPorBibliotecario ventana = new HistorialPrestamosPorBibliotecario(
+            prestamoControlador, bibliotecarioControlador);
         desktopPane.add(ventana);
         ventana.setVisible(true);
         try {

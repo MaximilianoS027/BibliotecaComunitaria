@@ -213,6 +213,22 @@ public class ManejadorPrestamo {
     }
     
     /**
+     * Lista préstamos por bibliotecario
+     */
+    public List<Prestamo> listarPrestamosPorBibliotecario(String bibliotecarioId) {
+        if (bibliotecarioId == null || bibliotecarioId.trim().isEmpty()) {
+            return new ArrayList<>();
+        }
+        
+        try {
+            return prestamoDAO.listarPorBibliotecario(bibliotecarioId.trim());
+        } catch (Exception e) {
+            System.err.println("Error al listar préstamos por bibliotecario: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+    
+    /**
      * Actualiza un préstamo existente
      */
     public void actualizarPrestamo(Prestamo prestamo) {

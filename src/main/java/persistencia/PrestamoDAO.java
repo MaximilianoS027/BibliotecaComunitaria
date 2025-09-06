@@ -221,6 +221,30 @@ public class PrestamoDAO {
     }
     
     /**
+     * Lista préstamos por bibliotecario
+     */
+    public List<Prestamo> listarPorBibliotecario(String bibliotecarioId) {
+        Session session = null;
+        
+        try {
+            session = sessionFactory.openSession();
+            
+            Query<Prestamo> query = session.createQuery(
+                "FROM Prestamo p WHERE p.bibliotecario.id = :bibliotecarioId", Prestamo.class);
+            query.setParameter("bibliotecarioId", bibliotecarioId);
+            
+            return query.list();
+            
+        } catch (Exception e) {
+            throw new RuntimeException("Error al listar préstamos por bibliotecario: " + e.getMessage(), e);
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+    
+    /**
      * Cuenta el total de préstamos
      */
     public long contarTotal() {

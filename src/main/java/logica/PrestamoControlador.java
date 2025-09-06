@@ -208,6 +208,23 @@ public class PrestamoControlador implements IPrestamoControlador {
     }
     
     @Override
+    public String[] listarPrestamosPorBibliotecario(String bibliotecarioId) {
+        if (bibliotecarioId == null || bibliotecarioId.trim().isEmpty()) {
+            return new String[0];
+        }
+        
+        System.out.println("DEBUG PrestamoControlador: Buscando préstamos para bibliotecario: " + bibliotecarioId.trim());
+        List<Prestamo> prestamos = manejadorPrestamo.listarPrestamosPorBibliotecario(bibliotecarioId.trim());
+        System.out.println("DEBUG PrestamoControlador: Encontrados " + prestamos.size() + " préstamos para bibliotecario");
+        
+        for (Prestamo p : prestamos) {
+            System.out.println("DEBUG PrestamoControlador: Préstamo " + p.getId() + " - Estado: " + p.getEstado());
+        }
+        
+        return convertirAArray(prestamos);
+    }
+    
+    @Override
     public void cambiarEstadoPrestamo(String idPrestamo, String nuevoEstado) 
             throws PrestamoNoExisteException, DatosInvalidosException {
         if (idPrestamo == null || idPrestamo.trim().isEmpty()) {
