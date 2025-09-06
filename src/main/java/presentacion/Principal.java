@@ -148,11 +148,13 @@ public class Principal extends JFrame {
     
     private void abrirRegistrarLector() {
         RegistrarLector ventana = new RegistrarLector(lectorControlador);
-        // Mostrar como ventana independiente
+        desktopPane.add(ventana);
         ventana.setVisible(true);
-        
-        // La ventana ya se centra automáticamente en su constructor
-        // No necesitamos hacer nada más aquí
+        try {
+            ventana.setSelected(true);
+        } catch (java.beans.PropertyVetoException e) {
+            e.printStackTrace();
+        }
     }
 
     private void abrirEstadoLector() {
@@ -267,11 +269,13 @@ public class Principal extends JFrame {
 
     private void abrirMaterialesConPrestamosPendientes() {
         MaterialesConPrestamosPendientes ventana = new MaterialesConPrestamosPendientes(materialesConPrestamosPendientesControlador);
-        // Mostrar como ventana independiente (no como internal frame)
+        desktopPane.add(ventana);
         ventana.setVisible(true);
-        
-        // La ventana ya se centra automáticamente en su constructor
-        // No necesitamos hacer nada más aquí
+        try {
+            ventana.setSelected(true);
+        } catch (java.beans.PropertyVetoException e) {
+            e.printStackTrace();
+        }
     }
 
 

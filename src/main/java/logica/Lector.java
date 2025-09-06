@@ -84,7 +84,7 @@ public class Lector extends Usuario {
     
     // Métodos de negocio
     public boolean tieneDireccionValida() {
-        return direccion != null && !direccion.trim().isEmpty() && direccion.length() >= 5;
+        return direccion != null && !direccion.trim().isEmpty();
     }
     
     public boolean tieneFechaRegistroValida() {

@@ -29,16 +29,16 @@ public class LectorControlador implements ILectorControlador {
             throws LectorRepetidoException, DatosInvalidosException {
         
         // Validaciones de datos
-        if (nombre == null || nombre.trim().isEmpty() || nombre.length() < 2) {
-            throw new DatosInvalidosException("El nombre debe tener al menos 2 caracteres");
+        if (nombre == null || nombre.trim().isEmpty()) {
+            throw new DatosInvalidosException("El nombre es obligatorio");
         }
         
-        if (email == null || !email.contains("@") || email.length() < 5) {
+        if (email == null || !email.contains("@")) {
             throw new DatosInvalidosException("El email debe ser válido y contener @");
         }
         
-        if (direccion == null || direccion.trim().isEmpty() || direccion.length() < 5) {
-            throw new DatosInvalidosException("La dirección debe tener al menos 5 caracteres");
+        if (direccion == null || direccion.trim().isEmpty()) {
+            throw new DatosInvalidosException("La dirección es obligatoria");
         }
         
         if (fechaRegistro == null || fechaRegistro.trim().isEmpty()) {

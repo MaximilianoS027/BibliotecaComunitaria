@@ -56,11 +56,11 @@ public abstract class Usuario {
     
     // Métodos de negocio
     public boolean tieneNombreValido() {
-        return nombre != null && !nombre.trim().isEmpty() && nombre.length() >= 2;
+        return nombre != null && !nombre.trim().isEmpty();
     }
     
     public boolean tieneEmailValido() {
-        return email != null && email.contains("@") && email.length() >= 5;
+        return email != null && email.contains("@");
     }
     
     @Override
