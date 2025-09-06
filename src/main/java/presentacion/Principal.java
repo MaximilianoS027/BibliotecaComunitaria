@@ -244,7 +244,7 @@ public class Principal extends JFrame {
     }
 
     private void abrirHistorialPrestamos() {
-        HistorialPrestamos ventana = new HistorialPrestamos(); // No necesita controlador
+        HistorialPrestamos ventana = new HistorialPrestamos(controlador); // Ahora necesita controlador        
         desktopPane.add(ventana);
         ventana.setVisible(true);
         try {

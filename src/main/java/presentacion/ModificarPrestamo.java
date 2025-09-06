@@ -272,24 +272,28 @@ public class ModificarPrestamo extends JInternalFrame {
             // Cargar materiales
             comboMateriales.removeAllItems();
             comboMateriales.addItem("-- Seleccionar Material --");
-            
+
             // Cargar libros
             String[] libros = controlador.listarLibros();
             for (String libro : libros) {
-                String[] partes = libro.split(" - ", 2);
-                if (partes.length >= 2) {
+                // Formato: "ID | Título | Páginas | Fecha"
+                String[] partes = libro.split(" \\| ", 4);
+                if (partes.length >= 4) {
                     String titulo = partes[1];
-                    comboMateriales.addItem("Libro: " + titulo);
+                    String paginas = partes[2];
+                    comboMateriales.addItem("Libro: " + titulo + " | " + paginas + " páginas");
                 }
             }
-            
+
             // Cargar artículos especiales
             String[] articulos = controlador.listarArticulosEspeciales();
             for (String articulo : articulos) {
-                String[] partes = articulo.split(" - ", 2);
-                if (partes.length >= 2) {
+                // Formato: "ID | Descripción | Peso | Dimensiones"
+                String[] partes = articulo.split(" \\| ", 4);
+                if (partes.length >= 4) {
                     String descripcion = partes[1];
-                    comboMateriales.addItem("Artículo: " + descripcion);
+                    String peso = partes[2];
+                    comboMateriales.addItem("Artículo: " + descripcion + " | " + peso + "kg");
                 }
             }
             
@@ -496,28 +500,35 @@ public class ModificarPrestamo extends JInternalFrame {
     }
     
     private String obtenerIdDeMaterial(String seleccion) {
+        // Formato: "Libro: Título | Páginas páginas" o "Artículo: Descripción | Peso kg"
         String tipo = seleccion.startsWith("Libro:") ? "Libro" : "Artículo";
         String descripcion = seleccion.substring(seleccion.indexOf(":") + 1).trim();
         
         if (tipo.equals("Libro")) {
             String[] libros = controlador.listarLibros();
             for (String libro : libros) {
-                String[] partes = libro.split(" - ", 2);
-                if (partes.length >= 2) {
+                // Formato: "ID | Título | Páginas | Fecha"
+                String[] partes = libro.split(" \\| ", 4);
+                if (partes.length >= 4) {
                     String titulo = partes[1];
-                    if (titulo.equals(descripcion)) {
-                        return partes[0];
+                    String paginas = partes[2];
+                    String tituloConPaginas = titulo + " | " + paginas + " páginas";
+                    if (tituloConPaginas.equals(descripcion)) {
+                        return partes[0]; // Retornar el ID
                     }
                 }
             }
         } else {
             String[] articulos = controlador.listarArticulosEspeciales();
             for (String articulo : articulos) {
-                String[] partes = articulo.split(" - ", 2);
-                if (partes.length >= 2) {
-                    String desc = partes[1];
-                    if (desc.equals(descripcion)) {
-                        return partes[0];
+                // Formato: "ID | Descripción | Peso | Dimensiones"
+                String[] partes = articulo.split(" \\| ", 4);
+                if (partes.length >= 4) {
+                    String descripcionArticulo = partes[1];
+                    String peso = partes[2];
+                    String descripcionCompleta = descripcionArticulo + " | " + peso + "kg";
+                    if (descripcionCompleta.equals(descripcion)) {
+                        return partes[0]; // Retornar el ID
                     }
                 }
             }
