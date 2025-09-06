@@ -1,7 +1,6 @@
 package presentacion;
 
 import interfaces.IMaterialesConPrestamosPendientesControlador;
-import logica.MaterialesConPrestamosPendientesControlador;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -17,7 +16,7 @@ import java.util.List;
  * Ventana para mostrar materiales con muchos préstamos pendientes
  * Permite al administrador identificar materiales que requieren atención prioritaria
  */
-public class MaterialesConPrestamosPendientes extends JFrame {
+public class MaterialesConPrestamosPendientes extends JInternalFrame {
 
     private IMaterialesConPrestamosPendientesControlador controlador;
 
@@ -30,15 +29,14 @@ public class MaterialesConPrestamosPendientes extends JFrame {
     private JScrollPane scrollPane;
 
     public MaterialesConPrestamosPendientes(IMaterialesConPrestamosPendientesControlador controlador) {
+        super("Materiales con Préstamos Pendientes", true, true, true, true);
         this.controlador = controlador;
         inicializarComponentes();
         cargarMateriales(); // Cargar datos al iniciar
     }
 
     private void inicializarComponentes() {
-        setTitle("Materiales con Préstamos Pendientes");
-        setResizable(true);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setSize(800, 600);
         setLayout(new BorderLayout(10, 10)); // Más espaciado
 
         // Panel central con la tabla
@@ -135,9 +133,6 @@ public class MaterialesConPrestamosPendientes extends JFrame {
         panelInferior.add(lblEstado);
 
         add(panelInferior, BorderLayout.SOUTH);
-
-        pack(); // Ajustar tamaño de la ventana a los componentes
-        setLocationRelativeTo(null); // Centrar la ventana
     }
 
     private void cargarMateriales() {
