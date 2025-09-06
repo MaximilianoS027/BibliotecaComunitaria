@@ -2,6 +2,11 @@ package presentacion;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.AlphaComposite;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.RenderingHints;
 
 /**
  * Panel personalizado que muestra la imagen de la Biblioteca Nacional del Uruguay como fondo
@@ -11,20 +16,9 @@ public class FondoBibliotecaPanel extends JDesktopPane {
     private Image imagenFondo;
     private boolean imagenCargada = false;
     
-    private boolean estirarImagen = false; // Flag para controlar si estirar o mantener proporciones
-    
     public FondoBibliotecaPanel() {
         super();
         cargarImagenFondo();
-    }
-    
-    /**
-     * Establece si la imagen debe estirarse para cubrir toda la ventana
-     * @param estirar true para estirar, false para mantener proporciones
-     */
-    public void setEstirarImagen(boolean estirar) {
-        this.estirarImagen = estirar;
-        repaint();
     }
     
     private void cargarImagenFondo() {
@@ -60,25 +54,17 @@ public class FondoBibliotecaPanel extends JDesktopPane {
             
             int scaledWidth, scaledHeight, x, y;
             
-            if (estirarImagen) {
-                // Estirar la imagen para cubrir exactamente toda la ventana
-                scaledWidth = panelWidth;
-                scaledHeight = panelHeight;
-                x = 0;
-                y = 0;
-            } else {
-                // Mantener proporciones y cubrir toda la ventana
-                double scaleX = (double) panelWidth / imageWidth;
-                double scaleY = (double) panelHeight / imageHeight;
-                double scale = Math.max(scaleX, scaleY); // Usar el mayor para cubrir todo
-                
-                scaledWidth = (int) (imageWidth * scale);
-                scaledHeight = (int) (imageHeight * scale);
-                
-                // Centrar la imagen
-                x = (panelWidth - scaledWidth) / 2;
-                y = (panelHeight - scaledHeight) / 2;
-            }
+            // Mantener proporciones y cubrir toda la ventana
+            double scaleX = (double) panelWidth / imageWidth;
+            double scaleY = (double) panelHeight / imageHeight;
+            double scale = Math.min(scaleX, scaleY); // Usar el menor para contener toda la imagen
+            
+            scaledWidth = (int) (imageWidth * scale);
+            scaledHeight = (int) (imageHeight * scale);
+            
+            // Centrar la imagen
+            x = (panelWidth - scaledWidth) / 2;
+            y = (panelHeight - scaledHeight) / 2;
             
             // Dibujar la imagen con transparencia para que no interfiera con el contenido
             g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.8f));

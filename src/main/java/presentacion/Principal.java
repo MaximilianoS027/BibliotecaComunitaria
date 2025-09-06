@@ -48,7 +48,6 @@ public class Principal extends JFrame {
         // Desktop pane para internal frames con fondo de la Biblioteca Nacional
         desktopPane = new FondoBibliotecaPanel();
         // Configurar para que la imagen se estire y cubra toda la ventana
-        ((FondoBibliotecaPanel) desktopPane).setEstirarImagen(true);
         add(desktopPane, BorderLayout.CENTER);
         
         // Crear menú
