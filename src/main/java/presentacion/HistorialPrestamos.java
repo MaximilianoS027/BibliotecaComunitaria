@@ -332,43 +332,38 @@ public class HistorialPrestamos extends JInternalFrame {
         
         for (String prestamoStr : todosLosPrestamos) {
             try {
-                // Formato: "ID - Lector (email) - Material - Estado"
-                String[] partes = prestamoStr.split(" - ", 4);
-                if (partes.length >= 4) {
-                    String prestamoId = partes[0];
-                    String lectorInfo = partes[1];
-                    String materialInfo = partes[2];
-                    String estado = partes[3];
-                    
-                    // Obtener detalles completos del préstamo
-                    DtPrestamo dtPrestamo = controlador.obtenerPrestamo(prestamoId);
-                    
-                    // Verificar si el préstamo pertenece al bibliotecario seleccionado
-                    if (!dtPrestamo.getBibliotecarioId().equals(bibliotecarioId)) {
-                        continue;
-                    }
-                    
-                    // Aplicar filtros
-                    if (estadoFiltro != null && !estado.equals(estadoFiltro)) {
-                        continue;
-                    }
-                    
-                    if (fechaDesde != null && dtPrestamo.getFechaSolicitud() != null) {
-                        if (dtPrestamo.getFechaSolicitud().before(fechaDesde)) {
-                            continue;
-                        }
-                    }
-                    
-                    if (fechaHasta != null && dtPrestamo.getFechaSolicitud() != null) {
-                        if (dtPrestamo.getFechaSolicitud().after(fechaHasta)) {
-                            continue;
-                        }
-                    }
-                    
-                    // Crear fila para la tabla
-                    Object[] fila = crearFilaPrestamo(dtPrestamo);
-                    resultado.add(fila);
+                // Extraer solo el ID del préstamo del string
+                String prestamoId = prestamoStr.split(" - ")[0];
+                
+                // Obtener detalles completos del préstamo
+                DtPrestamo dtPrestamo = controlador.obtenerPrestamo(prestamoId);
+                
+                // Verificar si el préstamo pertenece al bibliotecario seleccionado
+                if (!dtPrestamo.getBibliotecarioId().equals(bibliotecarioId)) {
+                    continue;
                 }
+                
+                // Aplicar filtros usando los datos del DtPrestamo
+                if (estadoFiltro != null && !dtPrestamo.getEstado().equals(estadoFiltro)) {
+                    continue;
+                }
+                
+                if (fechaDesde != null && dtPrestamo.getFechaSolicitud() != null) {
+                    if (dtPrestamo.getFechaSolicitud().before(fechaDesde)) {
+                        continue;
+                    }
+                }
+                
+                if (fechaHasta != null && dtPrestamo.getFechaSolicitud() != null) {
+                    if (dtPrestamo.getFechaSolicitud().after(fechaHasta)) {
+                        continue;
+                    }
+                }
+                
+                // Crear fila para la tabla
+                Object[] fila = crearFilaPrestamo(dtPrestamo);
+                resultado.add(fila);
+                
             } catch (Exception e) {
                 System.err.println("Error procesando préstamo: " + prestamoStr + " - " + e.getMessage());
             }
@@ -382,12 +377,16 @@ public class HistorialPrestamos extends JInternalFrame {
             String tipoMaterial = "Material";
             String descripcionMaterial = dtPrestamo.getMaterialDescripcion();
             
-            // Determinar tipo de material
+            // Determinar tipo de material y mejorar la descripción
             if (dtPrestamo.getMaterialTipo().toLowerCase().contains("libro")) {
                 tipoMaterial = "Libro";
+                // Para libros, mostrar: "Título | ID"
+                descripcionMaterial = dtPrestamo.getMaterialDescripcion() + " | " + dtPrestamo.getMaterialId();
             } else if (dtPrestamo.getMaterialTipo().toLowerCase().contains("artículo") || 
-                      dtPrestamo.getMaterialTipo().toLowerCase().contains("articulo")) {
+                    dtPrestamo.getMaterialTipo().toLowerCase().contains("articulo")) {
                 tipoMaterial = "Artículo";
+                // Para artículos, mostrar: "Descripción | ID"
+                descripcionMaterial = dtPrestamo.getMaterialDescripcion() + " | " + dtPrestamo.getMaterialId();
             }
             
             String fechaSolicitudStr = "N/A";
