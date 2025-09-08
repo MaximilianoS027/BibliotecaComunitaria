@@ -45,8 +45,9 @@ public class Principal extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         
-        // Desktop pane para internal frames
-        desktopPane = new JDesktopPane();
+        // Desktop pane para internal frames con fondo de la Biblioteca Nacional
+        desktopPane = new FondoBibliotecaPanel();
+        // Configurar para que la imagen se estire y cubra toda la ventana
         add(desktopPane, BorderLayout.CENTER);
         
         // Crear menú
