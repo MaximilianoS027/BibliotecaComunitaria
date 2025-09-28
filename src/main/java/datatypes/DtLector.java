@@ -16,6 +16,7 @@ public class DtLector {
     private Date fechaRegistro;
     private EstadoLector estado;
     private Zona zona;
+    private String password; // Solo para transferencia, no se almacena el hash
     
     // Constructor por defecto
     public DtLector() {}
@@ -26,6 +27,19 @@ public class DtLector {
         this.id = id;
         this.nombre = nombre;
         this.email = email;
+        this.direccion = direccion;
+        this.fechaRegistro = fechaRegistro;
+        this.estado = estado;
+        this.zona = zona;
+    }
+    
+    // Constructor con parámetros incluyendo password
+    public DtLector(String id, String nombre, String email, String password, String direccion, 
+                    Date fechaRegistro, EstadoLector estado, Zona zona) {
+        this.id = id;
+        this.nombre = nombre;
+        this.email = email;
+        this.password = password;
         this.direccion = direccion;
         this.fechaRegistro = fechaRegistro;
         this.estado = estado;
@@ -87,6 +101,14 @@ public class DtLector {
     
     public void setZona(Zona zona) {
         this.zona = zona;
+    }
+    
+    public String getPassword() {
+        return password;
+    }
+    
+    public void setPassword(String password) {
+        this.password = password;
     }
     
     @Override

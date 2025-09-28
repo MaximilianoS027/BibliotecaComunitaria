@@ -61,6 +61,55 @@ public class BibliotecarioControlador implements IBibliotecarioControlador {
     }
     
     @Override
+    public void registrarBibliotecarioConPassword(String numeroEmpleado, String nombre, String email, String password) 
+            throws BibliotecarioRepetidoException, DatosInvalidosException {
+        
+        // Validaciones de datos (numeroEmpleado ahora es opcional - se autogenera)
+        if (nombre == null || nombre.trim().isEmpty() || nombre.length() < 2) {
+            throw new DatosInvalidosException("El nombre debe tener al menos 2 caracteres");
+        }
+        
+        // Validación de email mejorada
+        if (email == null || email.trim().isEmpty()) {
+            throw new DatosInvalidosException("El email es obligatorio");
+        }
+        
+        if (password == null || password.trim().isEmpty()) {
+            throw new DatosInvalidosException("El password es obligatorio");
+        }
+        
+        if (!PasswordUtil.isValidPassword(password)) {
+            throw new DatosInvalidosException(PasswordUtil.getPasswordRequirements());
+        }
+        
+        String emailLimpio = email.trim().toLowerCase();
+        String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+        if (!emailLimpio.matches(emailRegex) || emailLimpio.length() < 5 || emailLimpio.length() > 100) {
+            throw new DatosInvalidosException("El email debe ser válido y tener entre 5 y 100 caracteres");
+        }
+        
+        // Crear entidad con password (ID y numeroEmpleado se autogeneran en ManejadorBibliotecario)
+        Bibliotecario bibliotecario = new Bibliotecario(
+            null, // numeroEmpleado se autogenera
+            nombre.trim(), 
+            emailLimpio,
+            password.trim()
+        );
+        
+        // Validaciones adicionales usando métodos de la entidad
+        if (!bibliotecario.tieneNombreValido()) {
+            throw new DatosInvalidosException("Nombre inválido");
+        }
+        
+        if (!bibliotecario.tieneEmailValido()) {
+            throw new DatosInvalidosException("Email inválido");
+        }
+        
+        // Delegar al manejador
+        manejadorBibliotecario.agregarBibliotecario(bibliotecario);
+    }
+    
+    @Override
     public DtBibliotecario obtenerBibliotecario(String numeroEmpleado) 
             throws BibliotecarioNoExisteException {
         

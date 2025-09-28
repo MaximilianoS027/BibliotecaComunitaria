@@ -27,6 +27,22 @@ public interface ILectorControlador {
         throws LectorRepetidoException, DatosInvalidosException;
     
     /**
+     * Registra un nuevo lector en el sistema con password
+     * @param nombre Nombre completo del lector
+     * @param email Email del lector
+     * @param password Password del lector
+     * @param direccion Dirección del lector
+     * @param fechaRegistro Fecha de registro en formato dd/MM/yyyy
+     * @param estado Estado del lector (Activo, Suspendido)
+     * @param zona Zona asignada al lector
+     * @throws LectorRepetidoException Si ya existe un lector con ese email
+     * @throws DatosInvalidosException Si los datos no son válidos
+     */
+    void registrarLectorConPassword(String nombre, String email, String password, String direccion, 
+                                   String fechaRegistro, String estado, String zona) 
+        throws LectorRepetidoException, DatosInvalidosException;
+    
+    /**
      * Obtiene un lector por su ID
      * @param id ID del lector a buscar
      * @return Datos del lector

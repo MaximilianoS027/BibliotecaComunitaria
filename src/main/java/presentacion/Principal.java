@@ -125,7 +125,15 @@ public class Principal extends JFrame {
         itemMaterialesConPrestamosPendientes.addActionListener(e -> abrirMaterialesConPrestamosPendientes());
         menuConsultas.add(itemMaterialesConPrestamosPendientes);
 
+        // Menú Autenticación
+        JMenu menuAutenticacion = new JMenu("Autenticación");
+        
+        JMenuItem itemLogin = new JMenuItem("Iniciar Sesión");
+        itemLogin.addActionListener(e -> abrirLogin());
+        menuAutenticacion.add(itemLogin);
+        
         // Añadir menús a la barra de menú
+        menuBar.add(menuAutenticacion);
         menuBar.add(menuGestionUsuario);
         menuBar.add(menuGestionMateriales);
         menuBar.add(menuGestionPrestamo);
@@ -278,8 +286,19 @@ public class Principal extends JFrame {
             e.printStackTrace();
         }
     }
-
-
+    
+    private void abrirLogin() {
+        Login ventana = new Login();
+        desktopPane.add(ventana);
+        ventana.setVisible(true);
+        
+        // Centrar internal frame
+        try {
+            ventana.setSelected(true);
+        } catch (java.beans.PropertyVetoException e) {
+            e.printStackTrace();
+        }
+    }
     
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {

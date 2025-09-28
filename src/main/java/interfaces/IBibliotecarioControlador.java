@@ -23,6 +23,18 @@ public interface IBibliotecarioControlador {
         throws BibliotecarioRepetidoException, DatosInvalidosException;
     
     /**
+     * Registra un nuevo bibliotecario en el sistema con password
+     * @param numeroEmpleado Número único del empleado
+     * @param nombre Nombre completo del bibliotecario
+     * @param email Email del bibliotecario
+     * @param password Password del bibliotecario
+     * @throws BibliotecarioRepetidoException Si ya existe un bibliotecario con ese número
+     * @throws DatosInvalidosException Si los datos no son válidos
+     */
+    void registrarBibliotecarioConPassword(String numeroEmpleado, String nombre, String email, String password) 
+        throws BibliotecarioRepetidoException, DatosInvalidosException;
+    
+    /**
      * Obtiene un bibliotecario por su número de empleado
      * @param numeroEmpleado Número del empleado a buscar
      * @return Datos del bibliotecario

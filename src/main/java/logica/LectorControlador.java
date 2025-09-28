@@ -105,6 +105,96 @@ public class LectorControlador implements ILectorControlador {
     }
     
     @Override
+    public void registrarLectorConPassword(String nombre, String email, String password, String direccion, 
+                                          String fechaRegistro, String estado, String zona) 
+            throws LectorRepetidoException, DatosInvalidosException {
+        
+        // Validaciones de datos
+        if (nombre == null || nombre.trim().isEmpty()) {
+            throw new DatosInvalidosException("El nombre es obligatorio");
+        }
+        
+        if (email == null || !email.contains("@")) {
+            throw new DatosInvalidosException("El email debe ser válido y contener @");
+        }
+        
+        if (password == null || password.trim().isEmpty()) {
+            throw new DatosInvalidosException("El password es obligatorio");
+        }
+        
+        if (!PasswordUtil.isValidPassword(password)) {
+            throw new DatosInvalidosException(PasswordUtil.getPasswordRequirements());
+        }
+        
+        if (direccion == null || direccion.trim().isEmpty()) {
+            throw new DatosInvalidosException("La dirección es obligatoria");
+        }
+        
+        if (fechaRegistro == null || fechaRegistro.trim().isEmpty()) {
+            throw new DatosInvalidosException("La fecha de registro es obligatoria");
+        }
+        
+        if (estado == null || estado.trim().isEmpty()) {
+            throw new DatosInvalidosException("El estado es obligatorio");
+        }
+        
+        if (zona == null || zona.trim().isEmpty()) {
+            throw new DatosInvalidosException("La zona es obligatoria");
+        }
+        
+        // Verificar si ya existe un lector con ese email
+        if (manejadorLector.existeLectorConEmail(email.trim())) {
+            throw new LectorRepetidoException("Ya existe un lector con el email: " + email);
+        }
+        
+        // Parsear fecha
+        Date fecha;
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            fecha = sdf.parse(fechaRegistro.trim());
+        } catch (ParseException e) {
+            throw new DatosInvalidosException("Formato de fecha inválido. Use dd/MM/yyyy");
+        }
+        
+        // Parsear estado
+        EstadoLector estadoLector = parseEstado(estado);
+        
+        // Parsear zona
+        Zona zonaLector = parseZona(zona);
+        
+        // Crear entidad con password
+        Lector lector = new Lector(
+            nombre.trim(), 
+            email.trim(), 
+            direccion.trim(),
+            password.trim(),
+            fecha,
+            estadoLector,
+            zonaLector
+        );
+        
+        // Validaciones adicionales usando métodos de la entidad
+        if (!lector.tieneNombreValido()) {
+            throw new DatosInvalidosException("Nombre inválido");
+        }
+        
+        if (!lector.tieneEmailValido()) {
+            throw new DatosInvalidosException("Email inválido");
+        }
+        
+        if (!lector.tieneDireccionValida()) {
+            throw new DatosInvalidosException("Dirección inválida");
+        }
+        
+        if (!lector.tieneFechaRegistroValida()) {
+            throw new DatosInvalidosException("La fecha de registro debe ser anterior a la fecha actual");
+        }
+        
+        // Delegar al manejador
+        manejadorLector.agregarLector(lector);
+    }
+    
+    @Override
     public DtLector obtenerLector(String id) throws LectorNoExisteException {
         if (id == null || id.trim().isEmpty()) {
             throw new LectorNoExisteException("ID de lector inválido");

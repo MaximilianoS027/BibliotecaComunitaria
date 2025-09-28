@@ -308,6 +308,23 @@ public class ManejadorLector {
         }
         return null;
     }
+    
+    /**
+     * Obtiene un lector por nombre solamente
+     */
+    public Lector obtenerLectorPorNombre(String nombre) {
+        if (nombre == null || nombre.trim().isEmpty()) {
+            return null;
+        }
+        String nombreBusqueda = nombre.trim().toLowerCase();
+        for (Lector lector : lectores.values()) {
+            if (lector.getNombre() != null &&
+                lector.getNombre().trim().toLowerCase().equals(nombreBusqueda)) {
+                return lector;
+            }
+        }
+        return null;
+    }
 
     /**
      * Lista todos los lectores

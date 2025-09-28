@@ -15,15 +15,15 @@ public class Bibliotecario extends Usuario {
     // Constructor por defecto requerido por JPA
     public Bibliotecario() {}
     
-    // Constructor con parámetros
-    public Bibliotecario(String id, String numeroEmpleado, String nombre, String email) {
-        super(id, nombre, email);
+    // Constructor con parámetros (sin password)
+    public Bibliotecario(String numeroEmpleado, String nombre, String email) {
+        super(numeroEmpleado, nombre, email); // Usar numeroEmpleado como ID
         this.numeroEmpleado = numeroEmpleado;
     }
     
-    // Constructor con parámetros (sin ID para compatibilidad)
-    public Bibliotecario(String numeroEmpleado, String nombre, String email) {
-        super(numeroEmpleado, nombre, email); // Usar numeroEmpleado como ID
+    // Constructor con parámetros incluyendo password
+    public Bibliotecario(String numeroEmpleado, String nombre, String email, String password) {
+        super(numeroEmpleado, nombre, email, password); // Usar numeroEmpleado como ID
         this.numeroEmpleado = numeroEmpleado;
     }
     

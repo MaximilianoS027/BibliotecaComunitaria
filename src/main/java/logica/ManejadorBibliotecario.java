@@ -279,4 +279,64 @@ public class ManejadorBibliotecario {
             }
         }
     }
+    
+    /**
+     * Obtiene un bibliotecario por nombre
+     */
+    public Bibliotecario obtenerBibliotecarioPorNombre(String nombre) {
+        Session session = null;
+        
+        try {
+            session = HibernateUtil.getSessionFactory().openSession();
+            
+            // Buscar por nombre
+            Query<Bibliotecario> query = session.createQuery(
+                "SELECT b FROM Bibliotecario b WHERE LOWER(b.nombre) = LOWER(:nombre)", Bibliotecario.class);
+            query.setParameter("nombre", nombre.trim());
+            
+            return query.uniqueResult();
+            
+        } catch (Exception e) {
+            return null;
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+    
+    /**
+     * Actualiza un bibliotecario existente
+     */
+    public void actualizarBibliotecario(Bibliotecario bibliotecario) throws BibliotecarioNoExisteException {
+        Session session = null;
+        Transaction transaction = null;
+        
+        try {
+            session = HibernateUtil.getSessionFactory().openSession();
+            transaction = session.beginTransaction();
+            
+            // Verificar que el bibliotecario existe
+            Bibliotecario bibliotecarioExistente = session.get(Bibliotecario.class, bibliotecario.getNumeroEmpleado());
+            if (bibliotecarioExistente == null) {
+                throw new BibliotecarioNoExisteException("No existe un bibliotecario con número de empleado: " + bibliotecario.getNumeroEmpleado());
+            }
+            
+            session.update(bibliotecario);
+            transaction.commit();
+            
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            if (e instanceof BibliotecarioNoExisteException) {
+                throw e;
+            }
+            throw new RuntimeException("Error al actualizar bibliotecario: " + e.getMessage(), e);
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
 }
