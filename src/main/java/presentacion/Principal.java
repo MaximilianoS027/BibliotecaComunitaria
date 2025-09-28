@@ -286,7 +286,7 @@ public class Principal extends JFrame {
             e.printStackTrace();
         }
     }
-    
+
     private void abrirLogin() {
         Login ventana = new Login();
         desktopPane.add(ventana);

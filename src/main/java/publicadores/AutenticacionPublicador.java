@@ -41,6 +41,7 @@ public class AutenticacionPublicador {
         String url = configuracion.getBaseUrl() + "/autenticacion";
         endpoint = Endpoint.publish(url, this);
         System.out.println("Servicio Autenticacion publicado en: " + url);
+        System.out.println("WSDL disponible en: " + url + "?wsdl");
     }
     
     @WebMethod(exclude = true)

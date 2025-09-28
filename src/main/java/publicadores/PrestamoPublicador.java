@@ -41,6 +41,7 @@ public class PrestamoPublicador {
         String url = configuracion.getBaseUrl() + "/prestamo";
         endpoint = Endpoint.publish(url, this);
         System.out.println("Servicio Prestamo publicado en: " + url);
+        System.out.println("WSDL disponible en: " + url + "?wsdl");
     }
     
     @WebMethod(exclude = true)

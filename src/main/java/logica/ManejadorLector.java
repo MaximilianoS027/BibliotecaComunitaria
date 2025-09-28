@@ -308,7 +308,7 @@ public class ManejadorLector {
         }
         return null;
     }
-    
+
     /**
      * Obtiene un lector por nombre solamente
      */

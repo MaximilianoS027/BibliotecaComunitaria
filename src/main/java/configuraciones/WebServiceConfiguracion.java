@@ -32,8 +32,8 @@ public class WebServiceConfiguracion {
         } catch(Exception e) {
             // Configuración por defecto si no existe el archivo
             configs.put("#WS_IP", "localhost");
-            configs.put("#WS_PORT", "8080");
-            System.out.println("Usando configuración por defecto: localhost:8080");
+            configs.put("#WS_PORT", "1432");
+            System.out.println("Usando configuración por defecto: localhost:1432");
         }
     }
     
@@ -48,7 +48,7 @@ public class WebServiceConfiguracion {
     
     /**
      * Obtiene la URL base del Web Service
-     * @return URL completa (ej: "http://localhost:8080")
+     * @return URL completa (ej: "http://localhost:1432")
      */
     public String getBaseUrl() {
         return "http://" + getConfigOf("#WS_IP") + ":" + getConfigOf("#WS_PORT");

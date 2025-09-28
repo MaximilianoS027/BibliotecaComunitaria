@@ -42,6 +42,7 @@ public class LibroPublicador {
         String url = configuracion.getBaseUrl() + "/libro";
         endpoint = Endpoint.publish(url, this);
         System.out.println("Servicio Libro publicado en: " + url);
+        System.out.println("WSDL disponible en: " + url + "?wsdl");
     }
     
     @WebMethod(exclude = true)

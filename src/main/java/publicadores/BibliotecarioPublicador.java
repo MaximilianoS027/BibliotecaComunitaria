@@ -42,6 +42,7 @@ public class BibliotecarioPublicador {
         String url = configuracion.getBaseUrl() + "/bibliotecario";
         endpoint = Endpoint.publish(url, this);
         System.out.println("Servicio Bibliotecario publicado en: " + url);
+        System.out.println("WSDL disponible en: " + url + "?wsdl");
     }
     
     @WebMethod(exclude = true)
