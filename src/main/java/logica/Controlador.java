@@ -278,25 +278,4 @@ public class Controlador implements IControlador {
                                              materialId, fechaSolicitud, estado, fechaDevolucion);
     }
     
-    // ============= GETTERS PARA CONTROLADORES ESPECÍFICOS =============
-    
-    public IBibliotecarioControlador getBibliotecarioControlador() {
-        return bibliotecarioControlador;
-    }
-    
-    public ILectorControlador getLectorControlador() {
-        return lectorControlador;
-    }
-    
-    public ILibroControlador getLibroControlador() {
-        return libroControlador;
-    }
-    
-    public IArticuloEspecialControlador getArticuloEspecialControlador() {
-        return articuloEspecialControlador;
-    }
-    
-    public IPrestamoControlador getPrestamoControlador() {
-        return prestamoControlador;
-    }
 }
