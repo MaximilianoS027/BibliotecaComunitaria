@@ -58,30 +58,25 @@ public class BibliotecarioPublicador {
     // ============= MÉTODOS WEB SERVICE =============
     
     @WebMethod
-    public void registrarBibliotecario(String numeroEmpleado, String nombre, String email) 
+    public void registrarBibliotecario(String nombre, String email) 
             throws BibliotecarioRepetidoException, DatosInvalidosException {
-        controlador.registrarBibliotecario(numeroEmpleado, nombre, email);
+        controlador.registrarBibliotecario(nombre, email);
     }
     
     @WebMethod
-    public void registrarBibliotecarioConPassword(String numeroEmpleado, String nombre, String email, String password) 
+    public void registrarBibliotecarioConPassword(String nombre, String email, String password) 
             throws BibliotecarioRepetidoException, DatosInvalidosException {
-        controlador.registrarBibliotecarioConPassword(numeroEmpleado, nombre, email, password);
+        controlador.registrarBibliotecarioConPassword(nombre, email, password);
     }
     
     @WebMethod
-    public DtBibliotecario obtenerBibliotecario(String numeroEmpleado) 
+    public DtBibliotecario obtenerBibliotecario(String id) 
             throws BibliotecarioNoExisteException {
-        return controlador.obtenerBibliotecario(numeroEmpleado);
+        return controlador.obtenerBibliotecario(id);
     }
     
     @WebMethod
     public String[] listarBibliotecarios() {
         return controlador.listarBibliotecarios();
-    }
-    
-    @WebMethod
-    public boolean existeBibliotecario(String numeroEmpleado) {
-        return controlador.existeBibliotecario(numeroEmpleado);
     }
 }

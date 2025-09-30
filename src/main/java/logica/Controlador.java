@@ -49,9 +49,9 @@ public class Controlador implements IControlador {
     // ============= OPERACIONES DE BIBLIOTECARIO (delegadas) =============
     
     @Override
-    public void registrarBibliotecario(String numeroEmpleado, String nombre, String email) 
+    public void registrarBibliotecario(String nombre, String email) 
             throws BibliotecarioRepetidoException, DatosInvalidosException {
-        bibliotecarioControlador.registrarBibliotecario(numeroEmpleado, nombre, email);
+        bibliotecarioControlador.registrarBibliotecario(nombre, email);
     }
     
     @Override
@@ -66,9 +66,9 @@ public class Controlador implements IControlador {
     }
     
     @Override
-    public void registrarBibliotecarioConPassword(String numeroEmpleado, String nombre, String email, String password) 
+    public void registrarBibliotecarioConPassword(String nombre, String email, String password) 
             throws BibliotecarioRepetidoException, DatosInvalidosException {
-        bibliotecarioControlador.registrarBibliotecarioConPassword(numeroEmpleado, nombre, email, password);
+        bibliotecarioControlador.registrarBibliotecarioConPassword(nombre, email, password);
     }
     
     // ============= OPERACIONES DE LECTOR (delegadas) =============
@@ -178,9 +178,9 @@ public class Controlador implements IControlador {
     }
     
     @Override
-    public void cambiarPasswordBibliotecario(String numeroEmpleado, String passwordActual, String passwordNuevo)
+    public void cambiarPasswordBibliotecario(String id, String passwordActual, String passwordNuevo)
             throws BibliotecarioNoExisteException, DatosInvalidosException {
-        autenticacionControlador.cambiarPasswordBibliotecario(numeroEmpleado, passwordActual, passwordNuevo);
+        autenticacionControlador.cambiarPasswordBibliotecario(id, passwordActual, passwordNuevo);
     }
     
     // ============= OPERACIONES DE LIBRO (delegadas) =============

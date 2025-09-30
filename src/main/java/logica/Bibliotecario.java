@@ -17,13 +17,13 @@ public class Bibliotecario extends Usuario {
     
     // Constructor con parámetros (sin password)
     public Bibliotecario(String numeroEmpleado, String nombre, String email) {
-        super(numeroEmpleado, nombre, email); // Usar numeroEmpleado como ID
+        super(null, nombre, email); // El ID se generará automáticamente por ManejadorBibliotecario
         this.numeroEmpleado = numeroEmpleado;
     }
     
     // Constructor con parámetros incluyendo password
     public Bibliotecario(String numeroEmpleado, String nombre, String email, String password) {
-        super(numeroEmpleado, nombre, email, password); // Usar numeroEmpleado como ID
+        super(null, nombre, email, password); // El ID se generará automáticamente por ManejadorBibliotecario
         this.numeroEmpleado = numeroEmpleado;
     }
     

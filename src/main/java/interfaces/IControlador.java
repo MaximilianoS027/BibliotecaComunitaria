@@ -18,7 +18,7 @@ public interface IControlador {
     /**
      * Registra un nuevo bibliotecario en el sistema
      */
-    void registrarBibliotecario(String numeroEmpleado, String nombre, String email) 
+    void registrarBibliotecario(String nombre, String email) 
         throws BibliotecarioRepetidoException, DatosInvalidosException;
     
     /**
@@ -34,7 +34,7 @@ public interface IControlador {
     /**
      * Registra un nuevo bibliotecario con password
      */
-    void registrarBibliotecarioConPassword(String numeroEmpleado, String nombre, String email, String password) 
+    void registrarBibliotecarioConPassword(String nombre, String email, String password) 
         throws BibliotecarioRepetidoException, DatosInvalidosException;
     
     // ============= OPERACIONES DE LECTOR =============
@@ -119,7 +119,7 @@ public interface IControlador {
     /**
      * Cambia el password de un bibliotecario
      */
-    void cambiarPasswordBibliotecario(String numeroEmpleado, String passwordActual, String passwordNuevo)
+    void cambiarPasswordBibliotecario(String id, String passwordActual, String passwordNuevo)
         throws BibliotecarioNoExisteException, DatosInvalidosException;
     
     // ============= OPERACIONES DE LIBRO =============

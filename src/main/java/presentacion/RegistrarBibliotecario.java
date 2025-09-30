@@ -56,7 +56,7 @@ public class RegistrarBibliotecario extends JInternalFrame {
         panelPrincipal.add(lblTitulo, gbc);
         
         // Instrucciones
-        JLabel lblInstrucciones = new JLabel("Ingrese los siguientes datos (número de empleado se genera automáticamente):");
+        JLabel lblInstrucciones = new JLabel("Ingrese los siguientes datos:");
         gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.WEST;
         panelPrincipal.add(lblInstrucciones, gbc);
@@ -154,8 +154,8 @@ public class RegistrarBibliotecario extends JInternalFrame {
                 return;
             }
             
-            // Llamar al controlador con password (numeroEmpleado se autogenera, por eso pasamos null)
-            controlador.registrarBibliotecarioConPassword(null, nombre, email, password);
+            // Llamar al controlador con password
+            controlador.registrarBibliotecarioConPassword(nombre, email, password);
             
             // Mostrar mensaje de éxito
             JOptionPane.showMessageDialog(this, 

@@ -68,7 +68,7 @@ public class PrestamoControlador implements IPrestamoControlador {
         }
         
         try {
-            bibliotecario = manejadorBibliotecario.obtenerBibliotecarioPorId(bibliotecarioId.trim());
+            bibliotecario = manejadorBibliotecario.obtenerBibliotecario(bibliotecarioId.trim());
         } catch (Exception e) {
             throw new DatosInvalidosException("No existe un bibliotecario con ID: " + bibliotecarioId);
         }
@@ -313,7 +313,7 @@ public class PrestamoControlador implements IPrestamoControlador {
         }
         
         try {
-            bibliotecario = manejadorBibliotecario.obtenerBibliotecarioPorId(bibliotecarioId.trim());
+            bibliotecario = manejadorBibliotecario.obtenerBibliotecario(bibliotecarioId.trim());
         } catch (Exception e) {
             throw new DatosInvalidosException("No existe un bibliotecario con ID: " + bibliotecarioId);
         }

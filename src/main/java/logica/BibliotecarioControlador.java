@@ -21,10 +21,10 @@ public class BibliotecarioControlador implements IBibliotecarioControlador {
     }
     
     @Override
-    public void registrarBibliotecario(String numeroEmpleado, String nombre, String email) 
+    public void registrarBibliotecario(String nombre, String email) 
             throws BibliotecarioRepetidoException, DatosInvalidosException {
         
-        // Validaciones de datos (numeroEmpleado ahora es opcional - se autogenera)
+        // Validaciones de datos
         if (nombre == null || nombre.trim().isEmpty() || nombre.length() < 2) {
             throw new DatosInvalidosException("El nombre debe tener al menos 2 caracteres");
         }
@@ -40,9 +40,9 @@ public class BibliotecarioControlador implements IBibliotecarioControlador {
             throw new DatosInvalidosException("El email debe ser válido y tener entre 5 y 100 caracteres");
         }
         
-        // Crear entidad (ID y numeroEmpleado se autogeneran en ManejadorBibliotecario)
+        // Crear entidad (ID se autogenera en ManejadorBibliotecario, numeroEmpleado ya no se usa como ID)
         Bibliotecario bibliotecario = new Bibliotecario(
-            null, // numeroEmpleado se autogenera
+            null, // numeroEmpleado ahora es solo un campo, no un identificador único al crear
             nombre.trim(), 
             emailLimpio
         );
@@ -61,10 +61,10 @@ public class BibliotecarioControlador implements IBibliotecarioControlador {
     }
     
     @Override
-    public void registrarBibliotecarioConPassword(String numeroEmpleado, String nombre, String email, String password) 
+    public void registrarBibliotecarioConPassword(String nombre, String email, String password) 
             throws BibliotecarioRepetidoException, DatosInvalidosException {
         
-        // Validaciones de datos (numeroEmpleado ahora es opcional - se autogenera)
+        // Validaciones de datos
         if (nombre == null || nombre.trim().isEmpty() || nombre.length() < 2) {
             throw new DatosInvalidosException("El nombre debe tener al menos 2 caracteres");
         }
@@ -86,9 +86,9 @@ public class BibliotecarioControlador implements IBibliotecarioControlador {
             throw new DatosInvalidosException("El email debe ser válido y tener entre 5 y 100 caracteres");
         }
         
-        // Crear entidad con password (ID y numeroEmpleado se autogeneran en ManejadorBibliotecario)
+        // Crear entidad con password (ID se autogenera en ManejadorBibliotecario, numeroEmpleado ya no se usa como ID)
         Bibliotecario bibliotecario = new Bibliotecario(
-            null, // numeroEmpleado se autogenera
+            null, // numeroEmpleado ahora es solo un campo, no un identificador único al crear
             nombre.trim(), 
             emailLimpio,
             password.trim()
@@ -112,18 +112,18 @@ public class BibliotecarioControlador implements IBibliotecarioControlador {
     }
     
     @Override
-    public DtBibliotecario obtenerBibliotecario(String numeroEmpleado) 
+    public DtBibliotecario obtenerBibliotecario(String id) 
             throws BibliotecarioNoExisteException {
         
-        if (numeroEmpleado == null || numeroEmpleado.trim().isEmpty()) {
-            throw new BibliotecarioNoExisteException("Número de empleado inválido");
+        if (id == null || id.trim().isEmpty()) {
+            throw new BibliotecarioNoExisteException("ID de bibliotecario inválido");
         }
         
-        Bibliotecario bibliotecario = manejadorBibliotecario.obtenerBibliotecario(numeroEmpleado.trim());
+        Bibliotecario bibliotecario = manejadorBibliotecario.obtenerBibliotecario(id.trim());
         
         // Convertir a DTO
         return new DtBibliotecario(
-            bibliotecario.getNumeroEmpleado(),
+            bibliotecario.getId(), // Usar el ID como identificador principal
             bibliotecario.getNombre(),
             bibliotecario.getEmail()
         );
@@ -136,7 +136,7 @@ public class BibliotecarioControlador implements IBibliotecarioControlador {
         String[] resultado = new String[bibliotecarios.size()];
         for (int i = 0; i < bibliotecarios.size(); i++) {
             Bibliotecario b = bibliotecarios.get(i);
-            // Usar ID real (B1, B2...) en lugar del número de empleado para compatibilidad con sistema de préstamos
+            // Usar ID real (B1, B2...) como identificador principal
             resultado[i] = b.getId() + " - " + b.getNombre() + " (" + b.getEmail() + ")";
         }
         
@@ -144,21 +144,11 @@ public class BibliotecarioControlador implements IBibliotecarioControlador {
     }
     
     @Override
-    public boolean existeBibliotecario(String numeroEmpleado) {
-        try {
-            manejadorBibliotecario.obtenerBibliotecario(numeroEmpleado);
-            return true;
-        } catch (BibliotecarioNoExisteException e) {
-            return false;
-        }
-    }
-    
-    @Override
-    public void actualizarBibliotecario(String numeroEmpleado, String nombre, String email)
+    public void actualizarBibliotecario(String id, String nombre, String email)
             throws BibliotecarioNoExisteException, DatosInvalidosException {
         
         // Verificar que existe
-        Bibliotecario bibliotecario = manejadorBibliotecario.obtenerBibliotecario(numeroEmpleado);
+        Bibliotecario bibliotecario = manejadorBibliotecario.obtenerBibliotecario(id);
         
         // Validaciones de datos
         if (nombre == null || nombre.trim().isEmpty() || nombre.length() < 2) {
@@ -190,7 +180,6 @@ public class BibliotecarioControlador implements IBibliotecarioControlador {
         }
         
         // Delegar al manejador para actualizar en BD
-        // TODO: Descomentar cuando se implemente actualizarBibliotecario en ManejadorBibliotecario
-        // manejadorBibliotecario.actualizarBibliotecario(bibliotecario);
+        manejadorBibliotecario.actualizarBibliotecario(bibliotecario);
     }
 }
