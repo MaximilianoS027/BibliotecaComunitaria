@@ -11,24 +11,24 @@ public interface IAutenticacionControlador {
     
     /**
      * Autentica un lector con nombre y password
-     * @param nombre Nombre del lector
+     * @param email Email del lector
      * @param password Password del lector
      * @return ID del lector si la autenticación es exitosa
      * @throws LectorNoExisteException Si no existe el lector o las credenciales son incorrectas
      * @throws DatosInvalidosException Si los datos son inválidos
      */
-    String autenticarLector(String nombre, String password) 
+    String autenticarLector(String email, String password) 
         throws LectorNoExisteException, DatosInvalidosException;
     
     /**
      * Autentica un bibliotecario con nombre y password
-     * @param nombre Nombre del bibliotecario
+     * @param email Email del bibliotecario
      * @param password Password del bibliotecario
      * @return ID del bibliotecario si la autenticación es exitosa
      * @throws BibliotecarioNoExisteException Si no existe el bibliotecario o las credenciales son incorrectas
      * @throws DatosInvalidosException Si los datos son inválidos
      */
-    String autenticarBibliotecario(String nombre, String password) 
+    String autenticarBibliotecario(String email, String password) 
         throws BibliotecarioNoExisteException, DatosInvalidosException;
     
     /**

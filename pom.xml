@@ -62,18 +62,34 @@
     </dependency>
     
     <!-- JAX-WS API -->
-    <dependency>
+    <!-- <dependency>
       <groupId>javax.jws</groupId>
       <artifactId>javax.jws-api</artifactId>
       <version>1.1</version>
-    </dependency>
+    </dependency> -->
     
     <!-- Web Services Metadata -->
-    <dependency>
+    <!-- <dependency>
       <groupId>javax.xml.ws</groupId>
       <artifactId>jaxws-api</artifactId>
       <version>2.3.1</version>
+    </dependency> -->
+    
+    <!-- Jakarta XML Web Services API -->
+    <dependency>
+      <groupId>jakarta.xml.ws</groupId>
+      <artifactId>jakarta.xml.ws-api</artifactId>
+      <version>4.0.0</version>
     </dependency>
+    
+    <!-- Jakarta XML SOAP API -->
+    <dependency>
+      <groupId>jakarta.xml.soap</groupId>
+      <artifactId>jakarta.xml.soap-api</artifactId>
+      <version>3.0.0</version>
+    </dependency>
+    
+    
   </dependencies>
   <build>
     <sourceDirectory>src/main/java</sourceDirectory>

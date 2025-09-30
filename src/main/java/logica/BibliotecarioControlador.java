@@ -77,10 +77,8 @@ public class BibliotecarioControlador implements IBibliotecarioControlador {
         if (password == null || password.trim().isEmpty()) {
             throw new DatosInvalidosException("El password es obligatorio");
         }
-        
-        if (!PasswordUtil.isValidPassword(password)) {
-            throw new DatosInvalidosException(PasswordUtil.getPasswordRequirements());
-        }
+
+        // Validaciones del password: (ya no se usa PasswordUtil)
         
         String emailLimpio = email.trim().toLowerCase();
         String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
@@ -103,6 +101,10 @@ public class BibliotecarioControlador implements IBibliotecarioControlador {
         
         if (!bibliotecario.tieneEmailValido()) {
             throw new DatosInvalidosException("Email inválido");
+        }
+        
+        if (!bibliotecario.tienePasswordValido()) {
+            throw new DatosInvalidosException("Password inválido");
         }
         
         // Delegar al manejador

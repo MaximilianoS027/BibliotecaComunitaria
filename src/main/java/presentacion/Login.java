@@ -62,24 +62,10 @@ public class Login extends JInternalFrame {
         lblInstrucciones.setFont(new Font("Arial", Font.PLAIN, 12));
         panelPrincipal.add(lblInstrucciones, gbc);
         
-        // Tipo de usuario
-        gbc.gridwidth = 1;
+        // Nombre
         gbc.gridy = 2;
         gbc.gridx = 0;
-        JLabel lblTipoUsuario = new JLabel("Tipo de usuario:");
-        lblTipoUsuario.setFont(new Font("Arial", Font.BOLD, 12));
-        panelPrincipal.add(lblTipoUsuario, gbc);
-        
-        cmbTipoUsuario = new JComboBox<>(new String[]{"Lector", "Bibliotecario"});
-        cmbTipoUsuario.setFont(new Font("Arial", Font.PLAIN, 12));
-        cmbTipoUsuario.setPreferredSize(new Dimension(250, 25));
-        gbc.gridx = 1;
-        panelPrincipal.add(cmbTipoUsuario, gbc);
-        
-        // Nombre
-        gbc.gridy = 3;
-        gbc.gridx = 0;
-        JLabel lblUsuario = new JLabel("Nombre:");
+        JLabel lblUsuario = new JLabel("Email:");
         lblUsuario.setFont(new Font("Arial", Font.BOLD, 12));
         panelPrincipal.add(lblUsuario, gbc);
         
@@ -91,7 +77,7 @@ public class Login extends JInternalFrame {
         
         // Password
         gbc.gridwidth = 1;
-        gbc.gridy = 4;
+        gbc.gridy = 3;
         gbc.gridx = 0;
         JLabel lblPassword = new JLabel("Contraseña:");
         lblPassword.setFont(new Font("Arial", Font.BOLD, 12));
@@ -105,7 +91,7 @@ public class Login extends JInternalFrame {
         
         // Botones
         gbc.gridx = 0;
-        gbc.gridy = 5;
+        gbc.gridy = 4;
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
         
@@ -142,14 +128,13 @@ public class Login extends JInternalFrame {
     
     private void autenticar() {
         try {
-            String usuario = txtUsuario.getText().trim();
+            String email = txtUsuario.getText().trim();
             String password = new String(txtPassword.getPassword());
-            String tipoUsuario = (String) cmbTipoUsuario.getSelectedItem();
             
             // Validaciones básicas
-            if (usuario.isEmpty()) {
+            if (email.isEmpty()) {
                 JOptionPane.showMessageDialog(this, 
-                    "El nombre es obligatorio", 
+                    "El email es obligatorio", 
                     "Error", 
                     JOptionPane.ERROR_MESSAGE);
                 return;
@@ -164,18 +149,26 @@ public class Login extends JInternalFrame {
             }
             
             String userId = null;
+            boolean autenticado = false;
             
-            // Autenticar según el tipo de usuario
-            if ("Lector".equals(tipoUsuario)) {
-                userId = controlador.autenticarLector(usuario, password);
+            // Intentar autenticar como Lector
+            try {
+                userId = controlador.autenticarLector(email, password);
+                autenticado = true;
+            } catch (LectorNoExisteException e) {
+                // Si no es un lector, intentar como Bibliotecario
+                try {
+                    userId = controlador.autenticarBibliotecario(email, password);
+                    autenticado = true;
+                } catch (BibliotecarioNoExisteException ex) {
+                    // No es ni lector ni bibliotecario o credenciales incorrectas
+                    throw new LectorNoExisteException("Usuario o contraseña incorrecta."); // Usamos esta excepción para un mensaje unificado
+                }
+            }
+
+            if (autenticado) {
                 JOptionPane.showMessageDialog(this, 
-                    "¡Bienvenido Lector!", 
-                    "Login Exitoso", 
-                    JOptionPane.INFORMATION_MESSAGE);
-            } else if ("Bibliotecario".equals(tipoUsuario)) {
-                userId = controlador.autenticarBibliotecario(usuario, password);
-                JOptionPane.showMessageDialog(this, 
-                    "¡Bienvenido Bibliotecario!", 
+                    "Inicio de sesión exitoso. Bienvenido.", 
                     "Login Exitoso", 
                     JOptionPane.INFORMATION_MESSAGE);
             }
@@ -183,9 +176,9 @@ public class Login extends JInternalFrame {
             // Limpiar formulario después del login exitoso
             limpiarFormulario();
             
-        } catch (LectorNoExisteException | BibliotecarioNoExisteException e) {
+        } catch (LectorNoExisteException e) {
             JOptionPane.showMessageDialog(this, 
-                "Credenciales incorrectas: " + e.getMessage(), 
+                "Usuario o contraseña incorrecta, verifique los datos e intente nuevamente.", 
                 "Error de Autenticación", 
                 JOptionPane.ERROR_MESSAGE);
         } catch (DatosInvalidosException e) {
@@ -205,7 +198,6 @@ public class Login extends JInternalFrame {
     private void limpiarFormulario() {
         txtUsuario.setText("");
         txtPassword.setText("");
-        cmbTipoUsuario.setSelectedIndex(0);
         txtUsuario.requestFocus();
     }
 }

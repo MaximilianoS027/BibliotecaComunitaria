@@ -281,6 +281,31 @@ public class ManejadorBibliotecario {
     }
     
     /**
+     * Obtiene un bibliotecario por email
+     */
+    public Bibliotecario obtenerBibliotecarioPorEmail(String email) {
+        Session session = null;
+        
+        try {
+            session = HibernateUtil.getSessionFactory().openSession();
+            
+            // Buscar por email
+            Query<Bibliotecario> query = session.createQuery(
+                "SELECT b FROM Bibliotecario b WHERE LOWER(b.email) = LOWER(:email)", Bibliotecario.class);
+            query.setParameter("email", email.trim());
+            
+            return query.uniqueResult();
+            
+        } catch (Exception e) {
+            return null;
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+
+    /**
      * Obtiene un bibliotecario por nombre
      */
     public Bibliotecario obtenerBibliotecarioPorNombre(String nombre) {

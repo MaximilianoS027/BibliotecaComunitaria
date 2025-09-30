@@ -121,32 +121,30 @@ public class LectorControlador implements ILectorControlador {
         if (password == null || password.trim().isEmpty()) {
             throw new DatosInvalidosException("El password es obligatorio");
         }
-        
-        if (!PasswordUtil.isValidPassword(password)) {
-            throw new DatosInvalidosException(PasswordUtil.getPasswordRequirements());
-        }
-        
+
+        // No se necesita PasswordUtil.isValidPassword(password) con el nuevo enfoque
+
         if (direccion == null || direccion.trim().isEmpty()) {
             throw new DatosInvalidosException("La dirección es obligatoria");
         }
-        
+
         if (fechaRegistro == null || fechaRegistro.trim().isEmpty()) {
             throw new DatosInvalidosException("La fecha de registro es obligatoria");
         }
-        
+
         if (estado == null || estado.trim().isEmpty()) {
             throw new DatosInvalidosException("El estado es obligatorio");
         }
-        
+
         if (zona == null || zona.trim().isEmpty()) {
             throw new DatosInvalidosException("La zona es obligatoria");
         }
-        
+
         // Verificar si ya existe un lector con ese email
         if (manejadorLector.existeLectorConEmail(email.trim())) {
             throw new LectorRepetidoException("Ya existe un lector con el email: " + email);
         }
-        
+
         // Parsear fecha
         Date fecha;
         try {
@@ -155,13 +153,13 @@ public class LectorControlador implements ILectorControlador {
         } catch (ParseException e) {
             throw new DatosInvalidosException("Formato de fecha inválido. Use dd/MM/yyyy");
         }
-        
+
         // Parsear estado
         EstadoLector estadoLector = parseEstado(estado);
-        
+
         // Parsear zona
         Zona zonaLector = parseZona(zona);
-        
+
         // Crear entidad con password
         Lector lector = new Lector(
             nombre.trim(), 
@@ -172,24 +170,28 @@ public class LectorControlador implements ILectorControlador {
             estadoLector,
             zonaLector
         );
-        
+
         // Validaciones adicionales usando métodos de la entidad
         if (!lector.tieneNombreValido()) {
             throw new DatosInvalidosException("Nombre inválido");
         }
-        
+
         if (!lector.tieneEmailValido()) {
             throw new DatosInvalidosException("Email inválido");
         }
-        
+
         if (!lector.tieneDireccionValida()) {
             throw new DatosInvalidosException("Dirección inválida");
         }
-        
+
         if (!lector.tieneFechaRegistroValida()) {
             throw new DatosInvalidosException("La fecha de registro debe ser anterior a la fecha actual");
         }
         
+        if (!lector.tienePasswordValido()) {
+            throw new DatosInvalidosException("Password inválido");
+        }
+
         // Delegar al manejador
         manejadorLector.agregarLector(lector);
     }

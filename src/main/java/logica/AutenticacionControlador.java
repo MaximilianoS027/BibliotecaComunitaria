@@ -20,22 +20,22 @@ public class AutenticacionControlador implements IAutenticacionControlador {
     }
     
     @Override
-    public String autenticarLector(String nombre, String password) 
+    public String autenticarLector(String email, String password) 
             throws LectorNoExisteException, DatosInvalidosException {
         
         // Validaciones
-        if (nombre == null || nombre.trim().isEmpty()) {
-            throw new DatosInvalidosException("El nombre es obligatorio");
+        if (email == null || email.trim().isEmpty()) {
+            throw new DatosInvalidosException("El email es obligatorio");
         }
         
         if (password == null || password.trim().isEmpty()) {
             throw new DatosInvalidosException("El password es obligatorio");
         }
         
-        // Buscar lector por nombre
-        Lector lector = manejadorLector.obtenerLectorPorNombre(nombre);
+        // Buscar lector por email
+        Lector lector = manejadorLector.obtenerLectorPorEmail(email);
         if (lector == null) {
-            throw new LectorNoExisteException("No existe un lector con el nombre: " + nombre);
+            throw new LectorNoExisteException("No existe un lector con el email: " + email);
         }
         
         // Verificar password
@@ -47,22 +47,22 @@ public class AutenticacionControlador implements IAutenticacionControlador {
     }
     
     @Override
-    public String autenticarBibliotecario(String nombre, String password) 
+    public String autenticarBibliotecario(String email, String password) 
             throws BibliotecarioNoExisteException, DatosInvalidosException {
         
         // Validaciones
-        if (nombre == null || nombre.trim().isEmpty()) {
-            throw new DatosInvalidosException("El nombre es obligatorio");
+        if (email == null || email.trim().isEmpty()) {
+            throw new DatosInvalidosException("El email es obligatorio");
         }
         
         if (password == null || password.trim().isEmpty()) {
             throw new DatosInvalidosException("El password es obligatorio");
         }
         
-        // Buscar bibliotecario por nombre
-        Bibliotecario bibliotecario = manejadorBibliotecario.obtenerBibliotecarioPorNombre(nombre);
+        // Buscar bibliotecario por email
+        Bibliotecario bibliotecario = manejadorBibliotecario.obtenerBibliotecarioPorEmail(email);
         if (bibliotecario == null) {
-            throw new BibliotecarioNoExisteException("No existe un bibliotecario con el nombre: " + nombre);
+            throw new BibliotecarioNoExisteException("No existe un bibliotecario con el email: " + email);
         }
         
         // Verificar password
@@ -88,10 +88,6 @@ public class AutenticacionControlador implements IAutenticacionControlador {
         
         if (passwordNuevo == null || passwordNuevo.trim().isEmpty()) {
             throw new DatosInvalidosException("El password nuevo es obligatorio");
-        }
-        
-        if (!PasswordUtil.isValidPassword(passwordNuevo)) {
-            throw new DatosInvalidosException(PasswordUtil.getPasswordRequirements());
         }
         
         // Buscar lector
@@ -127,10 +123,6 @@ public class AutenticacionControlador implements IAutenticacionControlador {
             throw new DatosInvalidosException("El password nuevo es obligatorio");
         }
         
-        if (!PasswordUtil.isValidPassword(passwordNuevo)) {
-            throw new DatosInvalidosException(PasswordUtil.getPasswordRequirements());
-        }
-        
         // Buscar bibliotecario
         Bibliotecario bibliotecario = manejadorBibliotecario.obtenerBibliotecario(numeroEmpleado);
         if (bibliotecario == null) {
@@ -160,10 +152,6 @@ public class AutenticacionControlador implements IAutenticacionControlador {
             throw new DatosInvalidosException("El password nuevo es obligatorio");
         }
         
-        if (!PasswordUtil.isValidPassword(passwordNuevo)) {
-            throw new DatosInvalidosException(PasswordUtil.getPasswordRequirements());
-        }
-        
         // Buscar lector
         Lector lector = manejadorLector.obtenerLector(lectorId);
         if (lector == null) {
@@ -186,10 +174,6 @@ public class AutenticacionControlador implements IAutenticacionControlador {
         
         if (passwordNuevo == null || passwordNuevo.trim().isEmpty()) {
             throw new DatosInvalidosException("El password nuevo es obligatorio");
-        }
-        
-        if (!PasswordUtil.isValidPassword(passwordNuevo)) {
-            throw new DatosInvalidosException(PasswordUtil.getPasswordRequirements());
         }
         
         // Buscar bibliotecario

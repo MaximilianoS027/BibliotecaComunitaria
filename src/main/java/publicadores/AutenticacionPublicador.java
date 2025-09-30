@@ -1,11 +1,11 @@
 package publicadores;
 
-import javax.jws.WebMethod;
-import javax.jws.WebService;
-import javax.jws.soap.SOAPBinding;
-import javax.jws.soap.SOAPBinding.ParameterStyle;
-import javax.jws.soap.SOAPBinding.Style;
-import javax.xml.ws.Endpoint;
+import jakarta.jws.WebMethod;
+import jakarta.jws.WebService;
+import jakarta.jws.soap.SOAPBinding;
+import jakarta.jws.soap.SOAPBinding.ParameterStyle;
+import jakarta.jws.soap.SOAPBinding.Style;
+import jakarta.xml.ws.Endpoint;
 
 import configuraciones.WebServiceConfiguracion;
 import excepciones.LectorNoExisteException;
@@ -57,15 +57,15 @@ public class AutenticacionPublicador {
     // ============= MÉTODOS WEB SERVICE =============
     
     @WebMethod
-    public String autenticarLector(String nombre, String password) 
+    public String autenticarLector(String email, String password) 
             throws LectorNoExisteException, DatosInvalidosException {
-        return controlador.autenticarLector(nombre, password);
+        return controlador.autenticarLector(email, password);
     }
     
     @WebMethod
-    public String autenticarBibliotecario(String nombre, String password) 
+    public String autenticarBibliotecario(String email, String password) 
             throws BibliotecarioNoExisteException, DatosInvalidosException {
-        return controlador.autenticarBibliotecario(nombre, password);
+        return controlador.autenticarBibliotecario(email, password);
     }
     
     @WebMethod

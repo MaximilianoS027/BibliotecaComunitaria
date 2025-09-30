@@ -20,16 +20,13 @@ public abstract class Usuario {
     private String nombre;
     private String email;
     
-    @Column(name = "password_hash")
-    private String passwordHash;
-    
-    @Column(name = "password_salt")
-    private String passwordSalt;
+    @Column(name = "password")
+    private String password;
     
     // Constructor por defecto requerido por JPA
     public Usuario() {}
     
-    // Constructor con parámetros
+    // Constructor con parámetros (sin password)
     public Usuario(String id, String nombre, String email) {
         this.id = id;
         this.nombre = nombre;
@@ -41,10 +38,7 @@ public abstract class Usuario {
         this.id = id;
         this.nombre = nombre;
         this.email = email;
-        if (password != null && !password.trim().isEmpty()) {
-            this.passwordSalt = PasswordUtil.generateSalt();
-            this.passwordHash = PasswordUtil.hashPassword(password, this.passwordSalt);
-        }
+        this.password = password;
     }
     
     // Getters y Setters
@@ -72,43 +66,21 @@ public abstract class Usuario {
         this.email = email;
     }
     
-    public String getPasswordHash() {
-        return passwordHash;
+    public String getPassword() {
+        return password;
     }
     
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
-    }
-    
-    public String getPasswordSalt() {
-        return passwordSalt;
-    }
-    
-    public void setPasswordSalt(String passwordSalt) {
-        this.passwordSalt = passwordSalt;
-    }
-    
-    /**
-     * Establece el password del usuario (genera hash y salt automáticamente)
-     * @param password Password en texto plano
-     */
     public void setPassword(String password) {
-        if (password != null && !password.trim().isEmpty()) {
-            this.passwordSalt = PasswordUtil.generateSalt();
-            this.passwordHash = PasswordUtil.hashPassword(password, this.passwordSalt);
-        }
+        this.password = password;
     }
     
     /**
      * Verifica si el password proporcionado es correcto
-     * @param password Password en texto plano
+     * @param passwordToCheck Password en texto plano a verificar
      * @return true si el password es correcto
      */
-    public boolean verifyPassword(String password) {
-        if (passwordHash == null || passwordSalt == null || password == null) {
-            return false;
-        }
-        return PasswordUtil.verifyPassword(password, passwordHash, passwordSalt);
+    public boolean verifyPassword(String passwordToCheck) {
+        return this.password != null && this.password.equals(passwordToCheck);
     }
     
     /**
@@ -116,7 +88,7 @@ public abstract class Usuario {
      * @return true si tiene password
      */
     public boolean hasPassword() {
-        return passwordHash != null && passwordSalt != null;
+        return password != null && !password.trim().isEmpty();
     }
     
     // Métodos de negocio

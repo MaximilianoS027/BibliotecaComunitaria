@@ -99,15 +99,15 @@ public interface IControlador {
     // ============= OPERACIONES DE AUTENTICACIÓN =============
     
     /**
-     * Autentica un lector con nombre y password
+     * Autentica un lector con email y password
      */
-    String autenticarLector(String nombre, String password) 
+    String autenticarLector(String email, String password) 
         throws LectorNoExisteException, DatosInvalidosException;
     
     /**
-     * Autentica un bibliotecario con nombre y password
+     * Autentica un bibliotecario con email y password
      */
-    String autenticarBibliotecario(String nombre, String password) 
+    String autenticarBibliotecario(String email, String password) 
         throws BibliotecarioNoExisteException, DatosInvalidosException;
     
     /**

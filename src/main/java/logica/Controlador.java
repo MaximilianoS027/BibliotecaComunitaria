@@ -160,15 +160,15 @@ public class Controlador implements IControlador {
     // ============= OPERACIONES DE AUTENTICACIÓN (delegadas) =============
     
     @Override
-    public String autenticarLector(String nombre, String password)
+    public String autenticarLector(String email, String password)
             throws LectorNoExisteException, DatosInvalidosException {
-        return autenticacionControlador.autenticarLector(nombre, password);
+        return autenticacionControlador.autenticarLector(email, password);
     }
 
     @Override
-    public String autenticarBibliotecario(String nombre, String password)
+    public String autenticarBibliotecario(String email, String password)
             throws BibliotecarioNoExisteException, DatosInvalidosException {
-        return autenticacionControlador.autenticarBibliotecario(nombre, password);
+        return autenticacionControlador.autenticarBibliotecario(email, password);
     }
     
     @Override
