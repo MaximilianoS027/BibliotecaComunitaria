@@ -19,6 +19,8 @@ public class RegistrarBibliotecario extends JInternalFrame {
     private IBibliotecarioControlador controlador;
     private JTextField txtNombre;
     private JTextField txtEmail;
+    private JPasswordField txtPassword;
+    private JPasswordField txtConfirmarPassword;
     private JButton btnAceptar;
     private JButton btnCancelar;
     
@@ -36,7 +38,7 @@ public class RegistrarBibliotecario extends JInternalFrame {
     }
     
     private void inicializarComponentes() {
-        setSize(450, 220);
+        setSize(450, 320);
         setLayout(new BorderLayout());
         
         // Panel principal
@@ -54,7 +56,7 @@ public class RegistrarBibliotecario extends JInternalFrame {
         panelPrincipal.add(lblTitulo, gbc);
         
         // Instrucciones
-        JLabel lblInstrucciones = new JLabel("Ingrese los siguientes datos (número de empleado se genera automáticamente):");
+        JLabel lblInstrucciones = new JLabel("Ingrese los siguientes datos:");
         gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.WEST;
         panelPrincipal.add(lblInstrucciones, gbc);
@@ -77,6 +79,24 @@ public class RegistrarBibliotecario extends JInternalFrame {
         txtEmail = new JTextField(15);
         gbc.gridx = 1;
         panelPrincipal.add(txtEmail, gbc);
+        
+        // Password
+        gbc.gridy = 4;
+        gbc.gridx = 0;
+        panelPrincipal.add(new JLabel("Contraseña:"), gbc);
+        
+        txtPassword = new JPasswordField(15);
+        gbc.gridx = 1;
+        panelPrincipal.add(txtPassword, gbc);
+        
+        // Confirmar Password
+        gbc.gridy = 5;
+        gbc.gridx = 0;
+        panelPrincipal.add(new JLabel("Confirmar contraseña:"), gbc);
+        
+        txtConfirmarPassword = new JPasswordField(15);
+        gbc.gridx = 1;
+        panelPrincipal.add(txtConfirmarPassword, gbc);
         
         add(panelPrincipal, BorderLayout.CENTER);
         
@@ -113,9 +133,29 @@ public class RegistrarBibliotecario extends JInternalFrame {
             // Obtener datos del formulario
             String nombre = txtNombre.getText();
             String email = txtEmail.getText();
+            String password = new String(txtPassword.getPassword());
+            String confirmarPassword = new String(txtConfirmarPassword.getPassword());
             
-            // Llamar al controlador (numeroEmpleado se autogenera, por eso pasamos null)
-            controlador.registrarBibliotecario(null, nombre, email);
+            // Validar que las contraseñas coincidan
+            if (!password.equals(confirmarPassword)) {
+                JOptionPane.showMessageDialog(this, 
+                    "Las contraseñas no coinciden", 
+                    "Error", 
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            // Validar que la contraseña no esté vacía
+            if (password.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this, 
+                    "La contraseña es obligatoria", 
+                    "Error", 
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            // Llamar al controlador con password
+            controlador.registrarBibliotecarioConPassword(nombre, email, password);
             
             // Mostrar mensaje de éxito
             JOptionPane.showMessageDialog(this, 
@@ -150,6 +190,8 @@ public class RegistrarBibliotecario extends JInternalFrame {
     private void limpiarFormulario() {
         txtNombre.setText("");
         txtEmail.setText("");
+        txtPassword.setText("");
+        txtConfirmarPassword.setText("");
         txtNombre.requestFocus();
     }
 }

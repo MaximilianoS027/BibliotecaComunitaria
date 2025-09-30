@@ -167,10 +167,10 @@ public class ManejadorBibliotecario {
                 bibliotecario.setNumeroEmpleado(generarNumeroEmpleado());
             }
             
-            // Verificar si ya existe por número de empleado
-            Bibliotecario existente = session.get(Bibliotecario.class, bibliotecario.getNumeroEmpleado());
+            // Verificar si ya existe por ID
+            Bibliotecario existente = session.get(Bibliotecario.class, bibliotecario.getId());
             if (existente != null) {
-                throw new BibliotecarioRepetidoException("Ya existe un bibliotecario con el número de empleado: " + bibliotecario.getNumeroEmpleado());
+                throw new BibliotecarioRepetidoException("Ya existe un bibliotecario con el ID: " + bibliotecario.getId());
             }
             
             session.save(bibliotecario);
@@ -191,14 +191,14 @@ public class ManejadorBibliotecario {
         }
     }
     
-    public Bibliotecario obtenerBibliotecario(String numeroEmpleado) throws BibliotecarioNoExisteException {
+    public Bibliotecario obtenerBibliotecario(String id) throws BibliotecarioNoExisteException {
         Session session = null;
         
         try {
             session = HibernateUtil.getSessionFactory().openSession();
-            Bibliotecario bibliotecario = session.get(Bibliotecario.class, numeroEmpleado);
+            Bibliotecario bibliotecario = session.get(Bibliotecario.class, id);
             if (bibliotecario == null) {
-                throw new BibliotecarioNoExisteException("No existe un bibliotecario con el número de empleado: " + numeroEmpleado);
+                throw new BibliotecarioNoExisteException("No existe un bibliotecario con el ID: " + id);
             }
             return bibliotecario;
             
@@ -207,38 +207,6 @@ public class ManejadorBibliotecario {
                 throw e;
             }
             throw new RuntimeException("Error al obtener bibliotecario: " + e.getMessage(), e);
-        } finally {
-            if (session != null) {
-                session.close();
-            }
-        }
-    }
-    
-    /**
-     * Obtiene un bibliotecario por su ID (B1, B2, B3...)
-     */
-    public Bibliotecario obtenerBibliotecarioPorId(String id) throws BibliotecarioNoExisteException {
-        Session session = null;
-        
-        try {
-            session = HibernateUtil.getSessionFactory().openSession();
-            
-            // Buscar por ID en lugar de número de empleado
-            Query<Bibliotecario> query = session.createQuery(
-                "SELECT b FROM Bibliotecario b WHERE b.id = :id", Bibliotecario.class);
-            query.setParameter("id", id);
-            
-            Bibliotecario bibliotecario = query.uniqueResult();
-            if (bibliotecario == null) {
-                throw new BibliotecarioNoExisteException("No existe un bibliotecario con ID: " + id);
-            }
-            return bibliotecario;
-            
-        } catch (Exception e) {
-            if (e instanceof BibliotecarioNoExisteException) {
-                throw e;
-            }
-            throw new RuntimeException("Error al obtener bibliotecario por ID: " + e.getMessage(), e);
         } finally {
             if (session != null) {
                 session.close();
@@ -263,16 +231,84 @@ public class ManejadorBibliotecario {
         }
     }
     
-    public boolean existeBibliotecario(String numeroEmpleado) {
+    /**
+     * Obtiene un bibliotecario por email
+     */
+    public Bibliotecario obtenerBibliotecarioPorEmail(String email) {
         Session session = null;
         
         try {
             session = HibernateUtil.getSessionFactory().openSession();
-            Bibliotecario bibliotecario = session.get(Bibliotecario.class, numeroEmpleado);
-            return bibliotecario != null;
+            
+            // Buscar por email
+            Query<Bibliotecario> query = session.createQuery(
+                "SELECT b FROM Bibliotecario b WHERE LOWER(b.email) = LOWER(:email)", Bibliotecario.class);
+            query.setParameter("email", email.trim());
+            
+            return query.uniqueResult();
             
         } catch (Exception e) {
-            return false;
+            return null;
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+
+    /**
+     * Obtiene un bibliotecario por nombre
+     */
+    public Bibliotecario obtenerBibliotecarioPorNombre(String nombre) {
+        Session session = null;
+        
+        try {
+            session = HibernateUtil.getSessionFactory().openSession();
+            
+            // Buscar por nombre
+            Query<Bibliotecario> query = session.createQuery(
+                "SELECT b FROM Bibliotecario b WHERE LOWER(b.nombre) = LOWER(:nombre)", Bibliotecario.class);
+            query.setParameter("nombre", nombre.trim());
+            
+            return query.uniqueResult();
+            
+        } catch (Exception e) {
+            return null;
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+    
+    /**
+     * Actualiza un bibliotecario existente
+     */
+    public void actualizarBibliotecario(Bibliotecario bibliotecario) throws BibliotecarioNoExisteException {
+        Session session = null;
+        Transaction transaction = null;
+        
+        try {
+            session = HibernateUtil.getSessionFactory().openSession();
+            transaction = session.beginTransaction();
+            
+            // Verificar que el bibliotecario existe
+            Bibliotecario bibliotecarioExistente = session.get(Bibliotecario.class, bibliotecario.getId());
+            if (bibliotecarioExistente == null) {
+                throw new BibliotecarioNoExisteException("No existe un bibliotecario con ID: " + bibliotecario.getId());
+            }
+            
+            session.update(bibliotecario);
+            transaction.commit();
+            
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            if (e instanceof BibliotecarioNoExisteException) {
+                throw e;
+            }
+            throw new RuntimeException("Error al actualizar bibliotecario: " + e.getMessage(), e);
         } finally {
             if (session != null) {
                 session.close();

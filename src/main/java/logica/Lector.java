@@ -29,20 +29,20 @@ public class Lector extends Usuario {
     // Constructor por defecto requerido por JPA
     public Lector() {}
     
-    // Constructor con parámetros
-    public Lector(String id, String nombre, String email, String direccion, 
+    // Constructor con parámetros (sin password, ID se autogenera)
+    public Lector(String nombre, String email, String direccion, 
                   Date fechaRegistro, EstadoLector estado, Zona zona) {
-        super(id, nombre, email);
+        super(null, nombre, email);  // Pasar null para que ManejadorLector genere ID secuencial (L1, L2, L3...)
         this.direccion = direccion;
         this.fechaRegistro = fechaRegistro;
         this.estado = estado;
         this.zona = zona;
     }
     
-    // Constructor con parámetros (sin ID para que ManejadorLector lo genere secuencialmente)
-    public Lector(String nombre, String email, String direccion, 
+    // Constructor con parámetros incluyendo password (ID se autogenera)
+    public Lector(String nombre, String email, String direccion, String password,
                   Date fechaRegistro, EstadoLector estado, Zona zona) {
-        super(null, nombre, email);  // Pasar null para que ManejadorLector genere ID secuencial (L1, L2, L3...)
+        super(null, nombre, email, password);  // Pasar null para que ManejadorLector genere ID secuencial
         this.direccion = direccion;
         this.fechaRegistro = fechaRegistro;
         this.estado = estado;

@@ -12,6 +12,7 @@ import interfaces.ILectorControlador;
 import interfaces.ILibroControlador;
 import interfaces.IArticuloEspecialControlador;
 import interfaces.IPrestamoControlador;
+import interfaces.IAutenticacionControlador;
 
 /**
  * Controlador principal que coordina todas las operaciones del sistema
@@ -24,6 +25,7 @@ public class Controlador implements IControlador {
     private ILibroControlador libroControlador;
     private IArticuloEspecialControlador articuloEspecialControlador;
     private IPrestamoControlador prestamoControlador;
+    private IAutenticacionControlador autenticacionControlador;
     
     // Instancia única (Singleton)
     private static Controlador instancia;
@@ -34,6 +36,7 @@ public class Controlador implements IControlador {
         this.libroControlador = new LibroControlador();
         this.articuloEspecialControlador = new ArticuloEspecialControlador();
         this.prestamoControlador = new PrestamoControlador();
+        this.autenticacionControlador = new AutenticacionControlador();
     }
     
     public static Controlador getInstancia() {
@@ -46,9 +49,9 @@ public class Controlador implements IControlador {
     // ============= OPERACIONES DE BIBLIOTECARIO (delegadas) =============
     
     @Override
-    public void registrarBibliotecario(String numeroEmpleado, String nombre, String email) 
+    public void registrarBibliotecario(String nombre, String email) 
             throws BibliotecarioRepetidoException, DatosInvalidosException {
-        bibliotecarioControlador.registrarBibliotecario(numeroEmpleado, nombre, email);
+        bibliotecarioControlador.registrarBibliotecario(nombre, email);
     }
     
     @Override
@@ -60,6 +63,12 @@ public class Controlador implements IControlador {
     @Override
     public String[] listarBibliotecarios() {
         return bibliotecarioControlador.listarBibliotecarios();
+    }
+    
+    @Override
+    public void registrarBibliotecarioConPassword(String nombre, String email, String password) 
+            throws BibliotecarioRepetidoException, DatosInvalidosException {
+        bibliotecarioControlador.registrarBibliotecarioConPassword(nombre, email, password);
     }
     
     // ============= OPERACIONES DE LECTOR (delegadas) =============
@@ -137,8 +146,41 @@ public class Controlador implements IControlador {
             throw new DatosInvalidosException("La nueva zona es obligatoria");
         }
         
-        // TODO: Delegar al lectorControlador cuando se implemente el método
-        throw new UnsupportedOperationException("Método pendiente de implementación en LectorControlador");
+        // Delegar al lectorControlador
+        lectorControlador.cambiarZonaLector(idLector, nuevaZona);
+    }
+    
+    @Override
+    public void registrarLectorConPassword(String nombre, String email, String password, String direccion, 
+                                          String fechaRegistro, String estado, String zona) 
+            throws LectorRepetidoException, DatosInvalidosException {
+        lectorControlador.registrarLectorConPassword(nombre, email, password, direccion, fechaRegistro, estado, zona);
+    }
+    
+    // ============= OPERACIONES DE AUTENTICACIÓN (delegadas) =============
+    
+    @Override
+    public String autenticarLector(String email, String password)
+            throws LectorNoExisteException, DatosInvalidosException {
+        return autenticacionControlador.autenticarLector(email, password);
+    }
+
+    @Override
+    public String autenticarBibliotecario(String email, String password)
+            throws BibliotecarioNoExisteException, DatosInvalidosException {
+        return autenticacionControlador.autenticarBibliotecario(email, password);
+    }
+    
+    @Override
+    public void cambiarPasswordLector(String lectorId, String passwordActual, String passwordNuevo)
+            throws LectorNoExisteException, DatosInvalidosException {
+        autenticacionControlador.cambiarPasswordLector(lectorId, passwordActual, passwordNuevo);
+    }
+    
+    @Override
+    public void cambiarPasswordBibliotecario(String id, String passwordActual, String passwordNuevo)
+            throws BibliotecarioNoExisteException, DatosInvalidosException {
+        autenticacionControlador.cambiarPasswordBibliotecario(id, passwordActual, passwordNuevo);
     }
     
     // ============= OPERACIONES DE LIBRO (delegadas) =============
@@ -236,25 +278,4 @@ public class Controlador implements IControlador {
                                              materialId, fechaSolicitud, estado, fechaDevolucion);
     }
     
-    // ============= GETTERS PARA CONTROLADORES ESPECÍFICOS =============
-    
-    public IBibliotecarioControlador getBibliotecarioControlador() {
-        return bibliotecarioControlador;
-    }
-    
-    public ILectorControlador getLectorControlador() {
-        return lectorControlador;
-    }
-    
-    public ILibroControlador getLibroControlador() {
-        return libroControlador;
-    }
-    
-    public IArticuloEspecialControlador getArticuloEspecialControlador() {
-        return articuloEspecialControlador;
-    }
-    
-    public IPrestamoControlador getPrestamoControlador() {
-        return prestamoControlador;
-    }
 }

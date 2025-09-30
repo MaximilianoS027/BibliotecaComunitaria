@@ -22,6 +22,8 @@ public class RegistrarLector extends JInternalFrame {
     // Componentes de la interfaz
     private JTextField txtNombre;
     private JTextField txtEmail;
+    private JPasswordField txtPassword;
+    private JPasswordField txtConfirmarPassword;
     private JTextField txtDireccion;
     private JTextField txtFechaRegistro;
     private JComboBox<EstadoLector> cmbEstado;
@@ -44,7 +46,7 @@ public class RegistrarLector extends JInternalFrame {
     */
     
     private void inicializarComponentes() {
-        setSize(600, 500);
+        setSize(600, 600);
         setLayout(new BorderLayout());
         
         // Panel principal
@@ -97,8 +99,34 @@ public class RegistrarLector extends JInternalFrame {
         gbc.gridx = 1;
         panelPrincipal.add(txtEmail, gbc);
         
-        // Dirección
+        // Password
         gbc.gridy = 4;
+        gbc.gridx = 0;
+        JLabel lblPassword = new JLabel("Contraseña:");
+        lblPassword.setFont(new Font("Arial", Font.BOLD, 12));
+        panelPrincipal.add(lblPassword, gbc);
+        
+        txtPassword = new JPasswordField(20);
+        txtPassword.setFont(new Font("Arial", Font.PLAIN, 12));
+        txtPassword.setPreferredSize(new Dimension(300, 25));
+        gbc.gridx = 1;
+        panelPrincipal.add(txtPassword, gbc);
+        
+        // Confirmar Password
+        gbc.gridy = 5;
+        gbc.gridx = 0;
+        JLabel lblConfirmarPassword = new JLabel("Confirmar contraseña:");
+        lblConfirmarPassword.setFont(new Font("Arial", Font.BOLD, 12));
+        panelPrincipal.add(lblConfirmarPassword, gbc);
+        
+        txtConfirmarPassword = new JPasswordField(20);
+        txtConfirmarPassword.setFont(new Font("Arial", Font.PLAIN, 12));
+        txtConfirmarPassword.setPreferredSize(new Dimension(300, 25));
+        gbc.gridx = 1;
+        panelPrincipal.add(txtConfirmarPassword, gbc);
+        
+        // Dirección
+        gbc.gridy = 6;
         gbc.gridx = 0;
         JLabel lblDireccion = new JLabel("Dirección:");
         lblDireccion.setFont(new Font("Arial", Font.BOLD, 12));
@@ -111,7 +139,7 @@ public class RegistrarLector extends JInternalFrame {
         panelPrincipal.add(txtDireccion, gbc);
         
         // Fecha de Registro
-        gbc.gridy = 5;
+        gbc.gridy = 7;
         gbc.gridx = 0;
         JLabel lblFecha = new JLabel("Fecha de registro:");
         lblFecha.setFont(new Font("Arial", Font.BOLD, 12));
@@ -127,7 +155,7 @@ public class RegistrarLector extends JInternalFrame {
         panelPrincipal.add(txtFechaRegistro, gbc);
         
         // Estado
-        gbc.gridy = 6;
+        gbc.gridy = 8;
         gbc.gridx = 0;
         JLabel lblEstado = new JLabel("Estado:");
         lblEstado.setFont(new Font("Arial", Font.BOLD, 12));
@@ -140,7 +168,7 @@ public class RegistrarLector extends JInternalFrame {
         panelPrincipal.add(cmbEstado, gbc);
         
         // Zona
-        gbc.gridy = 7;
+        gbc.gridy = 9;
         gbc.gridx = 0;
         JLabel lblZona = new JLabel("Zona:");
         lblZona.setFont(new Font("Arial", Font.BOLD, 12));
@@ -154,7 +182,7 @@ public class RegistrarLector extends JInternalFrame {
         
         // Botones
         gbc.gridx = 0;
-        gbc.gridy = 8;
+        gbc.gridy = 10;
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
         
@@ -201,13 +229,33 @@ public class RegistrarLector extends JInternalFrame {
             // Obtener datos del formulario
             String nombre = txtNombre.getText();
             String email = txtEmail.getText();
+            String password = new String(txtPassword.getPassword());
+            String confirmarPassword = new String(txtConfirmarPassword.getPassword());
             String direccion = txtDireccion.getText();
             String fechaStr = txtFechaRegistro.getText();
             String estado = cmbEstado.getSelectedItem().toString();
             String zona = cmbZona.getSelectedItem().toString();
             
-            // Llamar al controlador
-            controlador.registrarLector(nombre, email, direccion, fechaStr, estado, zona);
+            // Validar que las contraseñas coincidan
+            if (!password.equals(confirmarPassword)) {
+                JOptionPane.showMessageDialog(this, 
+                    "Las contraseñas no coinciden", 
+                    "Error", 
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            // Validar que la contraseña no esté vacía
+            if (password.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(this, 
+                    "La contraseña es obligatoria", 
+                    "Error", 
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            // Llamar al controlador con password
+            controlador.registrarLectorConPassword(nombre, email, password, direccion, fechaStr, estado, zona);
             
             // Mostrar mensaje de éxito
             JOptionPane.showMessageDialog(this, 
@@ -230,6 +278,8 @@ public class RegistrarLector extends JInternalFrame {
     private void limpiarFormulario() {
         txtNombre.setText("");
         txtEmail.setText("");
+        txtPassword.setText("");
+        txtConfirmarPassword.setText("");
         txtDireccion.setText("");
         establecerFechaActual();
         cmbEstado.setSelectedIndex(0);

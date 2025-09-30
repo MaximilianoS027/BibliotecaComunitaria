@@ -18,7 +18,7 @@ public interface IControlador {
     /**
      * Registra un nuevo bibliotecario en el sistema
      */
-    void registrarBibliotecario(String numeroEmpleado, String nombre, String email) 
+    void registrarBibliotecario(String nombre, String email) 
         throws BibliotecarioRepetidoException, DatosInvalidosException;
     
     /**
@@ -30,6 +30,12 @@ public interface IControlador {
      * Lista todos los bibliotecarios del sistema
      */
     String[] listarBibliotecarios();
+    
+    /**
+     * Registra un nuevo bibliotecario con password
+     */
+    void registrarBibliotecarioConPassword(String nombre, String email, String password) 
+        throws BibliotecarioRepetidoException, DatosInvalidosException;
     
     // ============= OPERACIONES DE LECTOR =============
     
@@ -82,6 +88,39 @@ public interface IControlador {
      */
     void cambiarZonaLector(String idLector, String nuevaZona) 
         throws LectorNoExisteException, DatosInvalidosException;
+    
+    /**
+     * Registra un nuevo lector con password
+     */
+    void registrarLectorConPassword(String nombre, String email, String password, String direccion, 
+                                   String fechaRegistro, String estado, String zona) 
+        throws LectorRepetidoException, DatosInvalidosException;
+    
+    // ============= OPERACIONES DE AUTENTICACIÓN =============
+    
+    /**
+     * Autentica un lector con email y password
+     */
+    String autenticarLector(String email, String password) 
+        throws LectorNoExisteException, DatosInvalidosException;
+    
+    /**
+     * Autentica un bibliotecario con email y password
+     */
+    String autenticarBibliotecario(String email, String password) 
+        throws BibliotecarioNoExisteException, DatosInvalidosException;
+    
+    /**
+     * Cambia el password de un lector
+     */
+    void cambiarPasswordLector(String lectorId, String passwordActual, String passwordNuevo)
+        throws LectorNoExisteException, DatosInvalidosException;
+    
+    /**
+     * Cambia el password de un bibliotecario
+     */
+    void cambiarPasswordBibliotecario(String id, String passwordActual, String passwordNuevo)
+        throws BibliotecarioNoExisteException, DatosInvalidosException;
     
     // ============= OPERACIONES DE LIBRO =============
     
