@@ -10,8 +10,8 @@
   <url>http://maven.apache.org</url>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>21</maven.compiler.source>
-    <maven.compiler.target>21</maven.compiler.target>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
     <junit.version>4.13.2</junit.version>
     <log4j.version>1.2.17</log4j.version>
     <postgresql.version>42.7.2</postgresql.version>
@@ -42,53 +42,12 @@
       <version>${hibernate.version}</version>
     </dependency>
     
-    <!-- JAX-WS Dependencies for Java 21 -->
+    <!-- JAX-WS Dependencies for Java 11 -->
     <dependency>
       <groupId>com.sun.xml.ws</groupId>
       <artifactId>jaxws-rt</artifactId>
-      <version>4.0.0</version>
+      <version>2.3.3</version>
     </dependency>
-    
-    <!-- JAXB Dependencies for Java 21 -->
-    <dependency>
-      <groupId>javax.xml.bind</groupId>
-      <artifactId>jaxb-api</artifactId>
-      <version>2.3.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.glassfish.jaxb</groupId>
-      <artifactId>jaxb-runtime</artifactId>
-      <version>2.3.1</version>
-    </dependency>
-    
-    <!-- JAX-WS API -->
-    <!-- <dependency>
-      <groupId>javax.jws</groupId>
-      <artifactId>javax.jws-api</artifactId>
-      <version>1.1</version>
-    </dependency> -->
-    
-    <!-- Web Services Metadata -->
-    <!-- <dependency>
-      <groupId>javax.xml.ws</groupId>
-      <artifactId>jaxws-api</artifactId>
-      <version>2.3.1</version>
-    </dependency> -->
-    
-    <!-- Jakarta XML Web Services API -->
-    <dependency>
-      <groupId>jakarta.xml.ws</groupId>
-      <artifactId>jakarta.xml.ws-api</artifactId>
-      <version>4.0.0</version>
-    </dependency>
-    
-    <!-- Jakarta XML SOAP API -->
-    <dependency>
-      <groupId>jakarta.xml.soap</groupId>
-      <artifactId>jakarta.xml.soap-api</artifactId>
-      <version>3.0.0</version>
-    </dependency>
-    
     
   </dependencies>
   <build>
@@ -99,8 +58,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.11.0</version>
         <configuration>
-          <source>21</source>
-          <target>21</target>
+          <source>11</source>
+          <target>11</target>
           <encoding>UTF-8</encoding>
         </configuration>
       </plugin>
