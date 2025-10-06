@@ -1,8 +1,8 @@
 package logica;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Column;
 import java.util.Date;
 
 /**
@@ -17,7 +17,7 @@ public class ArticuloEspecial extends Material {
     @Column(nullable = false, length = 500)
     private String descripcion;
     
-    @Column(nullable = false, precision = 10, scale = 3)
+    @Column(nullable = false)
     private Float pesoKg;
     
     @Column(nullable = false, length = 100)
