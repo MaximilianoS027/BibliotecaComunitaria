@@ -1,7 +1,7 @@
 package logica;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 /**
  * Entidad JPA que representa un bibliotecario en el sistema
