@@ -124,6 +124,7 @@
         <version>3.0.0</version>
         <configuration>
           <mainClass>MainNuevo</mainClass>
+          <includePluginDependencies>true</includePluginDependencies>
         </configuration>
       </plugin>
       <!-- Plugin para crear JAR ejecutable -->
