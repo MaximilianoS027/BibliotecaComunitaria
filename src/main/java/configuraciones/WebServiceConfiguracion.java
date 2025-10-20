@@ -22,18 +22,18 @@ public class WebServiceConfiguracion {
             String properties;
             
             while((properties = reader.readLine()) != null) {
-                if(properties.startsWith("#")) {
+                if(!properties.startsWith("#") && properties.contains("=")) {
                     String[] div = properties.split("=");
                     if(div.length == 2) {
-                        configs.put(div[0], div[1]);
+                        configs.put(div[0].trim(), div[1].trim());
                     }
                 }
             }
         } catch(Exception e) {
             // Configuración por defecto si no existe el archivo
-            configs.put("#WS_IP", "localhost");
-            configs.put("#WS_PORT", "1432");
-            System.out.println("Usando configuración por defecto: localhost:1432");
+            configs.put("WS_IP", "localhost");
+            configs.put("WS_PORT", "8081");
+            System.out.println("Usando configuración por defecto: localhost:8081");
         }
     }
     
@@ -51,6 +51,6 @@ public class WebServiceConfiguracion {
      * @return URL completa (ej: "http://localhost:1432")
      */
     public String getBaseUrl() {
-        return "http://" + getConfigOf("#WS_IP") + ":" + getConfigOf("#WS_PORT");
+        return "http://" + getConfigOf("WS_IP") + ":" + getConfigOf("WS_PORT");
     }
 }
