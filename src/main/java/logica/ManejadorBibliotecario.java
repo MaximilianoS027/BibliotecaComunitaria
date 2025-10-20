@@ -282,6 +282,31 @@ public class ManejadorBibliotecario {
     }
     
     /**
+     * Obtiene un bibliotecario por número de empleado
+     */
+    public Bibliotecario obtenerBibliotecarioPorNumeroEmpleado(String numeroEmpleado) {
+        Session session = null;
+        
+        try {
+            session = HibernateUtil.getSessionFactory().openSession();
+            
+            // Buscar por número de empleado
+            Query<Bibliotecario> query = session.createQuery(
+                "SELECT b FROM Bibliotecario b WHERE b.numeroEmpleado = :numeroEmpleado", Bibliotecario.class);
+            query.setParameter("numeroEmpleado", numeroEmpleado.trim());
+            
+            return query.uniqueResult();
+            
+        } catch (Exception e) {
+            return null;
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
+    }
+    
+    /**
      * Actualiza un bibliotecario existente
      */
     public void actualizarBibliotecario(Bibliotecario bibliotecario) throws BibliotecarioNoExisteException {
@@ -289,6 +314,7 @@ public class ManejadorBibliotecario {
         Transaction transaction = null;
         
         try {
+            System.out.println("DEBUG: Iniciando actualización de bibliotecario " + bibliotecario.getId() + " con password: " + bibliotecario.getPassword());
             session = HibernateUtil.getSessionFactory().openSession();
             transaction = session.beginTransaction();
             
@@ -298,12 +324,23 @@ public class ManejadorBibliotecario {
                 throw new BibliotecarioNoExisteException("No existe un bibliotecario con ID: " + bibliotecario.getId());
             }
             
-            session.update(bibliotecario);
+            System.out.println("DEBUG: Bibliotecario encontrado en BD. Password actual: " + bibliotecarioExistente.getPassword());
+            
+            // Usar consulta SQL nativa para actualizar el password
+            Query<?> updateQuery = session.createNativeQuery(
+                "UPDATE usuarios SET password = :password WHERE id = :id");
+            updateQuery.setParameter("password", bibliotecario.getPassword());
+            updateQuery.setParameter("id", bibliotecario.getId());
+            int rowsUpdated = updateQuery.executeUpdate();
+            System.out.println("DEBUG: Consulta SQL nativa ejecutada. Filas actualizadas: " + rowsUpdated);
             transaction.commit();
+            System.out.println("DEBUG: Transacción commitada");
             
         } catch (Exception e) {
+            System.out.println("DEBUG: Error en actualizarBibliotecario: " + e.getMessage());
             if (transaction != null) {
                 transaction.rollback();
+                System.out.println("DEBUG: Transacción rollback");
             }
             if (e instanceof BibliotecarioNoExisteException) {
                 throw e;
@@ -312,6 +349,7 @@ public class ManejadorBibliotecario {
         } finally {
             if (session != null) {
                 session.close();
+                System.out.println("DEBUG: Sesión cerrada");
             }
         }
     }

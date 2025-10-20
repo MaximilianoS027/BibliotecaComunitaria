@@ -124,7 +124,9 @@ public class AutenticacionControlador implements IAutenticacionControlador {
         }
         
         // Buscar bibliotecario
-        Bibliotecario bibliotecario = manejadorBibliotecario.obtenerBibliotecario(numeroEmpleado);
+        System.out.println("DEBUG: Buscando bibliotecario con número de empleado: " + numeroEmpleado);
+        Bibliotecario bibliotecario = manejadorBibliotecario.obtenerBibliotecarioPorNumeroEmpleado(numeroEmpleado);
+        System.out.println("DEBUG: Bibliotecario encontrado: " + (bibliotecario != null ? bibliotecario.getId() : "NULL"));
         if (bibliotecario == null) {
             throw new BibliotecarioNoExisteException("No existe un bibliotecario con el número: " + numeroEmpleado);
         }
@@ -135,8 +137,11 @@ public class AutenticacionControlador implements IAutenticacionControlador {
         }
         
         // Cambiar password
+        System.out.println("DEBUG: Cambiando password de bibliotecario " + bibliotecario.getId() + " de '" + bibliotecario.getPassword() + "' a '" + passwordNuevo + "'");
         bibliotecario.setPassword(passwordNuevo);
+        System.out.println("DEBUG: Password actualizado en memoria: " + bibliotecario.getPassword());
         manejadorBibliotecario.actualizarBibliotecario(bibliotecario);
+        System.out.println("DEBUG: Llamada a actualizarBibliotecario completada");
     }
     
     @Override
@@ -177,7 +182,7 @@ public class AutenticacionControlador implements IAutenticacionControlador {
         }
         
         // Buscar bibliotecario
-        Bibliotecario bibliotecario = manejadorBibliotecario.obtenerBibliotecario(numeroEmpleado);
+        Bibliotecario bibliotecario = manejadorBibliotecario.obtenerBibliotecarioPorNumeroEmpleado(numeroEmpleado);
         if (bibliotecario == null) {
             throw new BibliotecarioNoExisteException("No existe un bibliotecario con el número: " + numeroEmpleado);
         }
