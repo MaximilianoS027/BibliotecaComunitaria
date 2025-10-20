@@ -1,0 +1,6 @@
+# Configuración de Web Services
+# Copiar este archivo a ~/.BibliotecaComunitaria/.properties
+# y modificar los valores según sea necesario
+
+WS_IP=localhost
+WS_PORT=8081
